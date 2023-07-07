@@ -1,0 +1,120 @@
+[
+  {
+    "planner": "Kelsey",
+    "events": [
+      {
+        "names": ["Lauren", "John"],
+        "date": "08.17.24",
+        "active": true,
+        "slug": "Lauren+John"
+      },
+      {
+        "names": ["Ted", "Lauren"],
+        "date": "06.01.24",
+        "active": true,
+        "slug": "Ted+Lauren"
+      },
+      {
+        "names": ["Margaret", "Pascual"],
+        "date": "10.28.23",
+        "active": true,
+        "slug": "Margaret+Pascual"
+      },
+      {
+        "names": ["Rachel", "Nolan"],
+        "date": "09.30.23",
+        "active": true,
+        "slug": "Rachel+Nolan"
+      },
+      {
+        "names": ["Jay", "Hannah"],
+        "date": "09.16.23",
+        "active": true,
+        "slug": "Jay+Hannah"
+      },
+      {
+        "names": ["Brendan", "Samantha"],
+        "date": "08.19.23",
+        "active": true,
+        "slug": "Brendan+Samantha"
+      },
+      {
+        "names": ["Kyle", "Paige"],
+        "date": "08.12.23",
+        "active": true,
+        "slug": "Kyle+Paige"
+      },
+      {
+        "names": ["Kris", "Jenny"],
+        "date": "06.10.23",
+        "active": false,
+        "slug": "Kris+Jenny"
+      },
+      {
+        "names": ["Luna", "Taylor"],
+        "date": "04.08.19",
+        "active": false,
+        "slug": "Luna+Taylor"
+      }
+    ]
+  },
+  {
+    "planner": "Lauren",
+    "events": [
+      {
+        "names": ["Lauren", "John"],
+        "date": "08.17.24",
+        "active": true,
+        "slug": "Lauren+John"
+      },
+      {
+        "names": ["Ted", "Lauren"],
+        "date": "06.01.24",
+        "active": true,
+        "slug": "Ted+Lauren"
+      },
+      {
+        "names": ["Margaret", "Pascual"],
+        "date": "10.28.23",
+        "active": true,
+        "slug": "Margaret+Pascual"
+      },
+      {
+        "names": ["Rachel", "Nolan"],
+        "date": "09.30.23",
+        "active": true,
+        "slug": "Rachel+Nolan"
+      }
+    ]
+  },
+  {
+    "planner": "Kristen",
+    "events": [
+      {
+        "names": ["Lauren", "John"],
+        "date": "08.17.24",
+        "active": true,
+        "slug": "Lauren+John"
+      },
+      {
+        "names": ["Ted", "Lauren"],
+        "date": "06.01.24",
+        "active": true,
+        "slug": "Ted+Lauren"
+      },
+      {
+        "names": ["Margaret", "Pascual"],
+        "date": "10.28.23",
+        "active": true,
+        "slug": "Margaret+Pascual"
+      },
+      {
+        "names": ["Rachel", "Nolan"],
+        "date": "09.30.23",
+        "active": true,
+        "slug": "Rachel+Nolan"
+      }
+    ]
+  }
+  
+]

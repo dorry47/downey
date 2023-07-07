@@ -1,0 +1,26 @@
+[
+  {
+    "title": "All Clients",
+    "href": "/projects"
+  },
+  {
+    "title": "All Planners",
+    "href": "/users"
+  },
+  {
+    "title": "My Clients",
+    "href": "/"
+  },
+  {
+    "title": "My Info",
+    "href": "/users/edit"
+  },
+  {
+    "title": "Edit Documents",
+    "href": "/documents"
+  },
+  {
+    "title": "Log Out",
+    "href": "/logout"
+  }
+]
