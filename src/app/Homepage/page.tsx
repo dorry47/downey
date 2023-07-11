@@ -3,9 +3,27 @@ import ClientBox from '../../../components/ClientBox';
 import events from '../../data/events.json';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useStateContext } from '../../../context/StateContext';
 
 export default function Home() {
   const [activeList, setActiveList] = useState<{ [key: string]: boolean }>({});
+  const { state, setState } = useStateContext();
+
+  useEffect(() => {
+    const session = JSON.parse(localStorage.getItem('session') as string);
+    const user = JSON.parse(localStorage.getItem('user') as string);
+    if (session) {
+      setState({ ...state, session, user });
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(
+      'current local storage',
+      JSON.parse(localStorage.getItem('session') as string)
+    );
+    console.log(state);
+  }, [state]);
 
   const toggleList = (planner: string) => {
     console.log(planner);
@@ -31,7 +49,7 @@ export default function Home() {
           <div className="md:items-center md:pb-12 md:pt-12 text-center">
             <div className="md:col-span-10 md:py-12 md:mx-8 border-[rgba(238,217,212)] bg-[rgba(238,217,212)] bg-opacity-10 col-span-12 py-8 border border-solid">
               <h1 className="font-display md:text-3xl mt-2 text-xl font-normal leading-tight tracking-widest uppercase">
-                Hello Kelsey!
+                Hello !
               </h1>
             </div>
           </div>
