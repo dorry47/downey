@@ -1,8 +1,6 @@
 'use client';
 import ClientBox from '../../../components/ClientBox';
-import Footer from '../../../components/Footer';
 import events from '../../data/events.json';
-import footerLinks from '../../data/footerLinks.json';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -111,7 +109,6 @@ export default function Home() {
             ))}
         </div>
       </section>
-      <Footer links={footerLinks} />
     </main>
   );
 }
