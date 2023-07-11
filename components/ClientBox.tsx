@@ -12,7 +12,7 @@ const ClientBox = (props: Props) => {
   const names = props.names.join(' + ');
   return (
     <>
-      <Link href={`/projects/${props.slug}`}>
+      <Link href={`/clients/${props.slug}`}>
         <div
           className={`md:col-span-1 ${
             props.active ? 'bg-[rgba(238,217,212)]' : 'bg-[rgba(217,216,214)]'

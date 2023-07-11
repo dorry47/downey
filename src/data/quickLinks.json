@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Design Boards + Documents",
+    "subtitle": "",
+    "imageSrc": "/images/design-boards-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Guest Information",
+    "subtitle": "",
+    "imageSrc": "/images/guest-information-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Budget",
+    "subtitle": "quick link",
+    "imageSrc": "/images/budget-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Vendor Proposals + Contracts",
+    "subtitle": "quick link",
+    "imageSrc": "/images/vendor-proposal-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Client Documents",
+    "subtitle": "",
+    "imageSrc": "/images/client-documents-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Address Book",
+    "subtitle": "quick link",
+    "imageSrc": "/images/address-book-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Contract",
+    "subtitle": "quick link",
+    "imageSrc": "/images/contract-icon.jpg",
+    "href": "/test-and-test2/agreement",
+    "active": false
+  },
+  {
+    "title": "Vendor Contact + Payment Log",
+    "subtitle": "",
+    "imageSrc": "/images/vendor-payment-icon.jpg",
+    "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
+    "active": false
+  },
+  {
+    "title": "Catering",
+    "subtitle": "",
+    "imageSrc": "/images/catering-icon.jpg",
+    "href": "/questionnaires/1133",
+    "active": false
+  },
+  {
+    "title": "Design",
+    "subtitle": "",
+    "imageSrc": "/images/design-icon.jpg",
+    "href": "/questionnaires/1134",
+    "active": false
+  },
+  {
+    "title": "Guest Services",
+    "subtitle": "",
+    "imageSrc": "/images/guest-services-icon.jpg",
+    "href": "/questionnaires/1135",
+    "active": false
+  },
+  {
+    "title": "Music",
+    "subtitle": "",
+    "imageSrc": "/images/music-icon.jpg",
+    "href": "/questionnaires/1136",
+    "active": false
+  }
+]
