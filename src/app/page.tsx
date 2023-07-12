@@ -38,7 +38,7 @@ const Page = (props: Props) => {
         session,
         user: session.user,
       });
-      router.push('/homepage');
+      router.push('/Homepage');
     } else {
       router.push('/');
     }
