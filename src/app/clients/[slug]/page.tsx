@@ -1,13 +1,14 @@
 'use client';
-import React from 'react';
+import { useEffect } from 'react';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
-import useAuthMiddleware from '../../../../middleware/authMiddleware';
+import useAuthMiddleware from '../../../.././middleware/authMiddleware';
 
 type Props = {};
 
 const page = (props: Props) => {
   useAuthMiddleware();
+
   return (
     <div>
       <header
@@ -48,10 +49,11 @@ const page = (props: Props) => {
 
       <section className="sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <div className="sm:grid-cols-3 md:grid-cols-4 sm:gap-6 sm:py-10 grid grid-cols-2 gap-2 py-4 text-center">
-          {quickLinks.map((quickLink) => {
+          {quickLinks.map((quickLink, id) => {
             const { title, subtitle, href, imageSrc, active } = quickLink;
             return (
               <QuickLink
+                key={id}
                 title={title}
                 subtitle={subtitle}
                 href={href}
@@ -245,7 +247,7 @@ const page = (props: Props) => {
               </h4>
               <div className="grid grid-cols-2">
                 <div className="md:col-span-1 col-span-2 pb-6">
-                  <h2 className="font-display tracking-widewide md:text-sm mb-1 text-lg">
+                  <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                     test testt
                   </h2>
                   <p className="lining-nums mb-1 font-serif">t. </p>
@@ -258,7 +260,7 @@ const page = (props: Props) => {
                   </p>
                 </div>
                 <div className="col-span-1">
-                  <h2 className="font-display tracking-widewide md:text-sm mb-1 text-lg">
+                  <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                     test2 test22
                   </h2>
                   <p className="lining-nums mb-1 font-serif">t. </p>
@@ -274,7 +276,7 @@ const page = (props: Props) => {
               <h4 className="text-left text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-normal uppercase text-xxs tracking-extrawide">
                 planner's details
               </h4>
-              <h2 className="font-display tracking-widewide md:text-sm mb-1 text-lg">
+              <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                 Kelsey Connely
               </h2>
               <p className="lining-nums mb-1 font-serif">t. 724.877.6966</p>

@@ -5,7 +5,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import footerLinks from '../data/footerLinks.json';
 import { usePathname } from 'next/navigation';
-import { StateProvider, useStateContext } from '../../context/StateContext';
+import { StateProvider } from '../../context/StateContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
