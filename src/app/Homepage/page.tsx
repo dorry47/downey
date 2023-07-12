@@ -73,7 +73,7 @@ export default function Home() {
                     slug={event.slug}
                   />
                 ))}
-              <Link href="/projects/new">
+              <Link href="">
                 <div className="md:col-span-1 bg-[rgba(219,96,53)] md:py-6 py-3">
                   <div className="md:mx-6 border-[rgba(219,96,53)] text-[rgba(238,217,212)] mx-3 border">
                     <h3 className="font-display md:text-xl md:mt-6 mt-3 text-base font-normal leading-tight tracking-widest uppercase">

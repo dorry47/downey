@@ -111,7 +111,7 @@ const page = (props: Props) => {
               </p>
             </div>
             <div className="col-span-3">
-              <a href="/test-and-test2/edit">
+              <a href="">
                 <h4 className="text-xxs tracking-extrawide pt-3 mb-1 font-sans font-normal text-black uppercase">
                   edit event details
                 </h4>
