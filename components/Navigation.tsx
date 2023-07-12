@@ -71,15 +71,14 @@ const Navigation = (props: Props) => {
                 href="">
                 hi Kelsey
               </Link>{' '}
-              <Link
+              <button
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"
                 rel="nofollow"
                 onClick={() => {
                   handleSignOut();
-                }}
-                href="/logout">
+                }}>
                 Log Out
-              </Link>
+              </button>
             </>
           )}
         </div>
