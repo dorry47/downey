@@ -1,10 +1,13 @@
+'use client';
 import React from 'react';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
+import useAuthMiddleware from '../../../../middleware/authMiddleware';
 
 type Props = {};
 
 const page = (props: Props) => {
+  useAuthMiddleware();
   return (
     <div>
       <header
