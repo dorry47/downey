@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { useStateContext } from '../context/StateContext';
 import { useRouter } from 'next/navigation';
+import { useClient } from '../lib/useClient';
 
 type Props = {
   showLinks: boolean;
@@ -13,10 +13,7 @@ const Navigation = (props: Props) => {
   const { setState } = useStateContext();
   const router = useRouter();
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-  );
+  const supabase = useClient();
 
   const handleSignOut = async () => {
     try {

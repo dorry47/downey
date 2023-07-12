@@ -17,7 +17,7 @@ const useAuthMiddleware = () => {
       router.push('/');
       console.log('redirecting to login');
     }
-  }, [pathName, state.user]);
+  }, [pathName, state.user, state.session, router]);
 };
 
 export default useAuthMiddleware;

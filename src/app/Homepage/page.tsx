@@ -34,10 +34,6 @@ export default function Home() {
     }));
   };
 
-  useEffect(() => {
-    console.log(activeList);
-  }, [activeList]);
-
   return (
     <main className="">
       <header

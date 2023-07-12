@@ -1,5 +1,4 @@
 'use client';
-import { useEffect } from 'react';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
 

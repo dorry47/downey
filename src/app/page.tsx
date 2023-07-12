@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
 import { useStateContext } from '../../context/StateContext';
+import { useClient } from '../../lib/useClient';
 
 type Props = {};
 
@@ -12,10 +12,7 @@ const Page = (props: Props) => {
   const { state, setState } = useStateContext();
   const [loading, setLoading] = useState(true);
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-  );
+  const supabase = useClient();
 
   useEffect(() => {
     const { data: authListener } =
@@ -37,6 +34,7 @@ const Page = (props: Props) => {
       localStorage.setItem('session', JSON.stringify(session));
       localStorage.setItem('user', JSON.stringify(session.user));
       setState({
+        ...state,
         session,
         user: session.user,
       });
