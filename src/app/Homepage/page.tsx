@@ -58,18 +58,13 @@ export default function Home() {
 
       <section className="max-w-7xl sm:px-6 lg:px-8 mx-auto">
         <div className="md:mt-10">
-          <div
-            className="md:grid-cols-3 md:mt-8 grid grid-cols-2 gap-4 mt-2 text-center"
-            data-controller="project"
-            data-project-list-hidden-className="hidden">
+          <div className="md:grid-cols-3 md:mt-8 grid grid-cols-2 gap-4 mt-2 text-center">
             <div className="md:col-span-3 col-span-2">
               <p className="text-[rgba(217,142,72)] sm:text-2xl mt-2 font-serif text-2xl font-extrabold leading-8 tracking-widest uppercase">
                 Your Clients
               </p>
             </div>
-            <div
-              data-project-target="projectList"
-              className="md:col-span-3 md:grid-cols-3 md:px-0 grid grid-cols-1 col-span-2 gap-4 px-3">
+            <div className="md:col-span-3 md:grid-cols-3 md:px-0 grid grid-cols-1 col-span-2 gap-4 px-3">
               {events
                 .filter((planner: any) => planner.planner === 'Kelsey')
                 .flatMap((planner: any) => planner.events)
