@@ -4,12 +4,10 @@ import events from '../../data/events.json';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useStateContext } from '../../../context/StateContext';
-import useAuthMiddleware from '../../../middleware/authMiddleware';
 
 export default function Home() {
   const [activeList, setActiveList] = useState<{ [key: string]: boolean }>({});
   const { state, setState } = useStateContext();
-  useAuthMiddleware();
 
   useEffect(() => {
     const session = JSON.parse(localStorage.getItem('session') as string);

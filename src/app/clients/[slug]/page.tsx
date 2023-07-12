@@ -2,13 +2,10 @@
 import { useEffect } from 'react';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
-import useAuthMiddleware from '../../../.././middleware/authMiddleware';
 
 type Props = {};
 
 const page = (props: Props) => {
-  useAuthMiddleware();
-
   return (
     <div>
       <header
@@ -70,7 +67,7 @@ const page = (props: Props) => {
           <div className="grid grid-cols-3 gap-6 text-center">
             <div className="md:col-span-2 col-span-3 font-serif text-left">
               <h4 className="text-left text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-normal uppercase text-xxs tracking-extrawide">
-                couple\'s details
+                couples details
               </h4>
               <div className="grid grid-cols-2">
                 <div className="md:col-span-1 col-span-2 pb-6">
@@ -101,7 +98,7 @@ const page = (props: Props) => {
             </div>
             <div className="md:col-span-1 col-span-3 text-left">
               <h4 className="text-left text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-normal uppercase text-xxs tracking-extrawide">
-                planner\'s details
+                planners details
               </h4>
               <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                 Kelsey Connely

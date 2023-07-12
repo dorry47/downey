@@ -4,12 +4,10 @@ import { Auth } from '@supabase/auth-ui-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import { useStateContext } from '../../context/StateContext';
-import useAuthMiddleware from '../../middleware/authMiddleware';
 
 type Props = {};
 
 const Page = (props: Props) => {
-  useAuthMiddleware();
   const router = useRouter();
   const { state, setState } = useStateContext();
   const [loading, setLoading] = useState(true);
