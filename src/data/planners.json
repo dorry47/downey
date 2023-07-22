@@ -1,0 +1,18 @@
+[
+  {
+    "firstName": "Emily",
+    "lastName": "de Ayora",
+    "email": "emily@downeystreetevents.com",
+    "phone": "415-999-9999",
+    "archived": false,
+    "slug": "emily-de-ayora"
+  },
+  {
+    "firstName": "Katie",
+    "lastName": "Hill",
+    "email": "test@email.com",
+    "phone": "415-999-9999",
+    "archived": true,
+    "slug": "katie-hill"
+  }
+]

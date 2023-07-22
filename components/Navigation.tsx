@@ -34,7 +34,7 @@ const Navigation = (props: Props) => {
             <>
               <Link
                 className="text-[rgba(219,96,53)] px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em]  font-normal"
-                href="/projects/new">
+                href="/clients/new">
                 + New Client
               </Link>
               <Link
@@ -44,15 +44,16 @@ const Navigation = (props: Props) => {
               </Link>
               <Link
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em] font-normal"
-                href="/users">
+                href="/planners">
                 Planners
               </Link>
             </>
           )}
         </div>
-        <div className=" lg:w-96 relative flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
-          <Link className="w-full h-full m-auto" href="/">
+        <div className=" lg:w-96 flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
+          <Link className="relative w-full h-full m-auto" href="/">
             <Image
+              priority
               className="p-2"
               src="/images/DSE-Logo.svg"
               alt="DSE Logo"

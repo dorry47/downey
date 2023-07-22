@@ -1,11 +1,11 @@
 [
   {
     "title": "All Clients",
-    "href": "/projects"
+    "href": "/clients/all-clients"
   },
   {
     "title": "All Planners",
-    "href": "/users"
+    "href": "/planners"
   },
   {
     "title": "My Clients",
@@ -13,14 +13,10 @@
   },
   {
     "title": "My Info",
-    "href": "/users/edit"
+    "href": "/planners"
   },
   {
     "title": "Edit Documents",
     "href": "/documents"
-  },
-  {
-    "title": "Log Out",
-    "href": "/logout"
   }
 ]
