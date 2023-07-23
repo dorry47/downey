@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import planners from '../../../data/planners.json';
 
 type Props = {};
 
@@ -11,7 +12,9 @@ const page = (props: Props) => {
     formState: { errors },
   } = useForm({
     shouldUnregister: false,
-    defaultValues: {},
+    defaultValues: {
+      PLANNER: '',
+    },
   });
 
   const onSubmit = async (data: Record<string, any>) => {
@@ -74,30 +77,27 @@ const page = (props: Props) => {
                     <div className="grid grid-cols-6 gap-6">
                       <div className="sm:col-span-6 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_user_id">
                           Planner
                         </label>
                         <select
                           className="border-dse-peach focus:outline-none focus:ring-transparent focus:border-dse-orange w-full px-3 py-2 mt-1 font-serif text-sm bg-white border"
-                          name="project[user_id]"
+                          {...register('PLANNER', {
+                            required: 'First name required.',
+                          })}
                           id="project_user_id">
-                          <option value="9">not sure</option>
-                          <option value="13">Testing </option>
-                          <option value="6">Cassandra O’Gara</option>
-                          <option value="8">Jennifer Shortridge</option>
-                          <option value="1">Rusty Meadows</option>
-                          <option value="0">Kristen Nakano</option>
-                          <option value="7">Camden Mobley</option>
-                          <option value="12">Alexa Schneier</option>
-                          <option value="11">Kelsey Connely</option>
-                          <option value="4">Lauren Geissler</option>
-                          <option value="2">Shaley Bagan</option>
-                          <option value="5">Emily de Ayora</option>
+                          {planners.map((planner, id) => (
+                            <option
+                              value={`${planner.firstName} ${planner.lastName}`}
+                              key={id}>
+                              {planner.firstName} {planner.lastName}
+                            </option>
+                          ))}
                         </select>
                       </div>
-                      <div className="sm:col-span-4 flex items-start col-span-6">
-                        <div className="flex items-center h-5">
+                      {/* <div className="sm:col-span-4 flex items-start col-span-6"> */}
+                      {/* <div className="flex items-center h-5">
                           <input
                             name="project[fixed_price]"
                             type="hidden"
@@ -110,18 +110,18 @@ const page = (props: Props) => {
                             name="project[fixed_price]"
                             id="project_fixed_price"
                           />
-                        </div>
-                        <div className="ml-3 text-sm">
+                        </div> */}
+                      {/* <div className="ml-3 text-sm">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_fixed_price">
                             Percentage Pricing
                           </label>
-                        </div>
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
+                        </div> */}
+                      {/* </div> */}
+                      {/* <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_deposit">
                           Deposit
                         </label>
@@ -139,7 +139,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_deposit_url">
                           Deposit url
                         </label>
@@ -150,10 +150,10 @@ const page = (props: Props) => {
                           name="project[deposit_url]"
                           id="project_deposit_url"
                         />
-                      </div>
+                      </div> */}
                       <div className="sm:col-span-6 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_amendments">
                           Amendments
                         </label>
@@ -179,7 +179,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="ml-3 text-sm">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_archived">
                             Archived
                           </label>
@@ -194,7 +194,7 @@ const page = (props: Props) => {
               </div>
             </div>
           </div>
-          <div className="sm: hidden" aria-hidden="true">
+          <div className="sm:visible" aria-hidden="true">
             <div className="py-5">
               <div className="border-t border-gray-200"></div>
             </div>
@@ -303,7 +303,7 @@ const page = (props: Props) => {
 
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_venue_name">
                           Venue name
                         </label>
@@ -316,7 +316,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_venue_address">
                           Venue City
                         </label>
@@ -331,7 +331,7 @@ const page = (props: Props) => {
 
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_guest_range">
                           Guest range
                         </label>
@@ -374,7 +374,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_guest_range_end">
                           Guest range end
                         </label>
@@ -421,7 +421,7 @@ const page = (props: Props) => {
               </div>
             </div>
           </div>
-          <div className="sm: hidden" aria-hidden="true">
+          <div className="sm:visible" aria-hidden="true">
             <div className="py-5">
               <div className="border-t border-gray-200"></div>
             </div>
@@ -453,7 +453,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_first_name">
                             First name
                           </label>
@@ -467,7 +467,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_last_name">
                             Last name
                           </label>
@@ -481,7 +481,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_role">
                             Role
                           </label>
@@ -496,7 +496,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_phone">
                             Phone
                           </label>
@@ -510,7 +510,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_email">
                             Email
                           </label>
@@ -524,7 +524,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_address_1">
                             Address 1
                           </label>
@@ -538,7 +538,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_0_address_2">
                             Address 2
                           </label>
@@ -553,7 +553,7 @@ const page = (props: Props) => {
                         <div className="grid grid-cols-3 col-span-6">
                           <div className="col-span-1">
                             <label
-                              className="text-10px tracking-widewide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="project_people_attributes_0_city">
                               City
                             </label>
@@ -567,7 +567,7 @@ const page = (props: Props) => {
                           </div>
                           <div className="col-span-1 px-3">
                             <label
-                              className="text-10px tracking-widewide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="project_people_attributes_0_state">
                               State
                             </label>
@@ -581,7 +581,7 @@ const page = (props: Props) => {
                           </div>
                           <div className="col-span-1">
                             <label
-                              className="text-10px tracking-widewide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="project_people_attributes_0_postal_code">
                               Postal code
                             </label>
@@ -604,7 +604,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_first_name">
                             First name
                           </label>
@@ -618,7 +618,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_last_name">
                             Last name
                           </label>
@@ -632,7 +632,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_role">
                             Role
                           </label>
@@ -647,7 +647,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_phone">
                             Phone
                           </label>
@@ -661,7 +661,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_email">
                             Email
                           </label>
@@ -675,7 +675,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_address_1">
                             Address 1
                           </label>
@@ -689,7 +689,7 @@ const page = (props: Props) => {
                         </div>
                         <div className="col-span-6">
                           <label
-                            className="text-10px tracking-widewide font-sans font-normal uppercase"
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="project_people_attributes_1_address_2">
                             Address 2
                           </label>
@@ -704,7 +704,7 @@ const page = (props: Props) => {
                         <div className="grid grid-cols-3 col-span-6">
                           <div className="col-span-1">
                             <label
-                              className="text-10px tracking-widewide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="project_people_attributes_1_city">
                               City
                             </label>
@@ -718,7 +718,7 @@ const page = (props: Props) => {
                           </div>
                           <div className="col-span-1 px-3">
                             <label
-                              className="text-10px tracking-widewide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="project_people_attributes_1_state">
                               State
                             </label>
@@ -732,7 +732,7 @@ const page = (props: Props) => {
                           </div>
                           <div className="col-span-1">
                             <label
-                              className="text-10px tracking-widewide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="project_people_attributes_1_postal_code">
                               Postal code
                             </label>
@@ -778,7 +778,7 @@ const page = (props: Props) => {
                     <div className="grid grid-cols-6 gap-6">
                       <div className="col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_url">
                           URL htmlFor client
                         </label>
@@ -797,7 +797,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_password">
                           Site Passcode
                         </label>
@@ -810,7 +810,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_password_confirmation">
                           Site Passcode Confirmation
                         </label>
@@ -830,7 +830,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_cover_url">
                           Primary Background Image
                         </label>
@@ -948,7 +948,7 @@ const page = (props: Props) => {
                     <div className="grid grid-cols-6 gap-6">
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_workflow_url">
                           Workflow url
                         </label>
@@ -962,7 +962,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_budget_url">
                           Budget url
                         </label>
@@ -976,7 +976,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_address_url">
                           Address url
                         </label>
@@ -990,7 +990,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_design_board_url">
                           Design board url
                         </label>
@@ -1004,7 +1004,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_client_docs_url">
                           Client docs url
                         </label>
@@ -1018,7 +1018,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_vendor_proposals_url">
                           Vendor proposals url
                         </label>
@@ -1032,7 +1032,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_vendor_contact_url">
                           Vendor contact url
                         </label>
@@ -1046,7 +1046,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_guest_info_url">
                           Guest info url
                         </label>
@@ -1060,7 +1060,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_calendar_address">
                           Calendar address
                         </label>
@@ -1103,7 +1103,7 @@ const page = (props: Props) => {
                     <div className="grid grid-cols-6 gap-6">
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_pinterest_url">
                           Pinterest url
                         </label>
@@ -1117,7 +1117,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_facebook_url">
                           Facebook url
                         </label>
@@ -1131,7 +1131,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_instagram_url">
                           Instagram url
                         </label>
@@ -1145,7 +1145,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_website_url">
                           Website url
                         </label>
@@ -1159,7 +1159,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_blog_url">
                           Blog url
                         </label>
@@ -1173,7 +1173,7 @@ const page = (props: Props) => {
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
-                          className="text-10px tracking-widewide font-sans font-normal uppercase"
+                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_registry_url">
                           Registry url
                         </label>
