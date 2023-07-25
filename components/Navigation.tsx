@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Navigation = (props: Props) => {
-  const { setState } = useStateContext();
+  const { setState, state } = useStateContext();
   const router = useRouter();
 
   const supabase = useClient();

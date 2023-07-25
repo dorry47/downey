@@ -36,7 +36,7 @@ const page = (props: Props) => {
             ))}
           </div>
         </div>
-        <Link href="/clients/new">
+        <Link href="/planners/edit/new">
           <button
             type="button"
             className="bg-[rgba(219,96,53)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-4 py-2 text-sm font-normal text-white border border-transparent rounded-md shadow-sm">

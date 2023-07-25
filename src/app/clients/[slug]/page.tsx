@@ -1,10 +1,42 @@
 'use client';
+import { usePathname } from 'next/navigation';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
+import events from '../../../data/events.json';
 
-type Props = {};
+type Props = {
+  clients: {
+    names: string;
+    date: string;
+  };
+};
 
 const page = (props: Props) => {
+  const router = usePathname();
+  const clientSlug = router.split('/clients/')[1];
+
+  const planners = events.flatMap((planner) => planner.events);
+  const clients = planners.find((p) => p.slug === clientSlug);
+  console.log(clients);
+
+  const { names, date } = clients ?? { names: [], date: '' };
+
+  const countdown = (date: string) => {
+    const countDownDate = new Date(date).getTime();
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24)) - 1;
+    return days;
+  };
+
+  const formatDate = (date: string) => {
+    const dateObj = new Date(date);
+    const month = dateObj.toLocaleString('default', { month: 'long' });
+    const day = dateObj.getDate();
+    const year = dateObj.getFullYear();
+    return `${month} ${day}, ${year}`;
+  };
+
   return (
     <div>
       <header
@@ -17,7 +49,7 @@ const page = (props: Props) => {
           <div className="md:items-center md:py-16 md:border-none border-[rgba(238,217,212)] grid grid-cols-12 gap-6 py-8 text-center border">
             <div className="md:col-span-3 md:order-1 order-2 col-span-6">
               <h1 className="font-display tracking-extrawide lining-nums text-base font-normal leading-tight uppercase">
-                404 Days
+                {countdown(date)} days
               </h1>
               <h2 className="text-xxs tracking-extrawide font-normal uppercase">
                 until the big day
@@ -25,10 +57,10 @@ const page = (props: Props) => {
             </div>
             <div className="md:col-span-6 md:py-16 md:border border-[rgba(238,217,212)] md:order-2 order-1 col-span-12 mx-8 border-b border-solid">
               <h1 className="font-display text-3xl font-normal leading-tight tracking-widest uppercase">
-                Lauren + John
+                {names.join(' & ')}
               </h1>
               <h2 className="font-display tracking-extrawide lining-nums pt-2 pb-4 text-base font-normal leading-tight uppercase">
-                August 17, 2024
+                {formatDate(date)}
               </h2>
             </div>
             <div className="md:col-span-3 order-3 col-span-6">
