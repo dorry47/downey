@@ -5,19 +5,22 @@ import planners from '../../../../data/planners.json';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
-type Props = {
-  onError: (errors: any) => void;
-  onSubmit: (data: any) => void;
-};
+type Props = {};
 
 const page = (props: Props) => {
   const router = usePathname();
   const plannerSlug = router.split('/planners/edit/')[1];
-  // console.log(plannerSlug);
+  console.log(plannerSlug);
 
   const planner: any = planners.find((p: any) => p.slug === plannerSlug);
 
-  const { firstName, lastName, email, phone, archived } = planner;
+  const { firstName, lastName, email, phone, archived } = planner || {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    archived: false,
+  };
 
   const {
     register,
@@ -26,36 +29,33 @@ const page = (props: Props) => {
   } = useForm({
     shouldUnregister: false,
     defaultValues: {
-      FNAME: firstName || '',
-      LNAME: lastName || '',
-      EMAIL: email || '',
-      PHONE: phone || '',
-      ARCHIVED: archived || false,
+      FNAME: firstName,
+      LNAME: lastName,
+      EMAIL: email,
+      PHONE: phone,
+      ARCHIVED: archived,
     },
   });
 
   const onSubmit = async (data: Record<string, any>) => {
     console.log('submitted', data);
-    // const res = await fetch('/api/editPlanner', {
-    //   body: JSON.stringify(data),
 
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
+    const { FNAME, LNAME, EMAIL, PHONE, ARCHIVED } = data;
 
-    //   method: 'POST',
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     if (data.error) {
-    //       console.log(data.error);
-    //       const { title, detail } = data.error;
-    //       setErrorMessage({
-    //         title: title,
-    //         detail: detail,
-    //       });
-    //     }
-    //   });
+    fetch('/api/editPlanner', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: EMAIL,
+        name: `${FNAME} ${LNAME}`,
+        phone: PHONE,
+        archived: ARCHIVED,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log('returned data', data));
 
     // window.scrollTo(0, 0);
   };

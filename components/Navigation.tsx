@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Navigation = (props: Props) => {
-  const { setState } = useStateContext();
+  const { setState, state } = useStateContext();
   const router = useRouter();
 
   const supabase = useClient();
@@ -39,7 +39,7 @@ const Navigation = (props: Props) => {
               </Link>
               <Link
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em]  font-normal"
-                href="/">
+                href="/Homepage">
                 Clients
               </Link>
               <Link
