@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   // Invite the user by email
   const res = await supabase.auth.admin.inviteUserByEmail(email, {
     data: { name: name, email: email, role: 'planner' },
-    redirectTo: 'http://localhost:3000/update-password',
+    redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
   });
 
   if (res.error) return NextResponse.json({ error: res.error.message });
