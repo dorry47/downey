@@ -2,7 +2,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import planners from '../../../data/planners.json';
-
+import {
+  days,
+  months,
+  years,
+  guestRange,
+  bgImages,
+} from '../../../../constants/NEW_CLIENT_CONSTS';
+import { useStateContext } from '../../../../context/StateContext';
 type Props = {};
 
 const page = (props: Props) => {
@@ -13,39 +20,85 @@ const page = (props: Props) => {
   } = useForm({
     shouldUnregister: false,
     defaultValues: {
-      PLANNER: '',
+      ADMIN_INFO: {
+        PLANNER: '',
+        AMMEND: '',
+        ARCHIVED: false,
+      },
+      EVENT_DETAILS: {
+        DATE: '',
+        WED_MONTH: '',
+        WED_DAY: '',
+        WED_YEAR: '',
+        VENUE_NAME: '',
+        VENUE_CITY: '',
+        GUEST_RANGE_START: '',
+        GUEST_RANGE_END: '',
+      },
+      PEOPLE: {
+        P_A_FNAME: '',
+        P_A_LNAME: '',
+        P_A_ROLE: '',
+        P_A_PHONE: '',
+        P_A_EMAIL: '',
+        P_A_ADD1: '',
+        P_A_ADD2: '',
+        P_A_CITY: '',
+        P_A_STATE: '',
+        P_A_ZIP: '',
+        P_B_FNAME: '',
+        P_B_LNAME: '',
+        P_B_ROLE: '',
+        P_B_PHONE: '',
+        P_B_EMAIL: '',
+        P_B_ADD1: '',
+        P_B_ADD2: '',
+        P_B_CITY: '',
+        P_B_STATE: '',
+        P_B_ZIP: '',
+      },
+      SITE_INFO: {
+        SITE_PASSCODE: '',
+        SITE_PASSCODE_CONFIRMATION: '',
+        BG_IMAGE_ID: '',
+      },
+      PLANNING_LINKS: {},
+      PUBLIC_LINKS: {},
     },
   });
 
+  const [selectedBgImageId, setSelectedBgImageId] = React.useState(0);
+  const { state } = useStateContext();
+
+  const handleBgImageSelect = (id: number) => {
+    setSelectedBgImageId(id);
+    console.log('selected', id);
+  };
+
   const onSubmit = async (data: Record<string, any>) => {
+    data.plannerName = data.ADMIN_INFO.PLANNER;
+    data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
     console.log('submitted', data);
-    // const res = await fetch('/api/editPlanner', {
-    //   body: JSON.stringify(data),
 
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
+    fetch('/api/newClient', {
+      method: 'POST',
+      body: JSON.stringify(data),
 
-    //   method: 'POST',
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     if (data.error) {
-    //       console.log(data.error);
-    //       const { title, detail } = data.error;
-    //       setErrorMessage({
-    //         title: title,
-    //         detail: detail,
-    //       });
-    //     }
-    //   });
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('returned data', data);
+      });
 
     // window.scrollTo(0, 0);
   };
 
   const onError = (errors: any) => {
     // your code here
-    console.log(errors);
+    console.log('errors: ', errors);
   };
 
   return (
@@ -76,17 +129,24 @@ const page = (props: Props) => {
                   <div className="md:p-0 p-4">
                     <div className="grid grid-cols-6 gap-6">
                       <div className="sm:col-span-6 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_user_id">
-                          Planner
-                        </label>
+                        {errors.ADMIN_INFO?.PLANNER ? (
+                          <p className="text-red-500">
+                            {errors.ADMIN_INFO.PLANNER.message}
+                          </p>
+                        ) : (
+                          <label
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                            htmlFor="PLANNER">
+                            Planner
+                          </label>
+                        )}
+
                         <select
                           className="border-dse-peach focus:outline-none focus:ring-transparent focus:border-dse-orange w-full px-3 py-2 mt-1 font-serif text-sm bg-white border"
-                          {...register('PLANNER', {
-                            required: 'First name required.',
+                          {...register('ADMIN_INFO.PLANNER', {
+                            required: 'Planner required.',
                           })}
-                          id="project_user_id">
+                          id="PLANNER">
                           {planners.map((planner, id) => (
                             <option
                               value={`${planner.firstName} ${planner.lastName}`}
@@ -96,91 +156,32 @@ const page = (props: Props) => {
                           ))}
                         </select>
                       </div>
-                      {/* <div className="sm:col-span-4 flex items-start col-span-6"> */}
-                      {/* <div className="flex items-center h-5">
-                          <input
-                            name="project[fixed_price]"
-                            type="hidden"
-                            value="0"
-                          />
-                          <input
-                            className="text-dse-peach border-dse-peach checked:border-dse-peach w-4 h-4 font-serif text-sm rounded cursor-pointer"
-                            type="checkbox"
-                            value="1"
-                            name="project[fixed_price]"
-                            id="project_fixed_price"
-                          />
-                        </div> */}
-                      {/* <div className="ml-3 text-sm">
-                          <label
-                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_fixed_price">
-                            Percentage Pricing
-                          </label>
-                        </div> */}
-                      {/* </div> */}
-                      {/* <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_deposit">
-                          Deposit
-                        </label>
-                        <div className=" flex mt-1">
-                          <span className="focus:ring-transparent focus:border-dse-orange border-dse-peach bg-dse-peach inline-flex items-center px-3 mt-1 font-serif text-sm text-gray-500 border border-r-0">
-                            $
-                          </span>
-                          <input
-                            className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                            type="text"
-                            name="project[deposit]"
-                            id="project_deposit"
-                          />
-                        </div>
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_deposit_url">
-                          Deposit url
-                        </label>
-                        <input
-                          placeholder="https://pay.stripe.com/invoice/xx"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[deposit_url]"
-                          id="project_deposit_url"
-                        />
-                      </div> */}
+
                       <div className="sm:col-span-6 col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_amendments">
+                          htmlFor="AMMEND">
                           Amendments
                         </label>
                         <textarea
+                          {...register('ADMIN_INFO.AMMEND')}
                           className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          name="project[amendments]"
-                          id="project_amendments"></textarea>
+                          id="AMMEND"></textarea>
                       </div>
                       <div className="sm:col-span-4 flex items-start col-span-6">
                         <div className="flex items-center h-5">
                           <input
-                            name="project[archived]"
-                            type="hidden"
-                            value="0"
-                          />
-                          <input
-                            className="text-dse-peach border-dse-peach checked:border-dse-peach w-4 h-4 font-serif text-sm rounded cursor-pointer"
+                            {...register('ADMIN_INFO.ARCHIVED')}
+                            id="ARCHIVED"
+                            name="ARCHIVED"
                             type="checkbox"
-                            value="1"
-                            name="project[archived]"
-                            id="project_archived"
+                            className="focus:ring-transparent text-dse-orange w-4 h-4 border-gray-300 rounded"
                           />
                         </div>
                         <div className="ml-3 text-sm">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_archived">
+                            htmlFor="ARCHIVED">
                             Archived
                           </label>
                           <p className="font-serif text-sm">
@@ -200,10 +201,7 @@ const page = (props: Props) => {
             </div>
           </div>
 
-          <div
-            className="sm:mt-0 mt-10"
-            data-controller="project"
-            data-project-image-selected-className="border-dse-peach">
+          <div className="sm:mt-0 mt-10">
             <div className="md:grid md:grid-cols-3 md:gap-6">
               <div className="md:col-span-1">
                 <div className="md:px-0 px-4">
@@ -220,199 +218,133 @@ const page = (props: Props) => {
                   <div className="md:p-0 p-4">
                     <div className="grid grid-cols-6 gap-6">
                       <div className="sm:col-span-6 col-span-6">
-                        <label
-                          className="text-xxs tracking-extrawide font-sans font-normal uppercase"
-                          htmlFor="project_wedding_date">
-                          Wedding date
-                        </label>
+                        {errors.EVENT_DETAILS?.WED_MONTH ? (
+                          <p className="text-red-500">
+                            {errors.EVENT_DETAILS?.WED_MONTH.message}
+                          </p>
+                        ) : (
+                          <label
+                            className="text-xxs tracking-extrawide font-sans font-normal uppercase"
+                            htmlFor="WED_MONTH">
+                            Wedding date
+                          </label>
+                        )}
                         <div className=" flex justify-between w-full">
                           <select
-                            id="project_wedding_date_1i"
-                            name="project[wedding_date(1i)]"
+                            {...register('EVENT_DETAILS.WED_MONTH', {
+                              required: 'Wedding date required.',
+                            })}
+                            id="WED_MONTH"
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
-                            <option value="" label=" "></option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
+                            {months.map((month, id) => (
+                              <option value={month.value} key={id}>
+                                {month.label}
+                              </option>
+                            ))}
                           </select>
                           <select
-                            id="project_wedding_date_2i"
-                            name="project[wedding_date(2i)]"
+                            {...register('EVENT_DETAILS.WED_DAY', {
+                              required: 'First name required.',
+                            })}
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
-                            <option value="" label=" "></option>
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
+                            {days.map((day: any, id: number) => (
+                              <option value={day.value} key={id}>
+                                {day.label}
+                              </option>
+                            ))}
                           </select>
                           <select
+                            {...register('EVENT_DETAILS.WED_YEAR', {
+                              required: 'First name required.',
+                            })}
                             id="project_wedding_date_3i"
-                            name="project[wedding_date(3i)]"
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
-                            <option value="" label=" "></option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                            <option value="24">24</option>
-                            <option value="25">25</option>
-                            <option value="26">26</option>
-                            <option value="27">27</option>
-                            <option value="28">28</option>
-                            <option value="29">29</option>
-                            <option value="30">30</option>
-                            <option value="31">31</option>
+                            {years.map((year: any, id: number) => (
+                              <option value={year.value} key={id}>
+                                {year.label}
+                              </option>
+                            ))}
                           </select>
                         </div>
                       </div>
 
                       <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_venue_name">
-                          Venue name
-                        </label>
+                        {errors.EVENT_DETAILS?.VENUE_NAME ? (
+                          <p className="text-red-500">
+                            {errors.EVENT_DETAILS?.VENUE_NAME.message}
+                          </p>
+                        ) : (
+                          <label
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                            htmlFor="VENUE_NAME">
+                            Venue name
+                          </label>
+                        )}
                         <input
+                          {...register('EVENT_DETAILS.VENUE_NAME', {
+                            required: 'Venue name required.',
+                          })}
                           className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                           type="text"
-                          name="project[venue_name]"
-                          id="project_venue_name"
+                          id="VENUE_NAME"
                         />
                       </div>
                       <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_venue_address">
-                          Venue City
-                        </label>
+                        {errors.EVENT_DETAILS?.VENUE_CITY ? (
+                          <p className="text-red-500">
+                            {errors.EVENT_DETAILS?.VENUE_CITY.message}
+                          </p>
+                        ) : (
+                          <label
+                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                            htmlFor="VENUE_CITY">
+                            Venue City
+                          </label>
+                        )}
                         <input
+                          {...register('EVENT_DETAILS.VENUE_CITY', {
+                            required: 'Venue city required.',
+                          })}
                           placeholder=""
                           className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                           type="text"
-                          name="project[venue_address]"
-                          id="project_venue_address"
+                          id="VENUE_CITY"
                         />
                       </div>
 
                       <div className="sm:col-span-3 col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_guest_range">
+                          htmlFor="GUEST_RANGE_START">
                           Guest range
                         </label>
                         <select
+                          {...register('EVENT_DETAILS.GUEST_RANGE_START', {})}
                           className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          name="project[guest_range]"
-                          id="project_guest_range">
-                          <option value="0">0</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="75">75</option>
-                          <option value="100">100</option>
-                          <option value="125">125</option>
-                          <option value="150">150</option>
-                          <option value="175">175</option>
-                          <option value="200">200</option>
-                          <option value="225">225</option>
-                          <option value="250">250</option>
-                          <option value="275">275</option>
-                          <option value="300">300</option>
-                          <option value="325">325</option>
-                          <option value="350">350</option>
-                          <option value="375">375</option>
-                          <option value="400">400</option>
-                          <option value="425">425</option>
-                          <option value="450">450</option>
-                          <option value="475">475</option>
-                          <option value="500">500</option>
-                          <option value="525">525</option>
-                          <option value="550">550</option>
-                          <option value="575">575</option>
-                          <option value="600">600</option>
-                          <option value="625">625</option>
-                          <option value="650">650</option>
-                          <option value="675">675</option>
-                          <option value="700">700</option>
-                          <option value="725">725</option>
-                          <option value="750">750</option>
+                          id="GUEST_RANGE_START">
+                          {guestRange.map((guest: any, id: number) => (
+                            <option value={guest.value} key={id}>
+                              {guest.label}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_guest_range_end">
+                          htmlFor="GUEST_RANGE_END">
                           Guest range end
                         </label>
                         <select
+                          {...register('EVENT_DETAILS.GUEST_RANGE_END', {})}
                           className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          name="project[guest_range_end]"
-                          id="project_guest_range_end">
-                          <option value="0">0</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="75">75</option>
-                          <option value="100">100</option>
-                          <option value="125">125</option>
-                          <option value="150">150</option>
-                          <option value="175">175</option>
-                          <option value="200">200</option>
-                          <option value="225">225</option>
-                          <option value="250">250</option>
-                          <option value="275">275</option>
-                          <option value="300">300</option>
-                          <option value="325">325</option>
-                          <option value="350">350</option>
-                          <option value="375">375</option>
-                          <option value="400">400</option>
-                          <option value="425">425</option>
-                          <option value="450">450</option>
-                          <option value="475">475</option>
-                          <option value="500">500</option>
-                          <option value="525">525</option>
-                          <option value="550">550</option>
-                          <option value="575">575</option>
-                          <option value="600">600</option>
-                          <option value="625">625</option>
-                          <option value="650">650</option>
-                          <option value="675">675</option>
-                          <option value="700">700</option>
-                          <option value="725">725</option>
-                          <option value="750">750</option>
+                          name="GUEST_RANGE_END"
+                          id="GUEST_RANGE_END">
+                          {guestRange.map((guest: any, id: number) => (
+                            <option value={guest.value} key={id}>
+                              {guest.label}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -426,10 +358,7 @@ const page = (props: Props) => {
               <div className="border-t border-gray-200"></div>
             </div>
           </div>
-          <div
-            className="sm:mt-0 mt-10"
-            data-controller="project"
-            data-project-image-selected-className="border-dse-peach">
+          <div className="sm:mt-0 mt-10">
             <div className="md:grid md:grid-cols-3 md:gap-6">
               <div className="md:col-span-1">
                 <div className="md:px-0 px-4">
@@ -454,41 +383,45 @@ const page = (props: Props) => {
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_first_name">
+                            htmlFor="P_A_FNAME">
                             First name
                           </label>
                           <input
+                            {...register('PEOPLE.P_A_FNAME', {
+                              required: 'Venue name required.',
+                            })}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][0][first_name]"
-                            id="project_people_attributes_0_first_name"
+                            id="P_A_FNAME"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_last_name">
+                            htmlFor="P_A_LNAME">
                             Last name
                           </label>
                           <input
+                            {...register('PEOPLE.P_A_LNAME', {
+                              required: 'Venue name required.',
+                            })}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][0][last_name]"
-                            id="project_people_attributes_0_last_name"
+                            id="P_A_LNAME"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_role">
+                            htmlFor="P_A_ROLE">
                             Role
                           </label>
                           <select
+                            {...register('PEOPLE.P_A_ROLE', {})}
                             className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                            name="project[people_attributes][0][role]"
-                            id="project_people_attributes_0_role">
+                            id="P_A_ROLE">
                             <option value="bride">Bride</option>
                             <option value="groom">Groom</option>
                             <option value="client">Client</option>
@@ -497,100 +430,101 @@ const page = (props: Props) => {
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_phone">
+                            htmlFor="P_A_PHONE">
                             Phone
                           </label>
                           <input
+                            {...register('PEOPLE.P_A_PHONE', {})}
                             placeholder=""
                             className="w-100 focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][0][phone]"
-                            id="project_people_attributes_0_phone"
+                            name="P_A_PHONE"
+                            id="P_A_PHONE"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_email">
+                            htmlFor="P_A_EMAIL">
                             Email
                           </label>
                           <input
+                            {...register('PEOPLE.P_A_EMAIL', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][0][email]"
-                            id="project_people_attributes_0_email"
+                            id="P_A_EMAIL"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_address_1">
+                            htmlFor="P_A_ADD1">
                             Address 1
                           </label>
                           <input
+                            {...register('PEOPLE.P_A_ADD1', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][0][address_1]"
-                            id="project_people_attributes_0_address_1"
+                            id="P_A_ADD1"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_0_address_2">
+                            htmlFor="P_A_ADD2">
                             Address 2
                           </label>
                           <input
+                            {...register('PEOPLE.P_A_ADD2', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][0][address_2]"
-                            id="project_people_attributes_0_address_2"
+                            id="P_A_ADD2"
                           />
                         </div>
                         <div className="grid grid-cols-3 col-span-6">
                           <div className="col-span-1">
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="project_people_attributes_0_city">
+                              htmlFor="P_A_CITY">
                               City
                             </label>
                             <input
+                              {...register('PEOPLE.P_A_CITY', {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="project[people_attributes][0][city]"
-                              id="project_people_attributes_0_city"
+                              id="P_A_CITY"
                             />
                           </div>
                           <div className="col-span-1 px-3">
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="project_people_attributes_0_state">
+                              htmlFor="P_A_STATE">
                               State
                             </label>
                             <input
+                              {...register('PEOPLE.P_A_STATE', {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="project[people_attributes][0][state]"
-                              id="project_people_attributes_0_state"
+                              id="P_A_STATE"
                             />
                           </div>
                           <div className="col-span-1">
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="project_people_attributes_0_postal_code">
+                              htmlFor="P_A_ZIP">
                               Postal code
                             </label>
                             <input
+                              {...register('PEOPLE.P_A_ZIP', {})}
                               placeholder=""
                               className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="project[people_attributes][0][postal_code]"
-                              id="project_people_attributes_0_postal_code"
+                              id="P_A_ZIP"
                             />
                           </div>
                         </div>
@@ -605,41 +539,41 @@ const page = (props: Props) => {
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_first_name">
+                            htmlFor="P_B_FNAME">
                             First name
                           </label>
                           <input
+                            {...register('PEOPLE.P_B_FNAME', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][1][first_name]"
-                            id="project_people_attributes_1_first_name"
+                            id="P_B_FNAME"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_last_name">
+                            htmlFor="P_B_LNAME">
                             Last name
                           </label>
                           <input
+                            {...register('PEOPLE.P_B_LNAME', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][1][last_name]"
-                            id="project_people_attributes_1_last_name"
+                            id="P_B_LNAME"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_role">
+                            htmlFor="P_B_ROLE">
                             Role
                           </label>
                           <select
+                            {...register('PEOPLE.P_B_ROLE', {})}
                             className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                            name="project[people_attributes][1][role]"
-                            id="project_people_attributes_1_role">
+                            id="P_B_ROLE">
                             <option value="bride">Bride</option>
                             <option value="groom">Groom</option>
                             <option value="client">Client</option>
@@ -648,100 +582,100 @@ const page = (props: Props) => {
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_phone">
+                            htmlFor="P_B_PHONE">
                             Phone
                           </label>
                           <input
+                            {...register('PEOPLE.P_B_PHONE', {})}
                             placeholder=""
                             className="w-100 focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][1][phone]"
-                            id="project_people_attributes_1_phone"
+                            id="P_B_PHONE"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_email">
+                            htmlFor="P_B_EMAIL">
                             Email
                           </label>
                           <input
+                            {...register('PEOPLE.P_B_EMAIL', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][1][email]"
-                            id="project_people_attributes_1_email"
+                            id="P_B_EMAIL"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_address_1">
+                            htmlFor="P_B_ADD1">
                             Address 1
                           </label>
                           <input
+                            {...register('PEOPLE.P_B_ADD1', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][1][address_1]"
-                            id="project_people_attributes_1_address_1"
+                            id="P_B_ADD1"
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="project_people_attributes_1_address_2">
+                            htmlFor="P_B_ADD2">
                             Address 2
                           </label>
                           <input
+                            {...register('PEOPLE.P_B_ADD2', {})}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
-                            name="project[people_attributes][1][address_2]"
-                            id="project_people_attributes_1_address_2"
+                            id="P_B_ADD2"
                           />
                         </div>
                         <div className="grid grid-cols-3 col-span-6">
                           <div className="col-span-1">
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="project_people_attributes_1_city">
+                              htmlFor="P_B_CITY">
                               City
                             </label>
                             <input
+                              {...register('PEOPLE.P_B_CITY', {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="project[people_attributes][1][city]"
-                              id="project_people_attributes_1_city"
+                              id="P_B_CITY"
                             />
                           </div>
                           <div className="col-span-1 px-3">
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="project_people_attributes_1_state">
+                              htmlFor="P_B_STATE">
                               State
                             </label>
                             <input
+                              {...register('PEOPLE.P_B_STATE', {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="project[people_attributes][1][state]"
-                              id="project_people_attributes_1_state"
+                              id="P_B_STATE"
                             />
                           </div>
                           <div className="col-span-1">
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="project_people_attributes_1_postal_code">
+                              htmlFor="P_B_ZIP">
                               Postal code
                             </label>
                             <input
+                              {...register('PEOPLE.P_B_ZIP', {})}
                               placeholder=""
                               className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="project[people_attributes][1][postal_code]"
-                              id="project_people_attributes_1_postal_code"
+                              id="P_B_ZIP"
                             />
                           </div>
                         </div>
@@ -752,15 +686,12 @@ const page = (props: Props) => {
               </div>
             </div>
           </div>
-          <div className="sm: hidden" aria-hidden="true">
+          <div className="sm:visible" aria-hidden="true">
             <div className="py-5">
               <div className="border-t border-gray-200"></div>
             </div>
           </div>
-          <div
-            className="sm:mt-0 mt-10"
-            data-controller="project"
-            data-project-image-selected-className="border-dse-peach">
+          <div className="sm:mt-0 mt-10">
             <div className="md:grid md:grid-cols-3 md:gap-6">
               <div className="md:col-span-1">
                 <div className="md:px-0 px-4">
@@ -776,11 +707,11 @@ const page = (props: Props) => {
                 <div className=" overflow-hidden">
                   <div className="md:p-0 p-4">
                     <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6">
+                      {/* <div className="col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                           htmlFor="project_url">
-                          URL htmlFor client
+                          URL for client
                         </label>
                         <div className=" flex mt-1">
                           <span className="focus:ring-transparent focus:border-dse-orange border-dse-peach bg-dse-peach inline-flex items-center px-3 mt-1 font-serif text-sm text-gray-500 border border-r-0">
@@ -794,40 +725,34 @@ const page = (props: Props) => {
                             id="project_url"
                           />
                         </div>
-                      </div>
+                      </div> */}
                       <div className="sm:col-span-3 col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_password">
+                          htmlFor="SITE_PASSCODE">
                           Site Passcode
                         </label>
                         <input
+                          {...register('SITE_INFO.SITE_PASSCODE')}
                           className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                           type="password"
-                          name="project[password]"
-                          id="project_password"
+                          id="SITE_PASSCODE"
                         />
                       </div>
                       <div className="sm:col-span-3 col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_password_confirmation">
+                          htmlFor="SITE_PASSCODE_CONFIRMATION">
                           Site Passcode Confirmation
                         </label>
                         <input
+                          {...register('SITE_INFO.SITE_PASSCODE_CONFIRMATION')}
                           className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                           type="password"
-                          name="project[password_confirmation]"
-                          id="project_password_confirmation"
+                          id="SITE_PASSCODE_CONFIRMATION"
                         />
                       </div>
-                      <div className="hidden col-span-6">
-                        <input
-                          type="hidden"
-                          name="project[cover_image]"
-                          id="project_cover_image"
-                        />
-                      </div>
+
                       <div className="col-span-6">
                         <label
                           className="text-[12px] tracking-widewide font-sans font-normal uppercase"
@@ -835,97 +760,33 @@ const page = (props: Props) => {
                           Primary Background Image
                         </label>
                       </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="1"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-1-c4ba2aa1f62783697aeb1b14da5c6bb77f33fed8bcf0289fa919870e6c3edeec.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="2"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-2-367ea581c3dfcca6c98316335a8ef42c0c8d158e4a38f4f22824b69624f12332.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="3"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-3-a2c565f0d2b06a13a31bcd32094eac2ce70ab6b422fc8b01a6fee9d4cf50bfa7.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="4"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-4-26b426e0c2c6865f43ca891f8bbd3a9c7a607d520a5059ac51a3490542cb1cb8.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="5"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-5-cb2a0b0a73247ac0f716fd08aa478d4d90b6ce9b6672cc7aa8325ce8f5ca780a.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="6"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-6-c0b02641e0dfeac727dfaa9af6413df094d9d9f8ff9686ee721ae8d2a99b5478.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="7"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-7-96e21e25fea49ea06538f334e8a5b7ef7b4edf6282932ebc635bbfd87fa5b089.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="8"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-8-7ebdf53fe41e5b0efab003b4e7a6c5b848a4137c5cedaa5492275b246fd41ce7.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="9"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-9-fc40902dcf5e017d2d27ff18a0a776667ecffbbb74efebe1f122bc6ef902714e.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="10"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-10-956d8de47062998b50be5d42950573275481b0b2aac7e841228e2807f50a3aee.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="11"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-11-4081509aefd0af25118da5c1627266c01b8eff42ccd29945fcb2512d22f49cde.jpg" />
-                      </div>
-                      <div
-                        className="sm:col-span-3 col-span-6 border-4 border-transparent"
-                        data-project-target="projectImage"
-                        data-project-image-value="12"
-                        data-action="click->project#image_select">
-                        <img src="/assets/client-banner-12-da62021b2c5a93be58bf89da0f717c7c56cf97c6d0303d33aebf8379287e941a.jpg" />
-                      </div>
+
+                      {bgImages.map((image, id) => (
+                        // <div
+                        //   className="sm:col-span-3 col-span-6 border-4 border-transparent"
+                        //   key={image.id}>
+                        //   <img src={image.url} alt={image.alt} />
+                        // </div>
+                        <label
+                          key={id}
+                          className="sm:col-span-3 col-span-6 border-4 border-transparent">
+                          <input
+                            type="radio"
+                            className="hidden"
+                            // value={image.id}
+                            checked={selectedBgImageId === image.id}
+                            onChange={() => handleBgImageSelect(image.id)}
+                          />
+                          <img src={image.url} alt={image.alt} />
+                        </label>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="sm: hidden" aria-hidden="true">
+          <div className="sm:visible" aria-hidden="true">
             <div className="py-5">
               <div className="border-t border-gray-200"></div>
             </div>
@@ -946,132 +807,32 @@ const page = (props: Props) => {
                 <div className=" overflow-hidden">
                   <div className="md:p-0 p-4">
                     <div className="grid grid-cols-6 gap-6">
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_workflow_url">
-                          Workflow url
-                        </label>
-                        <input
-                          placeholder="[Google htmlForm]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[workflow_url]"
-                          id="project_workflow_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_budget_url">
-                          Budget url
-                        </label>
-                        <input
-                          placeholder="[Google Folder]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[budget_url]"
-                          id="project_budget_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_address_url">
-                          Address url
-                        </label>
-                        <input
-                          placeholder="[Google Spreadsheet]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[address_url]"
-                          id="project_address_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_design_board_url">
-                          Design board url
-                        </label>
-                        <input
-                          placeholder="[Google Folder]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[design_board_url]"
-                          id="project_design_board_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_client_docs_url">
-                          Client docs url
-                        </label>
-                        <input
-                          placeholder="[Google Folder]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[client_docs_url]"
-                          id="project_client_docs_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_vendor_proposals_url">
-                          Vendor proposals url
-                        </label>
-                        <input
-                          placeholder="[Google Folder]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[vendor_proposals_url]"
-                          id="project_vendor_proposals_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_vendor_contact_url">
-                          Vendor contact url
-                        </label>
-                        <input
-                          placeholder="[Google Folder]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[vendor_contact_url]"
-                          id="project_vendor_contact_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_guest_info_url">
-                          Guest info url
-                        </label>
-                        <input
-                          placeholder="[Google Folder]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[guest_info_url]"
-                          id="project_guest_info_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_calendar_address">
-                          Calendar address
-                        </label>
-                        <input
-                          placeholder="[Google Calendar Address]"
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[calendar_address]"
-                          id="project_calendar_address"
-                        />
-                      </div>
+                      {[
+                        'workflow',
+                        'budget',
+                        'address',
+                        'design Board',
+                        'client Docs',
+                        'vendor Proposals',
+                        'vendor Contact',
+                        'guest Info',
+                        'calendar',
+                      ].map((title, id) => (
+                        <div key={id} className="sm:col-span-3 col-span-6">
+                          <label className="text-[12px] tracking-widewide font-sans font-normal uppercase">
+                            {title} url
+                          </label>
+                          <input
+                            {...register(
+                              `PLANNING_LINKS.${title.split(' ')[0]}_url`
+                            )}
+                            placeholder={`${title}`}
+                            className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
+                            type="text"
+                            id={`${title}_url`}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1079,7 +840,7 @@ const page = (props: Props) => {
             </div>
           </div>
 
-          <div className="sm: hidden" aria-hidden="true">
+          <div className="sm:visible" aria-hidden="true">
             <div className="py-5">
               <div className="border-t border-gray-200"></div>
             </div>
@@ -1101,90 +862,27 @@ const page = (props: Props) => {
                 <div className=" overflow-hidden">
                   <div className="md:p-0 p-4">
                     <div className="grid grid-cols-6 gap-6">
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_pinterest_url">
-                          Pinterest url
-                        </label>
-                        <input
-                          placeholder=""
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[pinterest_url]"
-                          id="project_pinterest_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_facebook_url">
-                          Facebook url
-                        </label>
-                        <input
-                          placeholder=""
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[facebook_url]"
-                          id="project_facebook_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_instagram_url">
-                          Instagram url
-                        </label>
-                        <input
-                          placeholder=""
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[instagram_url]"
-                          id="project_instagram_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_website_url">
-                          Website url
-                        </label>
-                        <input
-                          placeholder=""
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[website_url]"
-                          id="project_website_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_blog_url">
-                          Blog url
-                        </label>
-                        <input
-                          placeholder=""
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[blog_url]"
-                          id="project_blog_url"
-                        />
-                      </div>
-                      <div className="sm:col-span-3 col-span-6">
-                        <label
-                          className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                          htmlFor="project_registry_url">
-                          Registry url
-                        </label>
-                        <input
-                          placeholder=""
-                          className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                          type="text"
-                          name="project[registry_url]"
-                          id="project_registry_url"
-                        />
-                      </div>
+                      {[
+                        'pinterest',
+                        'facebook',
+                        'instagram',
+                        'website',
+                        'blog',
+                        'registry',
+                      ].map((title, id) => (
+                        <div key={id} className="sm:col-span-3 col-span-6">
+                          <label className="text-[12px]  tracking-widewide font-sans font-normal uppercase">
+                            {title} url
+                          </label>
+                          <input
+                            {...register(`PUBLIC_LINKS.${title}_url`)}
+                            placeholder={`${title} url`}
+                            className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                            type="text"
+                            id={`${title}_url`}
+                          />
+                        </div>
+                      ))}
                     </div>
                     <div className="md:px-0 px-4 py-3 text-right">
                       <input
@@ -1192,7 +890,6 @@ const page = (props: Props) => {
                         name="commit"
                         value="Create Project"
                         className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer"
-                        data-disable-with="Create Project"
                       />
                     </div>
                   </div>

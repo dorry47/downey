@@ -50,6 +50,8 @@ const page = (props: Props) => {
       body: JSON.stringify({
         email: EMAIL,
         name: `${FNAME} ${LNAME}`,
+        phone: PHONE,
+        archived: ARCHIVED,
       }),
     })
       .then((response) => response.json())
