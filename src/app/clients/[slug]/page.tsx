@@ -4,15 +4,9 @@ import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
 import events from '../../../data/events.json';
 import React from 'react';
+import { FC } from 'react';
 
-type Props = {
-  clients: {
-    names: string;
-    date: string;
-  };
-};
-
-const Page = (props: Props) => {
+const Page = () => {
   const router = usePathname();
   const clientSlug = router.split('/clients/')[1];
 
