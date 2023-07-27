@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
 import events from '../../../data/events.json';
+import React from 'react';
 
 type Props = {
   clients: {
@@ -11,7 +12,7 @@ type Props = {
   };
 };
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const router = usePathname();
   const clientSlug = router.split('/clients/')[1];
 
@@ -156,4 +157,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

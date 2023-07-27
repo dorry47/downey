@@ -19,8 +19,9 @@ export default function Page(props: Props) {
         <div className="flex flex-col">
           <div className=" grid grid-cols-7 gap-1">
             {['First Name', 'Last Name', 'Email', 'Phone', 'Archived'].map(
-              (title) => (
+              (title, id) => (
                 <h2
+                  key={id}
                   className={`${
                     title == 'Email' && 'col-span-2'
                   } py-4 font-sans font-normal tracking-widest text-left uppercase`}>
@@ -31,8 +32,8 @@ export default function Page(props: Props) {
           </div>
 
           <div className="flex flex-col justify-between">
-            {planners.map((planner) => (
-              <PlannerRow planner={planner} />
+            {planners.map((planner, id) => (
+              <PlannerRow planner={planner} key={id} />
             ))}
           </div>
         </div>

@@ -11,6 +11,7 @@ type Props = {};
 const Page = (props: Props) => {
   const { state, setState } = useStateContext();
   const [submitted, setSubmitted] = useState(false);
+  const supabase = useClient();
 
   const router = useRouter();
 
@@ -27,8 +28,6 @@ const Page = (props: Props) => {
   });
 
   useEffect(() => {
-    const supabase = useClient();
-
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session: any) => {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
@@ -51,7 +50,7 @@ const Page = (props: Props) => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  });
 
   useEffect(() => {
     // read the url parameters and get the value from email=
@@ -69,7 +68,7 @@ const Page = (props: Props) => {
         session: savedSession,
       });
     }
-  }, []);
+  });
 
   useEffect(() => {
     console.log('session', state.session);
@@ -79,8 +78,6 @@ const Page = (props: Props) => {
   const onSubmit = async (data: Record<string, any>) => {
     console.log('submitted', data);
     console.log('password', data.PASSWORD);
-
-    const supabase = useClient();
 
     // Update the user's password
     const { error: updateError } = await supabase.auth.updateUser({
