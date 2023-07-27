@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   return (
     <>
       <header className="bg-white shadow">
@@ -18,8 +18,9 @@ const page = (props: Props) => {
       <section className="max-w-7xl w-[1200px] sm:px-6 lg:px-8 mx-auto overflow-x-auto">
         <div className=" flex flex-col">
           <div className=" grid grid-cols-5 gap-1">
-            {['PLANNER', 'COUPLE', 'URL', '	PROJECT ID'].map((title) => (
+            {['PLANNER', 'COUPLE', 'URL', '	PROJECT ID'].map((title, id) => (
               <h2
+                key={id}
                 className={` py-4 font-sans font-normal tracking-widest text-left uppercase`}>
                 {title}
               </h2>
@@ -27,8 +28,9 @@ const page = (props: Props) => {
           </div>
 
           {events.map((planner) =>
-            planner.events.map((event) => (
+            planner.events.map((event, id) => (
               <AllClientsRow
+                key={id}
                 planner={planner.planner}
                 event={{
                   names: event.names.join(', '),
@@ -51,4 +53,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

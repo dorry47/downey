@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 type Props = {};
 
-const page = (props: Props) => {
+export default function Page(props: Props) {
   const router = usePathname();
   const plannerSlug = router.split('/planners/')[1];
 
@@ -43,6 +43,4 @@ const page = (props: Props) => {
       </section>
     </>
   );
-};
-
-export default page;
+}

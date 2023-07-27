@@ -12,7 +12,7 @@ import {
 import { useStateContext } from '../../../../context/StateContext';
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const {
     register,
     handleSubmit,
@@ -824,6 +824,7 @@ const page = (props: Props) => {
                           </label>
                           <input
                             {...register(
+                              // @ts-ignore
                               `PLANNING_LINKS.${title.split(' ')[0]}_url`
                             )}
                             placeholder={`${title}`}
@@ -875,6 +876,7 @@ const page = (props: Props) => {
                             {title} url
                           </label>
                           <input
+                            // @ts-ignore
                             {...register(`PUBLIC_LINKS.${title}_url`)}
                             placeholder={`${title} url`}
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -903,4 +905,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

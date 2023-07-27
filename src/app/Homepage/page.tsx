@@ -4,6 +4,7 @@ import events from '../../data/events.json';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useStateContext } from '../../../context/StateContext';
+import React from 'react';
 
 interface Event {
   names: string[];
@@ -17,7 +18,7 @@ interface Planner {
   events: Event[];
 }
 
-export default function Home() {
+export default function Page() {
   const [activeList, setActiveList] = useState<{ [key: string]: boolean }>({});
   const { state, setState } = useStateContext();
 
@@ -47,7 +48,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div>
       <main className="">
         <header
           style={{
@@ -146,6 +147,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-    </>
+    </div>
   );
 }

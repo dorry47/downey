@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const { state, setState } = useStateContext();
   const [submitted, setSubmitted] = useState(false);
 
@@ -199,4 +199,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

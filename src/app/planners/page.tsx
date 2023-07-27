@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 type Props = {};
 
-const page = (props: Props) => {
+export default function Page(props: Props) {
   return (
     <>
       <header className="bg-white shadow">
@@ -46,6 +46,4 @@ const page = (props: Props) => {
       </section>
     </>
   );
-};
-
-export default page;
+}
