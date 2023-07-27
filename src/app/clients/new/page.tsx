@@ -120,7 +120,7 @@ const Page = (props: Props) => {
                     Admin Info
                   </h3>
                   <p className="mt-1 font-serif text-sm">
-                    Input Admin inhtmlFormation her /e
+                    Input Admin information here
                   </p>
                 </div>
               </div>
@@ -799,7 +799,7 @@ const Page = (props: Props) => {
                     Planning Links
                   </h3>
                   <p className="mt-1 font-serif text-sm">
-                    Save planning links htmlFor the client's dashboard here
+                    Save planning links for the client&apos;s dashboard here
                   </p>
                 </div>
               </div>
@@ -854,8 +854,8 @@ const Page = (props: Props) => {
                     Public Links
                   </h3>
                   <p className="mt-1 font-serif text-sm">
-                    Please share the sites you are using htmlFor your planning
-                    or service
+                    Please share the sites you are using for your planning or
+                    service
                   </p>
                 </div>
               </div>
