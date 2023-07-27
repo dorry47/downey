@@ -50,7 +50,7 @@ const Page = (props: Props) => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  });
+  }, []);
 
   useEffect(() => {
     // read the url parameters and get the value from email=
@@ -68,7 +68,7 @@ const Page = (props: Props) => {
         session: savedSession,
       });
     }
-  });
+  }, []);
 
   useEffect(() => {
     console.log('session', state.session);
