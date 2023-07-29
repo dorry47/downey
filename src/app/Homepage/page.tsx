@@ -19,11 +19,15 @@ interface Planner {
   events: Event[];
 }
 
+interface LoggedInPlanner {
+  name: string;
+}
+
 export default function Page() {
   const [activeList, setActiveList] = useState<{ [key: string]: boolean }>({});
   const { state, setState } = useStateContext();
   const [clientData, setClientData] = useState<any[]>();
-
+  const [loggedInPlanner, setLoggedInPlanner] = useState<LoggedInPlanner>();
   const supabase = useClient();
 
   const allClients = async () => {
@@ -72,11 +76,16 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      'current local storage',
-      JSON.parse(localStorage.getItem('session') as string)
-    );
-    console.log(state);
+    const loggedInUser = async () =>
+      await supabase
+        .from('users')
+        .select('*')
+        .eq('email', state?.user?.email)
+        .then((data: any) => {
+          console.log(data?.data[0]);
+          setLoggedInPlanner(data?.data[0]);
+        });
+    loggedInUser();
   }, [state]);
 
   const toggleList = (planner: string) => {
@@ -100,7 +109,7 @@ export default function Page() {
             <div className="md:items-center md:pb-12 md:pt-12 text-center">
               <div className="md:col-span-10 md:py-12 md:mx-8 border-[rgba(238,217,212)] bg-[rgba(238,217,212)] bg-opacity-10 col-span-12 py-8 border border-solid">
                 <h1 className="font-display md:text-3xl mt-2 text-xl font-normal leading-tight tracking-widest uppercase">
-                  Hello {state.user?.user_metadata.name}!
+                  Hello {loggedInPlanner?.name.split(' ')[0]}!
                 </h1>
               </div>
             </div>
@@ -121,7 +130,7 @@ export default function Page() {
                   clientData
                     .filter(
                       (planner: Planner) =>
-                        planner.planner == state.user.user_metadata.name
+                        planner.planner == loggedInPlanner?.name
                     )
                     .flatMap((planner: Planner) => planner.events)
                     .map((event: Event, id: number) => (
@@ -153,7 +162,7 @@ export default function Page() {
               clientData
                 .filter(
                   (planner: Planner) =>
-                    planner.planner !== state.user.user_metadata.name
+                    planner.planner !== loggedInPlanner?.name
                 )
                 .map((list: Planner, id: number) => (
                   <div

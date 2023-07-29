@@ -2,19 +2,73 @@
 import { usePathname } from 'next/navigation';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
-import events from '../../../data/events.json';
-import React from 'react';
-import { FC } from 'react';
+import React, { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useClient } from '../../../../lib/useClient';
+
+interface ClientData {
+  plannerName: string;
+  SLUG: string;
+  P_A_FNAME: string;
+  P_B_FNAME: string;
+  VENUE_NAME: string;
+  VENUE_CITY: string;
+  VENUE_STATE: string;
+  WED_MONTH: string;
+  WED_DAY: string;
+  WED_YEAR: string;
+  ARCHIVED: string;
+  PLANNING_LINKS: {
+    workflow_url: string;
+    budget_url: string;
+    address_url: string;
+    design_url: string;
+    client_url: string;
+    vendor_url: string;
+    guest_url: string;
+    calendar_url: string;
+  };
+  PUBLIC_LINKS: {
+    blog_url: string;
+    website_url: string;
+    facebook_url: string;
+    registry_url: string;
+    instagram_url: string;
+    pinterest_url: string;
+  };
+}
 
 const Page = () => {
   const router = usePathname();
   const clientSlug = router.split('/clients/')[1];
+  const [clientData, setClientData] = useState<ClientData>();
 
-  const planners = events.flatMap((planner) => planner.events);
-  const clients = planners.find((p) => p.slug === clientSlug);
-  console.log(clients);
+  const supabase = useClient();
 
-  const { names, date } = clients ?? { names: [], date: '' };
+  const fetchEventData = async () => {
+    let { data, error } = await supabase
+      .from('new_client')
+      // take the client slug and look for it in the database
+      .select(
+        'plannerName, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_B_FNAME, EVENT_DETAILS->>VENUE_NAME, EVENT_DETAILS->>VENUE_CITY, EVENT_DETAILS->>WED_MONTH, EVENT_DETAILS->>VENUE_STATE, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR, ADMIN_INFO->>ARCHIVED, PLANNING_LINKS, PUBLIC_LINKS'
+      )
+      .eq('SLUG', clientSlug);
+    if (error) {
+      console.log(error);
+    } else {
+      return data;
+    }
+  };
+
+  useMemo(() => {
+    fetchEventData().then((data: any) => {
+      console.log('RETURNED DATA', data);
+      setClientData(data[0] as ClientData);
+    });
+  }, []);
+
+  const date = `${clientData?.WED_MONTH} ${clientData?.WED_DAY}, ${clientData?.WED_YEAR}`;
+  const names = [clientData?.P_A_FNAME, clientData?.P_B_FNAME];
 
   const countdown = (date: string) => {
     const countDownDate = new Date(date).getTime();
@@ -25,11 +79,9 @@ const Page = () => {
   };
 
   const formatDate = (date: string) => {
-    const dateObj = new Date(date);
-    const month = dateObj.toLocaleString('default', { month: 'long' });
-    const day = dateObj.getDate();
-    const year = dateObj.getFullYear();
-    return `${month} ${day}, ${year}`;
+    console.log(date);
+    const [month, day, year] = date.split(' ');
+    return `${month} ${day} ${year}`;
   };
 
   return (
@@ -60,15 +112,56 @@ const Page = () => {
             </div>
             <div className="md:col-span-3 order-3 col-span-6">
               <h1 className="font-display tracking-extrawide text-base font-normal leading-tight uppercase">
-                Cavallo Point Lodge
+                {clientData?.VENUE_NAME}
               </h1>
               <h2 className="font-cursive -rotate-6 text-lg tracking-wider transform">
-                Sausalito, California
+                {clientData?.VENUE_CITY}, {clientData?.VENUE_STATE}
               </h2>
             </div>
           </div>
         </div>
       </header>
+
+      <section className="bg-dse-peach h-16">
+        <div className="max-w-7xl sm:px-6 lg:px-8 py-6 mx-auto">
+          <ul className="flex justify-center space-x-4"></ul>
+        </div>
+      </section>
+
+      <section className="bg-dse-gold h-16">
+        <div className="max-w-7xl sm:px-6 lg:px-8 py-6 mx-auto">
+          <ul className="flex justify-center space-x-4">
+            <li className="">
+              <Link
+                href="#"
+                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase">
+                Admin Links:
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase"
+                href="/luna-and-taylor/signup">
+                Signup
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase"
+                href="/luna-and-taylor/agreement">
+                Agreement
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase"
+                href="/luna-and-taylor/payment">
+                Payment
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </section>
 
       <section className="sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <div className="sm:grid-cols-3 md:grid-cols-4 sm:gap-6 sm:py-10 grid grid-cols-2 gap-2 py-4 text-center">

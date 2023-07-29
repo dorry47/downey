@@ -26,7 +26,9 @@ const AllClientsRow = (props: Props) => {
       <p className="py-4 font-serif text-base text-left">{planner}</p>
       <p className="py-4 font-serif text-base text-left">{names}</p>
       <p className="py-4 font-serif text-base text-left">{slug}</p>
-      <p className="py-4 font-serif text-base text-left">{projectID}</p>
+      <p className=" py-4 overflow-auto font-serif text-base text-left">
+        {projectID.toString().slice(0, 8)}
+      </p>
 
       <div className="grid grid-cols-3 gap-1 my-auto">
         <p className="flex justify-center font-sans text-left">

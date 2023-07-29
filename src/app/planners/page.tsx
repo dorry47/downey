@@ -1,13 +1,53 @@
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import planners from '../../data/planners.json';
 import PlannerRow from '../../../components/PlannerRow';
 import Link from 'next/link';
+import { useClient } from '../../../lib/useClient';
+import { useStateContext } from '../../../context/StateContext';
 
 type Props = {};
 
+interface Planner {
+  name: string;
+  email: string;
+  phone: string;
+  archived: boolean;
+  slug: string;
+}
+
 export default function Page(props: Props) {
+  const [plannerData, setPlannerData] = useState<any>([]);
+
+  const supabase = useClient();
+  const { state, setState } = useStateContext();
+
+  const fetchPlannerData = async () => {
+    let { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('role', 'planner');
+    if (error) {
+      console.log(error);
+    } else {
+      return data;
+    }
+  };
+
+  useEffect(() => {
+    const session = JSON.parse(localStorage.getItem('session') as string);
+    const user = JSON.parse(localStorage.getItem('user') as string);
+    fetchPlannerData().then((data: any) => {
+      setPlannerData(data);
+    });
+
+    if (session) {
+      setState({ ...state, session, user });
+    }
+  }, []);
+
   return (
-    <>
+    <div className="">
       <header className="bg-white shadow">
         <div className="max-w-7xl sm:px-6 lg:px-8 px-4 py-6 mx-auto">
           <h1 className="font-display pt-4 pb-2 text-3xl font-normal leading-tight tracking-widest text-center uppercase">
@@ -15,8 +55,8 @@ export default function Page(props: Props) {
           </h1>
         </div>
       </header>
-      <section className="max-w-7xl w-[1200px] mx-auto overflow-x-scroll break-words">
-        <div className="flex flex-col">
+      <section className="max-w-7xl px-6 py-8 mx-auto overflow-auto break-words">
+        <div className="w-[1200px] flex flex-col">
           <div className=" grid grid-cols-7 gap-1">
             {['First Name', 'Last Name', 'Email', 'Phone', 'Archived'].map(
               (title, id) => (
@@ -31,8 +71,8 @@ export default function Page(props: Props) {
             )}
           </div>
 
-          <div className="flex flex-col justify-between">
-            {planners.map((planner, id) => (
+          <div className="flex flex-col justify-between mb-4">
+            {plannerData.map((planner: Planner, id: number) => (
               <PlannerRow planner={planner} key={id} />
             ))}
           </div>
@@ -45,6 +85,6 @@ export default function Page(props: Props) {
           </button>
         </Link>{' '}
       </section>
-    </>
+    </div>
   );
 }

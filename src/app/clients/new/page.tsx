@@ -16,68 +16,17 @@ import { useRouter } from 'next/navigation';
 interface Planner {
   name: string;
   email: string;
+  phone: string;
+  address: string;
+  archived: boolean;
 }
 
 type Props = {};
 
 const Page = (props: Props) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    shouldUnregister: false,
-    defaultValues: {
-      ADMIN_INFO: {
-        PLANNER: '',
-        AMMEND: '',
-        ARCHIVED: false,
-      },
-      EVENT_DETAILS: {
-        DATE: '',
-        WED_MONTH: '',
-        WED_DAY: '',
-        WED_YEAR: '',
-        VENUE_NAME: '',
-        VENUE_CITY: '',
-        GUEST_RANGE_START: '',
-        GUEST_RANGE_END: '',
-      },
-      PEOPLE: {
-        P_A_FNAME: '',
-        P_A_LNAME: '',
-        P_A_ROLE: '',
-        P_A_PHONE: '',
-        P_A_EMAIL: '',
-        P_A_ADD1: '',
-        P_A_ADD2: '',
-        P_A_CITY: '',
-        P_A_STATE: '',
-        P_A_ZIP: '',
-        P_B_FNAME: '',
-        P_B_LNAME: '',
-        P_B_ROLE: '',
-        P_B_PHONE: '',
-        P_B_EMAIL: '',
-        P_B_ADD1: '',
-        P_B_ADD2: '',
-        P_B_CITY: '',
-        P_B_STATE: '',
-        P_B_ZIP: '',
-      },
-      SITE_INFO: {
-        SITE_PASSCODE: '',
-        SITE_PASSCODE_CONFIRMATION: '',
-        BG_IMAGE_ID: '',
-      },
-      PLANNING_LINKS: {},
-      PUBLIC_LINKS: {},
-    },
-  });
-
   const [selectedBgImageId, setSelectedBgImageId] = React.useState(0);
-  const [planners, setPlanners] = React.useState([]);
+  const [planners, setPlanners] = React.useState<any>([]);
+  const [editClientData, setEditClientData] = React.useState<any>([]);
   const [submitted, setSubmitted] = React.useState(false);
   const { state } = useStateContext();
   const supabase = useClient();
@@ -101,6 +50,160 @@ const Page = (props: Props) => {
     });
   }, []);
 
+  // grab the parameter from the url edit=clientname
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editClientSlug = urlParams.get('edit');
+    console.log('edit client slug', editClientSlug);
+
+    const getClientData = async () => {
+      let { data, error } = await supabase
+        .from('new_client')
+        .select('*')
+        .eq('SLUG', editClientSlug);
+      if (error) {
+        console.log(error);
+      } else {
+        return data;
+      }
+    };
+
+    getClientData().then((data) => {
+      console.log('edit client data', data);
+      setEditClientData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (editClientData.length > 0) {
+      setSelectedBgImageId(editClientData[0].SITE_INFO.BG_IMAGE_ID);
+      setValue('ADMIN_INFO.PLANNER', editClientData[0].ADMIN_INFO.PLANNER);
+      setValue('ADMIN_INFO.AMMEND', editClientData[0].ADMIN_INFO.AMMEND);
+      setValue('ADMIN_INFO.ARCHIVED', editClientData[0].ADMIN_INFO.ARCHIVED);
+      setValue(
+        'EVENT_DETAILS.DATE',
+        editClientData[0].EVENT_DETAILS.DATE.toString()
+      );
+      setValue(
+        'EVENT_DETAILS.WED_MONTH',
+        editClientData[0].EVENT_DETAILS.WED_MONTH
+      );
+      setValue(
+        'EVENT_DETAILS.WED_DAY',
+        editClientData[0].EVENT_DETAILS.WED_DAY
+      );
+      setValue(
+        'EVENT_DETAILS.WED_YEAR',
+        editClientData[0].EVENT_DETAILS.WED_YEAR
+      );
+      setValue(
+        'EVENT_DETAILS.VENUE_NAME',
+        editClientData[0].EVENT_DETAILS.VENUE_NAME
+      );
+      setValue(
+        'EVENT_DETAILS.VENUE_CITY',
+        editClientData[0].EVENT_DETAILS.VENUE_CITY
+      );
+      setValue(
+        'EVENT_DETAILS.VENUE_STATE',
+        editClientData[0].EVENT_DETAILS.VENUE_STATE
+      );
+      setValue(
+        'EVENT_DETAILS.GUEST_RANGE_START',
+        editClientData[0].EVENT_DETAILS.GUEST_RANGE_START
+      );
+      setValue(
+        'EVENT_DETAILS.GUEST_RANGE_END',
+        editClientData[0].EVENT_DETAILS.GUEST_RANGE_END
+      );
+      setValue('PEOPLE.P_A_FNAME', editClientData[0].PEOPLE.P_A_FNAME);
+      setValue('PEOPLE.P_A_LNAME', editClientData[0].PEOPLE.P_A_LNAME);
+      setValue('PEOPLE.P_A_ROLE', editClientData[0].PEOPLE.P_A_ROLE);
+      setValue('PEOPLE.P_A_PHONE', editClientData[0].PEOPLE.P_A_PHONE);
+      setValue('PEOPLE.P_A_EMAIL', editClientData[0].PEOPLE.P_A_EMAIL);
+      setValue('PEOPLE.P_A_ADD1', editClientData[0].PEOPLE.P_A_ADD1);
+      setValue('PEOPLE.P_A_ADD2', editClientData[0].PEOPLE.P_A_ADD2);
+      setValue('PEOPLE.P_A_CITY', editClientData[0].PEOPLE.P_A_CITY);
+      setValue('PEOPLE.P_A_STATE', editClientData[0].PEOPLE.P_A_STATE);
+      setValue('PEOPLE.P_A_ZIP', editClientData[0].PEOPLE.P_A_ZIP);
+      setValue('PEOPLE.P_B_FNAME', editClientData[0].PEOPLE.P_B_FNAME);
+      setValue('PEOPLE.P_B_LNAME', editClientData[0].PEOPLE.P_B_LNAME);
+      setValue('PEOPLE.P_B_ROLE', editClientData[0].PEOPLE.P_B_ROLE);
+      setValue('PEOPLE.P_B_PHONE', editClientData[0].PEOPLE.P_B_PHONE);
+      setValue('PEOPLE.P_B_EMAIL', editClientData[0].PEOPLE.P_B_EMAIL);
+      setValue('PEOPLE.P_B_ADD1', editClientData[0].PEOPLE.P_B_ADD1);
+      setValue('PEOPLE.P_B_ADD2', editClientData[0].PEOPLE.P_B_ADD2);
+      setValue('PEOPLE.P_B_CITY', editClientData[0].PEOPLE.P_B_CITY);
+      setValue('PEOPLE.P_B_STATE', editClientData[0].PEOPLE.P_B_STATE);
+      setValue('PEOPLE.P_B_ZIP', editClientData[0].PEOPLE.P_B_ZIP);
+      setValue(
+        'SITE_INFO.SITE_PASSCODE',
+        editClientData[0].SITE_INFO.SITE_PASSCODE
+      );
+      setValue(
+        'SITE_INFO.SITE_PASSCODE_CONFIRMATION',
+        editClientData[0].SITE_INFO.SITE_PASSCODE_CONFIRMATION
+      );
+      setValue(
+        'PLANNING_LINKS.WORKFLOW_URL',
+        editClientData[0].PLANNING_LINKS.WORKFLOW_URL
+      );
+      setValue(
+        'PLANNING_LINKS.BUDGET_URL',
+        editClientData[0].PLANNING_LINKS.BUDGET_URL
+      );
+      setValue(
+        'PLANNING_LINKS.ADDRESS_URL',
+        editClientData[0].PLANNING_LINKS.ADDRESS_URL
+      );
+      setValue(
+        'PLANNING_LINKS.DESIGN_URL',
+        editClientData[0].PLANNING_LINKS.DESIGN_URL
+      );
+      setValue(
+        'PLANNING_LINKS.CLIENT_URL',
+        editClientData[0].PLANNING_LINKS.CLIENT_URL
+      );
+      setValue(
+        'PLANNING_LINKS.VENDOR_URL',
+        editClientData[0].PLANNING_LINKS.VENDOR_URL
+      );
+      setValue(
+        'PLANNING_LINKS.GUEST_URL',
+
+        editClientData[0].PLANNING_LINKS.GUEST_URL
+      );
+      setValue(
+        'PLANNING_LINKS.CALENDAR_URL',
+        editClientData[0].PLANNING_LINKS.CALENDAR_URL
+      );
+      setValue(
+        'PUBLIC_LINKS.BLOG_URL',
+        editClientData[0].PUBLIC_LINKS.BLOG_URL
+      );
+      setValue(
+        'PUBLIC_LINKS.WEBSITE_URL',
+        editClientData[0].PUBLIC_LINKS.WEBSITE_URL
+      );
+      setValue(
+        'PUBLIC_LINKS.FACEBOOK_URL',
+        editClientData[0].PUBLIC_LINKS.FACEBOOK_url
+      );
+      setValue(
+        'PUBLIC_LINKS.REGISTRY_URL',
+        editClientData[0].PUBLIC_LINKS.REGISTRY_URL
+      );
+      setValue(
+        'PUBLIC_LINKS.INSTAGRAM_URL',
+        editClientData[0].PUBLIC_LINKS.INSTAGRAM_URL
+      );
+      setValue(
+        'PUBLIC_LINKS.PINTEREST_URL',
+        editClientData[0].PUBLIC_LINKS.PINTEREST_URL
+      );
+    }
+  }, [editClientData]);
+
   console.log('planners', planners);
 
   const handleBgImageSelect = (id: number) => {
@@ -110,6 +213,10 @@ const Page = (props: Props) => {
 
   const onSubmit = async (data: Record<string, any>) => {
     data.plannerName = data.ADMIN_INFO.PLANNER;
+    data.plannerEmail = planners.find(
+      (planner: Planner) => planner.name === data.ADMIN_INFO.PLANNER
+    )?.email;
+
     data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
     data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
     console.log('submitted', data);
@@ -150,6 +257,79 @@ const Page = (props: Props) => {
     console.log('errors: ', errors);
   };
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldUnregister: false,
+    defaultValues: {
+      ADMIN_INFO: {
+        PLANNER: planners?.name || planners[0]?.name || '',
+        AMMEND: '',
+        ARCHIVED: false,
+      },
+      EVENT_DETAILS: {
+        DATE: '',
+        WED_MONTH: '',
+        WED_DAY: '',
+        WED_YEAR: '',
+        VENUE_NAME: '',
+        VENUE_CITY: '',
+        VENUE_STATE: '',
+        GUEST_RANGE_START: '',
+        GUEST_RANGE_END: '',
+      },
+      PEOPLE: {
+        P_A_FNAME: '',
+        P_A_LNAME: '',
+        P_A_ROLE: '',
+        P_A_PHONE: '',
+        P_A_EMAIL: '',
+        P_A_ADD1: '',
+        P_A_ADD2: '',
+        P_A_CITY: '',
+        P_A_STATE: '',
+        P_A_ZIP: '',
+        P_B_FNAME: '',
+        P_B_LNAME: '',
+        P_B_ROLE: '',
+        P_B_PHONE: '',
+        P_B_EMAIL: '',
+        P_B_ADD1: '',
+        P_B_ADD2: '',
+        P_B_CITY: '',
+        P_B_STATE: '',
+        P_B_ZIP: '',
+      },
+      SITE_INFO: {
+        SITE_PASSCODE: '',
+        SITE_PASSCODE_CONFIRMATION: '',
+        BG_IMAGE_ID: '',
+      },
+      PLANNING_LINKS: {
+        WORKFLOW_URL: '',
+        BUDGET_URL: '',
+        ADDRESS_URL: '',
+        DESIGN_URL: '',
+        CLIENT_URL: '',
+        VENDOR_URL: '',
+        GUEST_URL: '',
+        CALENDAR_URL: '',
+      },
+      PUBLIC_LINKS: {
+        BLOG_URL: '',
+        WEBSITE_URL: '',
+        FACEBOOK_URL: '',
+        REGISTRY_URL: '',
+        INSTAGRAM_URL: '',
+        PINTEREST_URL: '',
+      },
+    },
+  });
+
   return (
     <main className="newContainer">
       <header className="bg-white shadow">
@@ -182,7 +362,8 @@ const Page = (props: Props) => {
                         <div className="sm:col-span-6 col-span-6">
                           {errors.ADMIN_INFO?.PLANNER ? (
                             <p className="text-red-500">
-                              {errors.ADMIN_INFO.PLANNER.message}
+                              {/* @ts-ignore */}
+                              {errors.ADMIN_INFO?.PLANNER.message}
                             </p>
                           ) : (
                             <label
@@ -198,8 +379,8 @@ const Page = (props: Props) => {
                               required: 'Planner required.',
                             })}
                             id="PLANNER">
-                            {planners.map((planner: Planner, id) => (
-                              <option value={`${planner.name} `} key={id}>
+                            {planners?.map((planner: Planner, id: number) => (
+                              <option value={`${planner.name}`} key={id}>
                                 {planner.name}
                               </option>
                             ))}
@@ -317,7 +498,7 @@ const Page = (props: Props) => {
                           </div>
                         </div>
 
-                        <div className="sm:col-span-3 col-span-6">
+                        <div className="sm:col-span-2 col-span-6">
                           {errors.EVENT_DETAILS?.VENUE_NAME ? (
                             <p className="text-red-500">
                               {errors.EVENT_DETAILS?.VENUE_NAME.message}
@@ -338,7 +519,8 @@ const Page = (props: Props) => {
                             id="VENUE_NAME"
                           />
                         </div>
-                        <div className="sm:col-span-3 col-span-6">
+
+                        <div className="sm:col-span-2 col-span-3">
                           {errors.EVENT_DETAILS?.VENUE_CITY ? (
                             <p className="text-red-500">
                               {errors.EVENT_DETAILS?.VENUE_CITY.message}
@@ -358,6 +540,29 @@ const Page = (props: Props) => {
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
                             id="VENUE_CITY"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2 col-span-3">
+                          {errors.EVENT_DETAILS?.VENUE_STATE ? (
+                            <p className="text-red-500">
+                              {errors.EVENT_DETAILS?.VENUE_STATE.message}
+                            </p>
+                          ) : (
+                            <label
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                              htmlFor="VENUE_CITY">
+                              Venue State
+                            </label>
+                          )}
+                          <input
+                            {...register('EVENT_DETAILS.VENUE_STATE', {
+                              required: 'Venue state required.',
+                            })}
+                            placeholder=""
+                            className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                            type="text"
+                            id="VENUE_STATE"
                           />
                         </div>
 
@@ -888,29 +1093,34 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'workflow',
-                          'budget',
-                          'address',
-                          'design Board',
-                          'client Docs',
-                          'vendor Proposals',
-                          'vendor Contact',
-                          'guest Info',
-                          'calendar',
+                          'WORKFLOW',
+                          'BUDGET',
+                          'ADDRESS',
+                          'DESIGN_BOARD',
+                          'CLIENT_DOCS',
+                          'VENDOR_PROPOSALS',
+                          'VENDOR_CONTRACT',
+                          'GUEST_INFO',
+                          'CALENDAR',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
                             <label className="text-[12px] tracking-widewide font-sans font-normal uppercase">
-                              {title} url
+                              {/* {title} url */}
+                              {/* REGEX the title to remove '_' from DESIGN_BOARD */}
+                              {title.split('_').join(' ')} url
                             </label>
                             <input
                               {...register(
                                 // @ts-ignore
-                                `PLANNING_LINKS.${title.split(' ')[0]}_url`
+                                `PLANNING_LINKS.${title}_URL`
                               )}
-                              placeholder={`${title}`}
+                              placeholder={`${title
+                                .split('_')
+                                .join(' ')
+                                .toLowerCase()}`}
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
                               type="text"
-                              id={`${title}_url`}
+                              id={`${title}_URL`}
                             />
                           </div>
                         ))}
@@ -944,12 +1154,12 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'pinterest',
-                          'facebook',
-                          'instagram',
-                          'website',
-                          'blog',
-                          'registry',
+                          'PINTEREST',
+                          'FACEBOOK',
+                          'INSTAGRAM',
+                          'TWITTER',
+                          'YELP',
+                          'REGISTRY',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
                             <label className="text-[12px]  tracking-widewide font-sans font-normal uppercase">
@@ -957,11 +1167,11 @@ const Page = (props: Props) => {
                             </label>
                             <input
                               // @ts-ignore
-                              {...register(`PUBLIC_LINKS.${title}_url`)}
-                              placeholder={`${title} url`}
-                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                              {...register(`PUBLIC_LINKS.${title}_URL`)}
+                              placeholder={`${title.toLowerCase()}`}
+                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
                               type="text"
-                              id={`${title}_url`}
+                              id={`${title}_URL`}
                             />
                           </div>
                         ))}
@@ -986,7 +1196,7 @@ const Page = (props: Props) => {
           className="h-1/3 opacity-90 rounded-xl fixed inset-0 z-10 flex flex-col w-1/3 p-4 m-auto bg-white border-4 border-gray-300"
           id="successModal">
           <p className="m-auto text-xl text-center">
-            Successful creation. Please wait while we redirect you to the client
+            Successful creation. Please wait while we redirect you to the home
             page.
           </p>
           <svg

@@ -30,3 +30,19 @@ select {
   padding-right: 2.5rem;
   -webkit-print-color-adjust: exact;
 }
+
+
+::-webkit-scrollbar {
+  width: 5px; 
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #efcec6;
+  /* outline: 1px solid #1e202a; */
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 1px 6px rgba(0,0,0,0.2);
+}
