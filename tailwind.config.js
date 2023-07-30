@@ -16,6 +16,7 @@ module.exports = {
       backgroundColor: {
         'dse-gold': '#d98e48',
         'dse-orange': '#db6035',
+        'dse-peach': '#eed9d4',
       },
 
       borderColor: {

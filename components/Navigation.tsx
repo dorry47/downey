@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useStateContext } from '../context/StateContext';
 import { useRouter } from 'next/navigation';
 import { useClient } from '../lib/useClient';
@@ -12,6 +12,7 @@ type Props = {
 const Navigation = (props: Props) => {
   const { setState, state } = useStateContext();
   const router = useRouter();
+  const [loggedInPlanner, setLoggedInPlanner] = React.useState<any>(null);
 
   const supabase = useClient();
 
@@ -25,6 +26,22 @@ const Navigation = (props: Props) => {
       console.error('Error signing out:', error);
     }
   };
+
+  useEffect(() => {
+    const loggedInUser = async () =>
+      await supabase
+        .from('users')
+        .select('*')
+        .eq('email', state?.user?.email)
+        .then((data: any) => {
+          console.log(data?.data[0]);
+          setLoggedInPlanner(data?.data[0]);
+        });
+    loggedInUser();
+  }, [state]);
+
+  const slug = loggedInPlanner?.name;
+  const plannerSlug = slug?.replace(/\s+/g, '-').toLowerCase();
 
   return (
     <nav className="bg-[rgba(238,217,212)] h-12 md:h-16 w-full text-xl px-[2rem]">
@@ -51,7 +68,7 @@ const Navigation = (props: Props) => {
           )}
         </div>
         <div className=" lg:w-96 flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
-          <Link className="relative w-full h-full m-auto" href="/">
+          <Link className="relative w-full h-full m-auto" href="/Homepage">
             <Image
               priority
               className="p-2"
@@ -66,8 +83,8 @@ const Navigation = (props: Props) => {
             <>
               <Link
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"
-                href="">
-                hi Kelsey
+                href={`/planners/edit/${plannerSlug}`}>
+                hi {loggedInPlanner?.name}
               </Link>{' '}
               <button
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"

@@ -11,26 +11,227 @@ import {
 } from '../../../../constants/NEW_CLIENT_CONSTS';
 import { useStateContext } from '../../../../context/StateContext';
 import { useClient } from '../../../../lib/useClient';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Planner {
   name: string;
   email: string;
+  phone: string;
+  address: string;
+  archived: boolean;
 }
 
 type Props = {};
 
 const Page = (props: Props) => {
+  const [selectedBgImageId, setSelectedBgImageId] = React.useState(0);
+  const [planners, setPlanners] = React.useState<any>([]);
+  const [editClientData, setEditClientData] = React.useState<any>([]);
+  const [submitted, setSubmitted] = React.useState(false);
+  const { state } = useStateContext();
+  const supabase = useClient();
+  const router = useRouter();
+  const params = useSearchParams();
+
+  const urlParameter = params.get('edit');
+
+  console.log('url parameter', urlParameter);
+
+  const plannerData = async () => {
+    let { data, error } = await supabase
+      .from('users')
+      .select('name, email')
+      .eq('role', 'planner');
+    if (error) {
+      console.log(error);
+    } else {
+      return data;
+    }
+  };
+
+  useEffect(() => {
+    plannerData().then((planners) => {
+      setPlanners(planners as any);
+    });
+  }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editClientSlug = urlParams.get('edit');
+    console.log('edit client slug', editClientSlug);
+
+    const getClientData = async () => {
+      let { data, error } = await supabase
+        .from('new_client')
+        .select('*')
+        .eq('SLUG', editClientSlug);
+      if (error) {
+        console.log(error);
+      } else {
+        return data;
+      }
+    };
+
+    getClientData().then((data) => {
+      console.log('edit client data', data);
+      setEditClientData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (editClientData.length > 0) {
+      const {
+        SITE_INFO,
+        ADMIN_INFO,
+        EVENT_DETAILS,
+        PEOPLE,
+        PLANNING_LINKS,
+        PUBLIC_LINKS,
+      } = editClientData[0];
+      setSelectedBgImageId(SITE_INFO.BG_IMAGE_ID);
+      Object.entries({
+        plannerName: ADMIN_INFO.PLANNER,
+        'ADMIN_INFO.PLANNER': ADMIN_INFO.PLANNER,
+        'ADMIN_INFO.AMMEND': ADMIN_INFO.AMMEND,
+        'ADMIN_INFO.ARCHIVED': ADMIN_INFO.ARCHIVED,
+        'EVENT_DETAILS.DATE': EVENT_DETAILS.DATE.toString(),
+        'EVENT_DETAILS.WED_MONTH': EVENT_DETAILS.WED_MONTH,
+        'EVENT_DETAILS.WED_DAY': EVENT_DETAILS.WED_DAY,
+        'EVENT_DETAILS.WED_YEAR': EVENT_DETAILS.WED_YEAR,
+        'EVENT_DETAILS.VENUE_NAME': EVENT_DETAILS.VENUE_NAME,
+        'EVENT_DETAILS.VENUE_CITY': EVENT_DETAILS.VENUE_CITY,
+        'EVENT_DETAILS.VENUE_STATE': EVENT_DETAILS.VENUE_STATE,
+        'EVENT_DETAILS.GUEST_RANGE_START': EVENT_DETAILS.GUEST_RANGE_START,
+        'EVENT_DETAILS.GUEST_RANGE_END': EVENT_DETAILS.GUEST_RANGE_END,
+        'PEOPLE.P_A_FNAME': PEOPLE.P_A_FNAME,
+        'PEOPLE.P_A_LNAME': PEOPLE.P_A_LNAME,
+        'PEOPLE.P_A_ROLE': PEOPLE.P_A_ROLE,
+        'PEOPLE.P_A_PHONE': PEOPLE.P_A_PHONE,
+        'PEOPLE.P_A_EMAIL': PEOPLE.P_A_EMAIL,
+        'PEOPLE.P_A_ADD1': PEOPLE.P_A_ADD1,
+        'PEOPLE.P_A_ADD2': PEOPLE.P_A_ADD2,
+        'PEOPLE.P_A_CITY': PEOPLE.P_A_CITY,
+        'PEOPLE.P_A_STATE': PEOPLE.P_A_STATE,
+        'PEOPLE.P_A_ZIP': PEOPLE.P_A_ZIP,
+        'PEOPLE.P_B_FNAME': PEOPLE.P_B_FNAME,
+        'PEOPLE.P_B_LNAME': PEOPLE.P_B_LNAME,
+        'PEOPLE.P_B_ROLE': PEOPLE.P_B_ROLE,
+        'PEOPLE.P_B_PHONE': PEOPLE.P_B_PHONE,
+        'PEOPLE.P_B_EMAIL': PEOPLE.P_B_EMAIL,
+        'PEOPLE.P_B_ADD1': PEOPLE.P_B_ADD1,
+        'PEOPLE.P_B_ADD2': PEOPLE.P_B_ADD2,
+        'PEOPLE.P_B_CITY': PEOPLE.P_B_CITY,
+        'PEOPLE.P_B_STATE': PEOPLE.P_B_STATE,
+        'PEOPLE.P_B_ZIP': PEOPLE.P_B_ZIP,
+        'SITE_INFO.SITE_PASSCODE': SITE_INFO.SITE_PASSCODE,
+        'SITE_INFO.SITE_PASSCODE_CONFIRMATION':
+          SITE_INFO.SITE_PASSCODE_CONFIRMATION,
+        'PLANNING_LINKS.BUDGET_URL': PLANNING_LINKS.BUDGET_URL,
+        'PLANNING_LINKS.ADDRESS_URL': PLANNING_LINKS.ADDRESS_URL,
+        'PLANNING_LINKS.DESIGN_BOARD_URL': PLANNING_LINKS.DESIGN_BOARD_URL,
+        'PLANNING_LINKS.CLIENT_DOCS_URL': PLANNING_LINKS.CLIENT_DOCS_URL,
+        'PLANNING_LINKS.VENDOR_PROPOSALS_URL':
+          PLANNING_LINKS.VENDOR_PROPOSALS_URL,
+        'PLANNING_LINKS.VENDOR_CONTRACT_URL':
+          PLANNING_LINKS.VENDOR_CONTRACT_URL,
+        'PLANNING_LINKS.GUEST_INFO_URL': PLANNING_LINKS.GUEST_INFO_URL,
+        'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
+        'PUBLIC_LINKS.TWITTER_URL': PUBLIC_LINKS.TWITTER_URL,
+        'PUBLIC_LINKS.WEBSITE_URL': PUBLIC_LINKS.WEBSITE_URL,
+        'PUBLIC_LINKS.FACEBOOK_URL': PUBLIC_LINKS.FACEBOOK_URL,
+        'PUBLIC_LINKS.REGISTRY_URL': PUBLIC_LINKS.REGISTRY_URL,
+        'PUBLIC_LINKS.INSTAGRAM_URL': PUBLIC_LINKS.INSTAGRAM_URL,
+        'PUBLIC_LINKS.PINTEREST_URL': PUBLIC_LINKS.PINTEREST_URL,
+      }).forEach(
+        (
+          [key, value] // @ts-ignore
+        ) => setValue(key, value)
+      );
+    }
+  }, [editClientData]);
+
+  console.log('planners', planners);
+
+  const handleBgImageSelect = (id: number) => {
+    setSelectedBgImageId(id);
+  };
+
+  const onSubmit = async (data: Record<string, any>) => {
+    data.urlParameter = urlParameter;
+    data.plannerEmail = planners.find(
+      (planner: Planner) => planner.name === data.ADMIN_INFO.PLANNER
+    )?.email;
+    data.plannerName = planners.find(
+      (planner: Planner) => planner.name === data.ADMIN_INFO.PLANNER
+    )?.name;
+
+    data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
+    data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
+
+    try {
+      const response = await fetch('/api/newClient', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.error) {
+        if (responseData.error) {
+          toast.error('Clients with those names already exist.', {
+            position: 'bottom-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+        }
+      } else {
+        setSubmitted(true);
+        reset();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (submitted) {
+      console.log('redirecting to clients page');
+      setTimeout(() => {
+        router.push(`/Homepage`);
+      }, 3000);
+    }
+  }, [submitted]);
+
+  const onError = (errors: any) => {
+    // your code here
+    console.log('errors: ', errors);
+  };
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     shouldUnregister: false,
     defaultValues: {
       ADMIN_INFO: {
-        PLANNER: '',
+        PLANNER: editClientData?.plannerName || '',
         AMMEND: '',
         ARCHIVED: false,
       },
@@ -41,6 +242,7 @@ const Page = (props: Props) => {
         WED_YEAR: '',
         VENUE_NAME: '',
         VENUE_CITY: '',
+        VENUE_STATE: '',
         GUEST_RANGE_START: '',
         GUEST_RANGE_END: '',
       },
@@ -71,84 +273,27 @@ const Page = (props: Props) => {
         SITE_PASSCODE_CONFIRMATION: '',
         BG_IMAGE_ID: '',
       },
-      PLANNING_LINKS: {},
-      PUBLIC_LINKS: {},
+      PLANNING_LINKS: {
+        ADDRESS_URL: '',
+        // WORKFLOW_URL: '',
+        BUDGET_URL: '',
+        DESIGN_BOARD_URL: '',
+        CLIENT_DOCS_URL: '',
+        VENDOR_PROPOSALS_URL: '',
+        VENDOR_CONTRACT_URL: '',
+        GUEST_INFO_URL: '',
+        CALENDAR_URL: '',
+      },
+      PUBLIC_LINKS: {
+        WEBSITE_URL: '',
+        FACEBOOK_URL: '',
+        REGISTRY_URL: '',
+        INSTAGRAM_URL: '',
+        PINTEREST_URL: '',
+        TWITTER_URL: '',
+      },
     },
   });
-
-  const [selectedBgImageId, setSelectedBgImageId] = React.useState(0);
-  const [planners, setPlanners] = React.useState([]);
-  const [submitted, setSubmitted] = React.useState(false);
-  const { state } = useStateContext();
-  const supabase = useClient();
-  const router = useRouter();
-
-  const plannerData = async () => {
-    let { data, error } = await supabase
-      .from('users')
-      .select('name, email')
-      .eq('role', 'planner');
-    if (error) {
-      console.log(error);
-    } else {
-      return data;
-    }
-  };
-
-  useEffect(() => {
-    plannerData().then((planners) => {
-      setPlanners(planners as any);
-    });
-  }, []);
-
-  console.log('planners', planners);
-
-  const handleBgImageSelect = (id: number) => {
-    setSelectedBgImageId(id);
-    console.log('selected', id);
-  };
-
-  const onSubmit = async (data: Record<string, any>) => {
-    data.plannerName = data.ADMIN_INFO.PLANNER;
-    data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
-    data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
-    console.log('submitted', data);
-
-    try {
-      const response = await fetch('/api/newClient', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const responseData = await response.json();
-      console.log('returned data', responseData);
-      setSubmitted(true);
-      reset();
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (submitted) {
-      console.log('redirecting to clients page');
-      setTimeout(() => {
-        router.push(`/Homepage`);
-      }, 3000);
-    }
-  }, [submitted]);
-
-  const onError = (errors: any) => {
-    // your code here
-    console.log('errors: ', errors);
-  };
 
   return (
     <main className="newContainer">
@@ -182,7 +327,8 @@ const Page = (props: Props) => {
                         <div className="sm:col-span-6 col-span-6">
                           {errors.ADMIN_INFO?.PLANNER ? (
                             <p className="text-red-500">
-                              {errors.ADMIN_INFO.PLANNER.message}
+                              {/* @ts-ignore */}
+                              {errors.ADMIN_INFO?.PLANNER.message}
                             </p>
                           ) : (
                             <label
@@ -198,8 +344,8 @@ const Page = (props: Props) => {
                               required: 'Planner required.',
                             })}
                             id="PLANNER">
-                            {planners.map((planner: Planner, id) => (
-                              <option value={`${planner.name} `} key={id}>
+                            {planners?.map((planner: Planner, id: number) => (
+                              <option value={`${planner.name}`} key={id}>
                                 {planner.name}
                               </option>
                             ))}
@@ -317,7 +463,7 @@ const Page = (props: Props) => {
                           </div>
                         </div>
 
-                        <div className="sm:col-span-3 col-span-6">
+                        <div className="sm:col-span-2 col-span-6">
                           {errors.EVENT_DETAILS?.VENUE_NAME ? (
                             <p className="text-red-500">
                               {errors.EVENT_DETAILS?.VENUE_NAME.message}
@@ -338,7 +484,8 @@ const Page = (props: Props) => {
                             id="VENUE_NAME"
                           />
                         </div>
-                        <div className="sm:col-span-3 col-span-6">
+
+                        <div className="sm:col-span-2 col-span-3">
                           {errors.EVENT_DETAILS?.VENUE_CITY ? (
                             <p className="text-red-500">
                               {errors.EVENT_DETAILS?.VENUE_CITY.message}
@@ -358,6 +505,29 @@ const Page = (props: Props) => {
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
                             id="VENUE_CITY"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2 col-span-3">
+                          {errors.EVENT_DETAILS?.VENUE_STATE ? (
+                            <p className="text-red-500">
+                              {errors.EVENT_DETAILS?.VENUE_STATE.message}
+                            </p>
+                          ) : (
+                            <label
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                              htmlFor="VENUE_CITY">
+                              Venue State
+                            </label>
+                          )}
+                          <input
+                            {...register('EVENT_DETAILS.VENUE_STATE', {
+                              required: 'Venue state required.',
+                            })}
+                            placeholder=""
+                            className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                            type="text"
+                            id="VENUE_STATE"
                           />
                         </div>
 
@@ -500,7 +670,6 @@ const Page = (props: Props) => {
                               placeholder=""
                               className="w-100 focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="P_A_PHONE"
                               id="P_A_PHONE"
                             />
                           </div>
@@ -849,7 +1018,11 @@ const Page = (props: Props) => {
                           // </div>
                           <label
                             key={id}
-                            className="sm:col-span-3 col-span-6 border-4 border-transparent">
+                            className={`sm:col-span-3 ${
+                              selectedBgImageId == image.id
+                                ? 'border-[rgb(217,142,72)]'
+                                : 'border-transparent'
+                            } col-span-6 border-8 `}>
                             <input
                               type="radio"
                               className="hidden"
@@ -888,29 +1061,34 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'workflow',
-                          'budget',
-                          'address',
-                          'design Board',
-                          'client Docs',
-                          'vendor Proposals',
-                          'vendor Contact',
-                          'guest Info',
-                          'calendar',
+                          // 'WORKFLOW',
+                          'BUDGET',
+                          'ADDRESS',
+                          'DESIGN_BOARD',
+                          'CLIENT_DOCS',
+                          'VENDOR_PROPOSALS',
+                          'VENDOR_CONTRACT',
+                          'GUEST_INFO',
+                          'CALENDAR',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
                             <label className="text-[12px] tracking-widewide font-sans font-normal uppercase">
-                              {title} url
+                              {/* {title} url */}
+                              {/* REGEX the title to remove '_' from DESIGN_BOARD */}
+                              {title.split('_').join(' ')} url
                             </label>
                             <input
                               {...register(
                                 // @ts-ignore
-                                `PLANNING_LINKS.${title.split(' ')[0]}_url`
+                                `PLANNING_LINKS.${title}_URL`
                               )}
-                              placeholder={`${title}`}
+                              placeholder={`${title
+                                .split('_')
+                                .join(' ')
+                                .toLowerCase()}`}
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
                               type="text"
-                              id={`${title}_url`}
+                              id={`${title}_URL`}
                             />
                           </div>
                         ))}
@@ -944,12 +1122,12 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'pinterest',
-                          'facebook',
-                          'instagram',
-                          'website',
-                          'blog',
-                          'registry',
+                          'PINTEREST',
+                          'FACEBOOK',
+                          'INSTAGRAM',
+                          'TWITTER',
+                          'YELP',
+                          'REGISTRY',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
                             <label className="text-[12px]  tracking-widewide font-sans font-normal uppercase">
@@ -957,11 +1135,11 @@ const Page = (props: Props) => {
                             </label>
                             <input
                               // @ts-ignore
-                              {...register(`PUBLIC_LINKS.${title}_url`)}
-                              placeholder={`${title} url`}
-                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                              {...register(`PUBLIC_LINKS.${title}_URL`)}
+                              placeholder={`${title.toLowerCase()}`}
+                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
                               type="text"
-                              id={`${title}_url`}
+                              id={`${title}_URL`}
                             />
                           </div>
                         ))}
@@ -980,13 +1158,25 @@ const Page = (props: Props) => {
               </div>
             </div>
           </form>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </section>
       ) : (
         <div
           className="h-1/3 opacity-90 rounded-xl fixed inset-0 z-10 flex flex-col w-1/3 p-4 m-auto bg-white border-4 border-gray-300"
           id="successModal">
           <p className="m-auto text-xl text-center">
-            Successful creation. Please wait while we redirect you to the client
+            Successful creation. Please wait while we redirect you to the home
             page.
           </p>
           <svg
