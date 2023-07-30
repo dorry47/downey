@@ -9,11 +9,11 @@
   },
   {
     "title": "My Clients",
-    "href": "/"
+    "href": "/Homepage"
   },
   {
     "title": "My Info",
-    "href": "/my-info"
+    "href": "/planners/edit/"
   },
   {
     "title": "Edit Documents",

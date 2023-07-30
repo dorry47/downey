@@ -1,5 +1,14 @@
-[
+[ {
+  "titleKey": "WORKFLOW_URL",
+  "title": "Workflow",
+  "subtitle": "",
+  "imageSrc": "/images/workflow-icon.jpg",
+  "href": "/workflow",
+  "active": false
+
+}, 
   {
+    "titleKey": "DESIGN_BOARD_URL",
     "title": "Design Boards + Documents",
     "subtitle": "",
     "imageSrc": "/images/design-boards-icon.jpg",
@@ -7,6 +16,7 @@
     "active": false
   },
   {
+    "titleKey": "GUEST_INFO_URL",
     "title": "Guest Information",
     "subtitle": "",
     "imageSrc": "/images/guest-information-icon.jpg",
@@ -14,6 +24,7 @@
     "active": false
   },
   {
+    "titleKey": "BUDGET_URL",
     "title": "Budget",
     "subtitle": "quick link",
     "imageSrc": "/images/budget-icon.jpg",
@@ -21,6 +32,7 @@
     "active": false
   },
   {
+    "titleKey": "VENDOR_PROPOSALS_URL",
     "title": "Vendor Proposals + Contracts",
     "subtitle": "quick link",
     "imageSrc": "/images/vendor-proposal-icon.jpg",
@@ -28,6 +40,7 @@
     "active": false
   },
   {
+    "titleKey": "CLIENT_DOCS_URL",
     "title": "Client Documents",
     "subtitle": "",
     "imageSrc": "/images/client-documents-icon.jpg",
@@ -35,6 +48,7 @@
     "active": false
   },
   {
+    "titleKey": "ADDRESS_URL",
     "title": "Address Book",
     "subtitle": "quick link",
     "imageSrc": "/images/address-book-icon.jpg",
@@ -42,6 +56,7 @@
     "active": false
   },
   {
+    "titleKey": "CONTACTS_URL",
     "title": "Contract",
     "subtitle": "quick link",
     "imageSrc": "/images/contract-icon.jpg",
@@ -49,6 +64,7 @@
     "active": false
   },
   {
+    "titleKey": "VENDOR_CONTRACT_URL",
     "title": "Vendor Contact + Payment Log",
     "subtitle": "",
     "imageSrc": "/images/vendor-payment-icon.jpg",
@@ -56,6 +72,7 @@
     "active": false
   },
   {
+    "titleKey": "CATERING_URL",
     "title": "Catering",
     "subtitle": "",
     "imageSrc": "/images/catering-icon.jpg",
@@ -63,6 +80,7 @@
     "active": false
   },
   {
+    "titleKey": "DESIGN_BOARD_URL",
     "title": "Design",
     "subtitle": "",
     "imageSrc": "/images/design-icon.jpg",
@@ -70,6 +88,7 @@
     "active": false
   },
   {
+    "titleKey": "GUEST_INFO_URL",
     "title": "Guest Services",
     "subtitle": "",
     "imageSrc": "/images/guest-services-icon.jpg",
@@ -77,6 +96,7 @@
     "active": false
   },
   {
+    "titleKey": "MUSIC_URL",
     "title": "Music",
     "subtitle": "",
     "imageSrc": "/images/music-icon.jpg",

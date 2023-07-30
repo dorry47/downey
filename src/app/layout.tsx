@@ -8,6 +8,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { StateProvider } from '../../context/StateContext';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,6 +23,7 @@ export default function RootLayout({
 }) {
   const pathName = usePathname();
   const isMainPage = pathName === '/';
+  const queryClient = new QueryClient();
 
   const router = useRouter();
 
@@ -38,22 +44,29 @@ export default function RootLayout({
 
   return (
     <StateProvider>
-      <html lang="en">
-        <Head>
-          <title>Downey Street Events - Planning App</title>
-          <meta
-            name="description"
-            content="Downey Street Events Planning App"
-          />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="title" content="Downey Street Events - Planning App" />
-        </Head>
-        <body className={`${inter.className} `}>
-          <Navigation showLinks={!isMainPage} />
-          <div style={{ minHeight: screenHeight - 120 + 'px' }}>{children}</div>
-          {!isMainPage && <Footer links={footerLinks} />}
-        </body>
-      </html>
+      <QueryClientProvider client={queryClient}>
+        <html lang="en">
+          <Head>
+            <title>Downey Street Events - Planning App</title>
+            <meta
+              name="description"
+              content="Downey Street Events Planning App"
+            />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            />
+            <meta name="title" content="Downey Street Events - Planning App" />
+          </Head>
+          <body className={`${inter.className} `}>
+            <Navigation showLinks={!isMainPage} />
+            <div style={{ minHeight: screenHeight - 120 + 'px' }}>
+              {children}
+            </div>
+            {!isMainPage && <Footer links={footerLinks} />}
+          </body>
+        </html>
+      </QueryClientProvider>
     </StateProvider>
   );
 }

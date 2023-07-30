@@ -68,7 +68,7 @@ const Navigation = (props: Props) => {
           )}
         </div>
         <div className=" lg:w-96 flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
-          <Link className="relative w-full h-full m-auto" href="/">
+          <Link className="relative w-full h-full m-auto" href="/Homepage">
             <Image
               priority
               className="p-2"

@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import React from 'react';
 
 type Props = {
@@ -41,22 +42,22 @@ const PlannerRow = (props: Props) => {
       </p>
       <div className="grid grid-cols-3 gap-1 my-auto">
         <p className="flex justify-center font-sans text-left">
-          <a href={`planners/${slug}`}>
+          <Link href={`planners/${slug}`}>
             <button
               type="button"
               className="bg-[rgba(217,216,214)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-2 py-1 text-sm font-normal text-black border border-transparent rounded-md shadow-sm">
               View
             </button>
-          </a>{' '}
+          </Link>{' '}
         </p>
         <p className="flex justify-center font-sans text-left">
-          <a href={`planners/edit/${slug}`}>
+          <Link href={`planners/edit/${slug}`}>
             <button
               type="button"
               className="bg-[rgba(217,216,214)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-1 py-1 text-sm font-normal text-black border border-transparent rounded-md shadow-sm">
               Edit
             </button>
-          </a>{' '}
+          </Link>{' '}
         </p>
         <p className="flex justify-center font-sans text-left">
           <button

@@ -1,6 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import planners from '../../data/planners.json';
+import React, { Suspense, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import PlannerRow from '../../../components/PlannerRow';
 import Link from 'next/link';
 import { useClient } from '../../../lib/useClient';
@@ -17,8 +17,6 @@ interface Planner {
 }
 
 export default function Page(props: Props) {
-  const [plannerData, setPlannerData] = useState<any>([]);
-
   const supabase = useClient();
   const { state, setState } = useStateContext();
 
@@ -34,13 +32,14 @@ export default function Page(props: Props) {
     }
   };
 
+  const { data: plannerData } = useQuery({
+    queryKey: ['plannerData'],
+    queryFn: fetchPlannerData,
+  });
+
   useEffect(() => {
     const session = JSON.parse(localStorage.getItem('session') as string);
     const user = JSON.parse(localStorage.getItem('user') as string);
-    fetchPlannerData().then((data: any) => {
-      setPlannerData(data);
-    });
-
     if (session) {
       setState({ ...state, session, user });
     }
@@ -57,25 +56,26 @@ export default function Page(props: Props) {
       </header>
       <section className="max-w-7xl px-6 py-8 mx-auto overflow-auto break-words">
         <div className="w-[1200px] flex flex-col">
-          <div className=" grid grid-cols-7 gap-1">
-            {['First Name', 'Last Name', 'Email', 'Phone', 'Archived'].map(
-              (title, id) => (
-                <h2
-                  key={id}
-                  className={`${
-                    title == 'Email' && 'col-span-2'
-                  } py-4 font-sans font-normal tracking-widest text-left uppercase`}>
-                  {title}
-                </h2>
-              )
-            )}
-          </div>
-
-          <div className="flex flex-col justify-between mb-4">
-            {plannerData.map((planner: Planner, id: number) => (
-              <PlannerRow planner={planner} key={id} />
-            ))}
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <div className=" grid grid-cols-7 gap-1">
+              {['First Name', 'Last Name', 'Email', 'Phone', 'Archived'].map(
+                (title, id) => (
+                  <h2
+                    key={id}
+                    className={`${
+                      title == 'Email' && 'col-span-2'
+                    } py-4 font-sans font-normal tracking-widest text-left uppercase`}>
+                    {title}
+                  </h2>
+                )
+              )}
+            </div>
+            <div className="flex flex-col justify-between mb-4">
+              {plannerData?.map((planner: Planner, id: number) => (
+                <PlannerRow planner={planner} key={id} />
+              ))}
+            </div>
+          </Suspense>
         </div>
         <Link href="/planners/edit/new">
           <button

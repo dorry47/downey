@@ -11,7 +11,9 @@ import {
 } from '../../../../constants/NEW_CLIENT_CONSTS';
 import { useStateContext } from '../../../../context/StateContext';
 import { useClient } from '../../../../lib/useClient';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Planner {
   name: string;
@@ -31,6 +33,11 @@ const Page = (props: Props) => {
   const { state } = useStateContext();
   const supabase = useClient();
   const router = useRouter();
+  const params = useSearchParams();
+
+  const urlParameter = params.get('edit');
+
+  console.log('url parameter', urlParameter);
 
   const plannerData = async () => {
     let { data, error } = await supabase
@@ -50,7 +57,6 @@ const Page = (props: Props) => {
     });
   }, []);
 
-  // grab the parameter from the url edit=clientname
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const editClientSlug = urlParams.get('edit');
@@ -76,130 +82,72 @@ const Page = (props: Props) => {
 
   useEffect(() => {
     if (editClientData.length > 0) {
-      setSelectedBgImageId(editClientData[0].SITE_INFO.BG_IMAGE_ID);
-      setValue('ADMIN_INFO.PLANNER', editClientData[0].ADMIN_INFO.PLANNER);
-      setValue('ADMIN_INFO.AMMEND', editClientData[0].ADMIN_INFO.AMMEND);
-      setValue('ADMIN_INFO.ARCHIVED', editClientData[0].ADMIN_INFO.ARCHIVED);
-      setValue(
-        'EVENT_DETAILS.DATE',
-        editClientData[0].EVENT_DETAILS.DATE.toString()
-      );
-      setValue(
-        'EVENT_DETAILS.WED_MONTH',
-        editClientData[0].EVENT_DETAILS.WED_MONTH
-      );
-      setValue(
-        'EVENT_DETAILS.WED_DAY',
-        editClientData[0].EVENT_DETAILS.WED_DAY
-      );
-      setValue(
-        'EVENT_DETAILS.WED_YEAR',
-        editClientData[0].EVENT_DETAILS.WED_YEAR
-      );
-      setValue(
-        'EVENT_DETAILS.VENUE_NAME',
-        editClientData[0].EVENT_DETAILS.VENUE_NAME
-      );
-      setValue(
-        'EVENT_DETAILS.VENUE_CITY',
-        editClientData[0].EVENT_DETAILS.VENUE_CITY
-      );
-      setValue(
-        'EVENT_DETAILS.VENUE_STATE',
-        editClientData[0].EVENT_DETAILS.VENUE_STATE
-      );
-      setValue(
-        'EVENT_DETAILS.GUEST_RANGE_START',
-        editClientData[0].EVENT_DETAILS.GUEST_RANGE_START
-      );
-      setValue(
-        'EVENT_DETAILS.GUEST_RANGE_END',
-        editClientData[0].EVENT_DETAILS.GUEST_RANGE_END
-      );
-      setValue('PEOPLE.P_A_FNAME', editClientData[0].PEOPLE.P_A_FNAME);
-      setValue('PEOPLE.P_A_LNAME', editClientData[0].PEOPLE.P_A_LNAME);
-      setValue('PEOPLE.P_A_ROLE', editClientData[0].PEOPLE.P_A_ROLE);
-      setValue('PEOPLE.P_A_PHONE', editClientData[0].PEOPLE.P_A_PHONE);
-      setValue('PEOPLE.P_A_EMAIL', editClientData[0].PEOPLE.P_A_EMAIL);
-      setValue('PEOPLE.P_A_ADD1', editClientData[0].PEOPLE.P_A_ADD1);
-      setValue('PEOPLE.P_A_ADD2', editClientData[0].PEOPLE.P_A_ADD2);
-      setValue('PEOPLE.P_A_CITY', editClientData[0].PEOPLE.P_A_CITY);
-      setValue('PEOPLE.P_A_STATE', editClientData[0].PEOPLE.P_A_STATE);
-      setValue('PEOPLE.P_A_ZIP', editClientData[0].PEOPLE.P_A_ZIP);
-      setValue('PEOPLE.P_B_FNAME', editClientData[0].PEOPLE.P_B_FNAME);
-      setValue('PEOPLE.P_B_LNAME', editClientData[0].PEOPLE.P_B_LNAME);
-      setValue('PEOPLE.P_B_ROLE', editClientData[0].PEOPLE.P_B_ROLE);
-      setValue('PEOPLE.P_B_PHONE', editClientData[0].PEOPLE.P_B_PHONE);
-      setValue('PEOPLE.P_B_EMAIL', editClientData[0].PEOPLE.P_B_EMAIL);
-      setValue('PEOPLE.P_B_ADD1', editClientData[0].PEOPLE.P_B_ADD1);
-      setValue('PEOPLE.P_B_ADD2', editClientData[0].PEOPLE.P_B_ADD2);
-      setValue('PEOPLE.P_B_CITY', editClientData[0].PEOPLE.P_B_CITY);
-      setValue('PEOPLE.P_B_STATE', editClientData[0].PEOPLE.P_B_STATE);
-      setValue('PEOPLE.P_B_ZIP', editClientData[0].PEOPLE.P_B_ZIP);
-      setValue(
-        'SITE_INFO.SITE_PASSCODE',
-        editClientData[0].SITE_INFO.SITE_PASSCODE
-      );
-      setValue(
-        'SITE_INFO.SITE_PASSCODE_CONFIRMATION',
-        editClientData[0].SITE_INFO.SITE_PASSCODE_CONFIRMATION
-      );
-      setValue(
-        'PLANNING_LINKS.WORKFLOW_URL',
-        editClientData[0].PLANNING_LINKS.WORKFLOW_URL
-      );
-      setValue(
-        'PLANNING_LINKS.BUDGET_URL',
-        editClientData[0].PLANNING_LINKS.BUDGET_URL
-      );
-      setValue(
-        'PLANNING_LINKS.ADDRESS_URL',
-        editClientData[0].PLANNING_LINKS.ADDRESS_URL
-      );
-      setValue(
-        'PLANNING_LINKS.DESIGN_URL',
-        editClientData[0].PLANNING_LINKS.DESIGN_URL
-      );
-      setValue(
-        'PLANNING_LINKS.CLIENT_URL',
-        editClientData[0].PLANNING_LINKS.CLIENT_URL
-      );
-      setValue(
-        'PLANNING_LINKS.VENDOR_URL',
-        editClientData[0].PLANNING_LINKS.VENDOR_URL
-      );
-      setValue(
-        'PLANNING_LINKS.GUEST_URL',
-
-        editClientData[0].PLANNING_LINKS.GUEST_URL
-      );
-      setValue(
-        'PLANNING_LINKS.CALENDAR_URL',
-        editClientData[0].PLANNING_LINKS.CALENDAR_URL
-      );
-      setValue(
-        'PUBLIC_LINKS.BLOG_URL',
-        editClientData[0].PUBLIC_LINKS.BLOG_URL
-      );
-      setValue(
-        'PUBLIC_LINKS.WEBSITE_URL',
-        editClientData[0].PUBLIC_LINKS.WEBSITE_URL
-      );
-      setValue(
-        'PUBLIC_LINKS.FACEBOOK_URL',
-        editClientData[0].PUBLIC_LINKS.FACEBOOK_url
-      );
-      setValue(
-        'PUBLIC_LINKS.REGISTRY_URL',
-        editClientData[0].PUBLIC_LINKS.REGISTRY_URL
-      );
-      setValue(
-        'PUBLIC_LINKS.INSTAGRAM_URL',
-        editClientData[0].PUBLIC_LINKS.INSTAGRAM_URL
-      );
-      setValue(
-        'PUBLIC_LINKS.PINTEREST_URL',
-        editClientData[0].PUBLIC_LINKS.PINTEREST_URL
+      const {
+        SITE_INFO,
+        ADMIN_INFO,
+        EVENT_DETAILS,
+        PEOPLE,
+        PLANNING_LINKS,
+        PUBLIC_LINKS,
+      } = editClientData[0];
+      setSelectedBgImageId(SITE_INFO.BG_IMAGE_ID);
+      Object.entries({
+        plannerName: ADMIN_INFO.PLANNER,
+        'ADMIN_INFO.PLANNER': ADMIN_INFO.PLANNER,
+        'ADMIN_INFO.AMMEND': ADMIN_INFO.AMMEND,
+        'ADMIN_INFO.ARCHIVED': ADMIN_INFO.ARCHIVED,
+        'EVENT_DETAILS.DATE': EVENT_DETAILS.DATE.toString(),
+        'EVENT_DETAILS.WED_MONTH': EVENT_DETAILS.WED_MONTH,
+        'EVENT_DETAILS.WED_DAY': EVENT_DETAILS.WED_DAY,
+        'EVENT_DETAILS.WED_YEAR': EVENT_DETAILS.WED_YEAR,
+        'EVENT_DETAILS.VENUE_NAME': EVENT_DETAILS.VENUE_NAME,
+        'EVENT_DETAILS.VENUE_CITY': EVENT_DETAILS.VENUE_CITY,
+        'EVENT_DETAILS.VENUE_STATE': EVENT_DETAILS.VENUE_STATE,
+        'EVENT_DETAILS.GUEST_RANGE_START': EVENT_DETAILS.GUEST_RANGE_START,
+        'EVENT_DETAILS.GUEST_RANGE_END': EVENT_DETAILS.GUEST_RANGE_END,
+        'PEOPLE.P_A_FNAME': PEOPLE.P_A_FNAME,
+        'PEOPLE.P_A_LNAME': PEOPLE.P_A_LNAME,
+        'PEOPLE.P_A_ROLE': PEOPLE.P_A_ROLE,
+        'PEOPLE.P_A_PHONE': PEOPLE.P_A_PHONE,
+        'PEOPLE.P_A_EMAIL': PEOPLE.P_A_EMAIL,
+        'PEOPLE.P_A_ADD1': PEOPLE.P_A_ADD1,
+        'PEOPLE.P_A_ADD2': PEOPLE.P_A_ADD2,
+        'PEOPLE.P_A_CITY': PEOPLE.P_A_CITY,
+        'PEOPLE.P_A_STATE': PEOPLE.P_A_STATE,
+        'PEOPLE.P_A_ZIP': PEOPLE.P_A_ZIP,
+        'PEOPLE.P_B_FNAME': PEOPLE.P_B_FNAME,
+        'PEOPLE.P_B_LNAME': PEOPLE.P_B_LNAME,
+        'PEOPLE.P_B_ROLE': PEOPLE.P_B_ROLE,
+        'PEOPLE.P_B_PHONE': PEOPLE.P_B_PHONE,
+        'PEOPLE.P_B_EMAIL': PEOPLE.P_B_EMAIL,
+        'PEOPLE.P_B_ADD1': PEOPLE.P_B_ADD1,
+        'PEOPLE.P_B_ADD2': PEOPLE.P_B_ADD2,
+        'PEOPLE.P_B_CITY': PEOPLE.P_B_CITY,
+        'PEOPLE.P_B_STATE': PEOPLE.P_B_STATE,
+        'PEOPLE.P_B_ZIP': PEOPLE.P_B_ZIP,
+        'SITE_INFO.SITE_PASSCODE': SITE_INFO.SITE_PASSCODE,
+        'SITE_INFO.SITE_PASSCODE_CONFIRMATION':
+          SITE_INFO.SITE_PASSCODE_CONFIRMATION,
+        'PLANNING_LINKS.BUDGET_URL': PLANNING_LINKS.BUDGET_URL,
+        'PLANNING_LINKS.ADDRESS_URL': PLANNING_LINKS.ADDRESS_URL,
+        'PLANNING_LINKS.DESIGN_BOARD_URL': PLANNING_LINKS.DESIGN_BOARD_URL,
+        'PLANNING_LINKS.CLIENT_DOCS_URL': PLANNING_LINKS.CLIENT_DOCS_URL,
+        'PLANNING_LINKS.VENDOR_PROPOSALS_URL':
+          PLANNING_LINKS.VENDOR_PROPOSALS_URL,
+        'PLANNING_LINKS.VENDOR_CONTRACT_URL':
+          PLANNING_LINKS.VENDOR_CONTRACT_URL,
+        'PLANNING_LINKS.GUEST_INFO_URL': PLANNING_LINKS.GUEST_INFO_URL,
+        'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
+        'PUBLIC_LINKS.TWITTER_URL': PUBLIC_LINKS.TWITTER_URL,
+        'PUBLIC_LINKS.WEBSITE_URL': PUBLIC_LINKS.WEBSITE_URL,
+        'PUBLIC_LINKS.FACEBOOK_URL': PUBLIC_LINKS.FACEBOOK_URL,
+        'PUBLIC_LINKS.REGISTRY_URL': PUBLIC_LINKS.REGISTRY_URL,
+        'PUBLIC_LINKS.INSTAGRAM_URL': PUBLIC_LINKS.INSTAGRAM_URL,
+        'PUBLIC_LINKS.PINTEREST_URL': PUBLIC_LINKS.PINTEREST_URL,
+      }).forEach(
+        (
+          [key, value] // @ts-ignore
+        ) => setValue(key, value)
       );
     }
   }, [editClientData]);
@@ -208,18 +156,19 @@ const Page = (props: Props) => {
 
   const handleBgImageSelect = (id: number) => {
     setSelectedBgImageId(id);
-    console.log('selected', id);
   };
 
   const onSubmit = async (data: Record<string, any>) => {
-    data.plannerName = data.ADMIN_INFO.PLANNER;
+    data.urlParameter = urlParameter;
     data.plannerEmail = planners.find(
       (planner: Planner) => planner.name === data.ADMIN_INFO.PLANNER
     )?.email;
+    data.plannerName = planners.find(
+      (planner: Planner) => planner.name === data.ADMIN_INFO.PLANNER
+    )?.name;
 
     data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
     data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
-    console.log('submitted', data);
 
     try {
       const response = await fetch('/api/newClient', {
@@ -235,9 +184,24 @@ const Page = (props: Props) => {
       }
 
       const responseData = await response.json();
-      console.log('returned data', responseData);
-      setSubmitted(true);
-      reset();
+
+      if (responseData.error) {
+        if (responseData.error) {
+          toast.error('Clients with those names already exist.', {
+            position: 'bottom-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+        }
+      } else {
+        setSubmitted(true);
+        reset();
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -267,7 +231,7 @@ const Page = (props: Props) => {
     shouldUnregister: false,
     defaultValues: {
       ADMIN_INFO: {
-        PLANNER: planners?.name || planners[0]?.name || '',
+        PLANNER: editClientData?.plannerName || '',
         AMMEND: '',
         ARCHIVED: false,
       },
@@ -310,22 +274,23 @@ const Page = (props: Props) => {
         BG_IMAGE_ID: '',
       },
       PLANNING_LINKS: {
-        WORKFLOW_URL: '',
-        BUDGET_URL: '',
         ADDRESS_URL: '',
-        DESIGN_URL: '',
-        CLIENT_URL: '',
-        VENDOR_URL: '',
-        GUEST_URL: '',
+        // WORKFLOW_URL: '',
+        BUDGET_URL: '',
+        DESIGN_BOARD_URL: '',
+        CLIENT_DOCS_URL: '',
+        VENDOR_PROPOSALS_URL: '',
+        VENDOR_CONTRACT_URL: '',
+        GUEST_INFO_URL: '',
         CALENDAR_URL: '',
       },
       PUBLIC_LINKS: {
-        BLOG_URL: '',
         WEBSITE_URL: '',
         FACEBOOK_URL: '',
         REGISTRY_URL: '',
         INSTAGRAM_URL: '',
         PINTEREST_URL: '',
+        TWITTER_URL: '',
       },
     },
   });
@@ -705,7 +670,6 @@ const Page = (props: Props) => {
                               placeholder=""
                               className="w-100 focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
-                              name="P_A_PHONE"
                               id="P_A_PHONE"
                             />
                           </div>
@@ -1054,7 +1018,11 @@ const Page = (props: Props) => {
                           // </div>
                           <label
                             key={id}
-                            className="sm:col-span-3 col-span-6 border-4 border-transparent">
+                            className={`sm:col-span-3 ${
+                              selectedBgImageId == image.id
+                                ? 'border-[rgb(217,142,72)]'
+                                : 'border-transparent'
+                            } col-span-6 border-8 `}>
                             <input
                               type="radio"
                               className="hidden"
@@ -1093,7 +1061,7 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'WORKFLOW',
+                          // 'WORKFLOW',
                           'BUDGET',
                           'ADDRESS',
                           'DESIGN_BOARD',
@@ -1190,6 +1158,18 @@ const Page = (props: Props) => {
               </div>
             </div>
           </form>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </section>
       ) : (
         <div

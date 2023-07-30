@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useClient } from '../lib/useClient'; // import supabase client
 import { useStateContext } from '../context/StateContext';
 import { useRouter } from 'next/navigation';
@@ -9,10 +9,28 @@ type Props = {
 };
 
 const Footer = (props: Props) => {
-  const { setState } = useStateContext();
+  const { setState, state } = useStateContext();
+  const [loggedInPlanner, setLoggedInPlanner] = React.useState<any>(null);
+  const [plannerSlug, setPlannerSlug] = React.useState<any>(null);
+
   const router = useRouter();
 
   const supabase = useClient();
+
+  useEffect(() => {
+    const loggedInUser = async () =>
+      await supabase
+        .from('users')
+        .select('*')
+        .eq('email', state?.user?.email)
+        .then((data: any) => {
+          console.log(data?.data[0]);
+          setLoggedInPlanner(data?.data[0]);
+        });
+    loggedInUser();
+    const slug = loggedInPlanner?.name;
+    setPlannerSlug(slug?.replace(/\s+/g, '-').toLowerCase());
+  }, [state]);
 
   const handleSignOut = async () => {
     try {
@@ -33,7 +51,9 @@ const Footer = (props: Props) => {
             <Link
               key={id}
               className="font-display md:text-sm hover:bg-transparent hover:text-[rgba(217,142,72)] px-2 text-xs tracking-widest text-center text-black uppercase"
-              href={link.href}>
+              href={`${link.href}${
+                link.title == 'My Info' ? plannerSlug : ''
+              }`}>
               {link.title}
             </Link>
           ))}

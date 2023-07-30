@@ -3,21 +3,34 @@
 @tailwind utilities;
 
 
-.newContainer {
 
-  
-  [multiple], [type=date], [type=datetime-local], [type=email], [type=month], [type=number], [type=password], [type=search], [type=tel], [type=text], [type=time], [type=url], [type=week], select, textarea {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: #fff;
-    border-width: 1px;
-    border-radius: 0;
-    padding: 0.5rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-  
-  }
+
+[multiple], [type=date], [type=datetime-local], [type=email], [type=month], [type=number], [type=password], [type=search], [type=tel], [type=text], [type=time], [type=url], [type=week], select, textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  border-width: 1px;
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+
+}
+
+.edit-documents { 
+  textarea, input, select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  /* border-color: #6b7280; */
+  border-width: 2px;
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
 
 
 }

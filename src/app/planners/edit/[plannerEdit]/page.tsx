@@ -125,7 +125,7 @@ const Page = (props: Props) => {
       .then((response) => response.json())
       .then((data) => {
         reset();
-        // setSubmitted(true);
+        setSubmitted(true);
 
         console.log('returned data', data);
       });
