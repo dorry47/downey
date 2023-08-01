@@ -4,6 +4,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { useRouter } from 'next/navigation';
 import { useStateContext } from '../../context/StateContext';
 import { useClient } from '../../lib/useClient';
+import Link from 'next/link';
 
 type Props = {};
 
@@ -38,7 +39,7 @@ const Page = (props: Props) => {
         session,
         user: session.user,
       });
-      router.push('/Homepage');
+      window.location.href = '/Homepage';
     } else {
       router.push('/');
     }
@@ -75,11 +76,11 @@ const Page = (props: Props) => {
               </h2>
               <p className="mt-2 text-sm text-center text-gray-600">
                 or{' '}
-                <a
+                <Link
                   href="https://downeystreetevents.com"
                   className="text-[#d98e48] hover:text-black hover:bg-transparent font-medium bg-transparent">
                   return to Downey Street Events website
-                </a>
+                </Link>
               </p>
             </div>
             <Auth

@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useStateContext } from '../context/StateContext';
 import { useRouter } from 'next/navigation';
 import { useClient } from '../lib/useClient';
+import { set } from 'react-hook-form';
 
 type Props = {
   showLinks: boolean;
@@ -13,6 +14,16 @@ const Navigation = (props: Props) => {
   const { setState, state } = useStateContext();
   const router = useRouter();
   const [loggedInPlanner, setLoggedInPlanner] = React.useState<any>(null);
+
+  const handleSession = async () => {
+    const session = JSON.parse(localStorage.getItem('session') as string);
+    const user = JSON.parse(localStorage.getItem('user') as string);
+    console.log('get session', session);
+    console.log('get user', user);
+    if (session) {
+      setState({ ...state, session, user });
+    }
+  };
 
   const supabase = useClient();
 
@@ -28,7 +39,7 @@ const Navigation = (props: Props) => {
   };
 
   useEffect(() => {
-    const loggedInUser = async () =>
+    const loggedInUser = async () => {
       await supabase
         .from('users')
         .select('*')
@@ -37,8 +48,13 @@ const Navigation = (props: Props) => {
           console.log(data?.data[0]);
           setLoggedInPlanner(data?.data[0]);
         });
+    };
     loggedInUser();
-  }, [state]);
+  }, [state?.user?.email]);
+
+  useEffect(() => {
+    handleSession();
+  }, []);
 
   const slug = loggedInPlanner?.name;
   const plannerSlug = slug?.replace(/\s+/g, '-').toLowerCase();

@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useClient } from '../../../../lib/useClient';
 import { bgImages } from '../../../../constants/NEW_CLIENT_CONSTS';
+import { set } from 'react-hook-form';
 interface PlanningLinks {
   workflow_url: string;
   budget_url: string;
@@ -63,12 +64,13 @@ const Page = () => {
   const [clientData, setClientData] = useState<ClientData>();
   const [plannerData, setPlannerData] = useState<any>();
   const [bgImageURL, setBgImageURL] = useState<any>('');
+  const [documents, setDocuments] = useState<any>();
+  const [isLoading, setIsLoading] = useState(true);
   const fetchedPlanningLinks = useMemo(
     () => clientData?.PLANNING_LINKS,
     [clientData]
   );
 
-  console.log('fetchedPlanningLinks', fetchedPlanningLinks);
   // i want to compare the titleKey in the quickLinks.json to the key in the PLANNING_LINKS object
 
   const planningLinks = useMemo(() => {
@@ -88,18 +90,41 @@ const Page = () => {
   const supabase = useClient();
 
   useEffect(() => {
-    fetchEventData().then((data: any) => {
-      // Leads to editable forms
-      data[0].PLANNING_LINKS.CONTACTS_URL = 'fefw';
-      data[0].PLANNING_LINKS.CATERING_URL = 'fes';
-      data[0].PLANNING_LINKS.MUSIC_URL = 'fewfw';
-      data[0].PLANNING_LINKS.GUEST_SERVICES_URL = 'fewf';
-      data[0].PLANNING_LINKS.DESIGN_URL = 'fewf';
-      data[0].PLANNING_LINKS.WORKFLOW_URL = 'fewf';
-      // Rest of the data captured from the backend call.
-      setClientData(data[0] as ClientData);
+    fetchDocuments().then((data: any) => {
+      console.log('documents', data);
+      setDocuments(data);
     });
   }, []);
+
+  useEffect(() => {
+    fetchEventData().then((data: any) => {
+      if (documents) {
+        // Leads to editable forms
+        data[0].PLANNING_LINKS.CONTRACT_URL = `/documents/${
+          documents.find((document: any) => document.title == 'Contract').id
+        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.CATERING_URL = `/documents/${
+          documents?.find((document: any) => document.title == 'Catering')?.id
+        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.MUSIC_URL = `/documents/${
+          documents?.find((document: any) => document.title == 'Music')?.id
+        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.GUEST_SERVE_URL = `/documents/${
+          documents?.find((document: any) => document.title == 'Guest Services')
+            ?.id
+        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.DESIGN_URL = `/documents/${
+          documents?.find((document: any) => document.title == 'Design')?.id
+        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.WORKFLOW_URL = `/documents/${
+          documents?.find((document: any) => document.title == 'Workflow')?.id
+        }?edit=${data[0].SLUG}`;
+        // Rest of the data captured from the backend call.
+        setClientData(data[0] as ClientData);
+        setIsLoading(false);
+      }
+    });
+  }, [documents]);
 
   useEffect(() => {
     fetchPlannerData().then((data: any) => {
@@ -163,6 +188,17 @@ const Page = () => {
     }
   };
 
+  const fetchDocuments = async () => {
+    let { data, error } = await supabase
+      .from('documents')
+      .select('id, title')
+      .eq('status', 'Published');
+    if (error) {
+      console.log(error);
+    }
+    return data;
+  };
+
   const date = `${clientData?.WED_MONTH} ${clientData?.WED_DAY}, ${clientData?.WED_YEAR}`;
   const names = [clientData?.P_A_FNAME, clientData?.P_B_FNAME];
 
@@ -179,6 +215,9 @@ const Page = () => {
     const [month, day, year] = date.split(' ');
     return `${month} ${day} ${year}`;
   };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>

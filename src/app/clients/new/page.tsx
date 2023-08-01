@@ -39,6 +39,87 @@ const Page = (props: Props) => {
 
   console.log('url parameter', urlParameter);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldUnregister: false,
+    defaultValues: {
+      ADMIN_INFO: {
+        PLANNER: editClientData?.plannerName || '',
+        AMMEND: '',
+        ARCHIVED: false,
+      },
+      EVENT_DETAILS: {
+        DATE: '',
+        WED_MONTH: '',
+        WED_DAY: '',
+        WED_YEAR: '',
+        VENUE_NAME: '',
+        VENUE_CITY: '',
+        VENUE_STATE: '',
+        GUEST_RANGE_START: '',
+        GUEST_RANGE_END: '',
+      },
+      PEOPLE: {
+        P_A_FNAME: '',
+        P_A_LNAME: '',
+        P_A_ROLE: '',
+        P_A_PHONE: '',
+        P_A_EMAIL: '',
+        P_A_ADD1: '',
+        P_A_ADD2: '',
+        P_A_CITY: '',
+        P_A_STATE: '',
+        P_A_ZIP: '',
+        P_B_FNAME: '',
+        P_B_LNAME: '',
+        P_B_ROLE: '',
+        P_B_PHONE: '',
+        P_B_EMAIL: '',
+        P_B_ADD1: '',
+        P_B_ADD2: '',
+        P_B_CITY: '',
+        P_B_STATE: '',
+        P_B_ZIP: '',
+      },
+      SITE_INFO: {
+        SITE_PASSCODE: '',
+        SITE_PASSCODE_CONFIRMATION: '',
+        BG_IMAGE_ID: '',
+      },
+      PLANNING_LINKS: {
+        // ADMIN FORMS
+        DESIGN_URL: '',
+        WORLFLOW_URL: '',
+        MUSIC_URL: '',
+        GUEST_SERVE_URL: '',
+        CATERING_URL: '',
+        CONTRACT_URL: '',
+        // EXTERNAL LINKS
+        ADDRESS_URL: '',
+        BUDGET_URL: '',
+        DESIGN_BOARD_URL: '',
+        CLIENT_DOCS_URL: '',
+        VENDOR_PROPOSALS_URL: '',
+        VENDOR_CONTACT_URL: '',
+        GUEST_INFO_URL: '',
+        CALENDAR_URL: '',
+      },
+      PUBLIC_LINKS: {
+        WEBSITE_URL: '',
+        FACEBOOK_URL: '',
+        REGISTRY_URL: '',
+        INSTAGRAM_URL: '',
+        PINTEREST_URL: '',
+        TWITTER_URL: '',
+      },
+    },
+  });
+
   const plannerData = async () => {
     let { data, error } = await supabase
       .from('users')
@@ -220,80 +301,6 @@ const Page = (props: Props) => {
     // your code here
     console.log('errors: ', errors);
   };
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    shouldUnregister: false,
-    defaultValues: {
-      ADMIN_INFO: {
-        PLANNER: editClientData?.plannerName || '',
-        AMMEND: '',
-        ARCHIVED: false,
-      },
-      EVENT_DETAILS: {
-        DATE: '',
-        WED_MONTH: '',
-        WED_DAY: '',
-        WED_YEAR: '',
-        VENUE_NAME: '',
-        VENUE_CITY: '',
-        VENUE_STATE: '',
-        GUEST_RANGE_START: '',
-        GUEST_RANGE_END: '',
-      },
-      PEOPLE: {
-        P_A_FNAME: '',
-        P_A_LNAME: '',
-        P_A_ROLE: '',
-        P_A_PHONE: '',
-        P_A_EMAIL: '',
-        P_A_ADD1: '',
-        P_A_ADD2: '',
-        P_A_CITY: '',
-        P_A_STATE: '',
-        P_A_ZIP: '',
-        P_B_FNAME: '',
-        P_B_LNAME: '',
-        P_B_ROLE: '',
-        P_B_PHONE: '',
-        P_B_EMAIL: '',
-        P_B_ADD1: '',
-        P_B_ADD2: '',
-        P_B_CITY: '',
-        P_B_STATE: '',
-        P_B_ZIP: '',
-      },
-      SITE_INFO: {
-        SITE_PASSCODE: '',
-        SITE_PASSCODE_CONFIRMATION: '',
-        BG_IMAGE_ID: '',
-      },
-      PLANNING_LINKS: {
-        ADDRESS_URL: '',
-        // WORKFLOW_URL: '',
-        BUDGET_URL: '',
-        DESIGN_BOARD_URL: '',
-        CLIENT_DOCS_URL: '',
-        VENDOR_PROPOSALS_URL: '',
-        VENDOR_CONTRACT_URL: '',
-        GUEST_INFO_URL: '',
-        CALENDAR_URL: '',
-      },
-      PUBLIC_LINKS: {
-        WEBSITE_URL: '',
-        FACEBOOK_URL: '',
-        REGISTRY_URL: '',
-        INSTAGRAM_URL: '',
-        PINTEREST_URL: '',
-        TWITTER_URL: '',
-      },
-    },
-  });
 
   return (
     <main className="newContainer">
@@ -1067,7 +1074,7 @@ const Page = (props: Props) => {
                           'DESIGN_BOARD',
                           'CLIENT_DOCS',
                           'VENDOR_PROPOSALS',
-                          'VENDOR_CONTRACT',
+                          'VENDOR_CONTACT',
                           'GUEST_INFO',
                           'CALENDAR',
                         ].map((title, id) => (

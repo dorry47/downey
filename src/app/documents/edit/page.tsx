@@ -5,6 +5,7 @@ import { useClient } from '../../../../lib/useClient';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Link from 'next/link';
 
 type Props = {};
 
@@ -13,7 +14,8 @@ const Page = () => {
   const [documents, setDocument] = React.useState<any>([]);
   const params = useSearchParams();
 
-  const urlParameter = params.get('edit');
+  const urlParameter = params.get('edit') || null;
+  console.log('urlParameter', urlParameter);
 
   const [questionCount, setQuestionCount] = React.useState([
     {
@@ -99,7 +101,9 @@ const Page = () => {
   };
 
   const onSubmit = (data: any) => {
-    data.urlParameter = urlParameter;
+    if (urlParameter) {
+      data.urlParameter = urlParameter;
+    }
     console.log('data', data);
 
     const positionsAreUnique = checkPositionsAreUnique(data);
@@ -119,10 +123,10 @@ const Page = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          urlParameter: urlParameter,
+          ...data,
           title: data.title,
           questions: sanitizedQuestions,
-          status: 'Published',
+          status: data.status,
         }),
       })
         .then((response) => response.json())
@@ -282,7 +286,7 @@ const Page = () => {
                         </section>
                       ))}
 
-                      <div className="md:mx-0 print:hidden justify-left flex gap-2 py-3 mx-4 text-right">
+                      <div className="md:mx-0 print:hidden flex justify-center gap-2 py-3 mx-4 mb-6 text-right">
                         <button
                           type="button"
                           onClick={() =>
@@ -302,25 +306,44 @@ const Page = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            setQuestionCount(
-                              questionCount.slice(0, questionCount.length - 1)
-                            );
-                            //  delete question from form data array
-                            setValue(
-                              `questions.${questionCount.length - 1}`,
-                              // @ts-ignore
-                              null
-                            );
+                            if (questionCount.length === 1) {
+                              return toast.error(
+                                'You must have at least one question'
+                              );
+                            } else {
+                              //  delete question from form data array
+                              setValue(
+                                `questions.${questionCount.length - 1}`,
+                                // @ts-ignore
+                                null
+                              );
+                              setQuestionCount(
+                                questionCount.slice(0, questionCount.length - 1)
+                              );
+                            }
                           }}
                           className="md:py-2 bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 text-xs font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
-                          Delete Last Question
+                          Delete Question
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="md:mx-0 print:hidden flex justify-end gap-2 py-3 mx-4 text-right">
+                <div className="md:mx-0 print:hidden flex justify-between gap-2 py-3 mx-4 text-right">
+                  <div className=" flex gap-2">
+                    <Link
+                      className="md:py-2 bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 text-xs font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer"
+                      href="/documents">
+                      Back
+                    </Link>
+
+                    <Link
+                      className="md:py-2 bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 text-xs font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer"
+                      href={`/documents/${urlParameter}`}>
+                      View
+                    </Link>
+                  </div>
                   <button
                     type="submit"
                     name="commit"
@@ -334,9 +357,6 @@ const Page = () => {
             </div>
           </div>
         </form>
-
-        <a href="/questionnaires/77">Show</a>
-        <a href="/questionnaires">Back</a>
       </section>
 
       {submitted && (

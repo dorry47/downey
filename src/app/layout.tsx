@@ -34,14 +34,6 @@ export default function RootLayout({
     setScreenHeight(window.innerHeight - footerHeight);
   }, []);
 
-  // if localstorage session is empty then redirect to login page
-  if (typeof window !== 'undefined') {
-    const session = JSON.parse(localStorage.getItem('session') as string);
-    if (!session) {
-      router.push('/');
-    }
-  }
-
   return (
     <StateProvider>
       <QueryClientProvider client={queryClient}>

@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import React from 'react';
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
     slug: string;
     projectID: number;
   };
+  setDeletedItem: (deletedItem: boolean) => void;
 };
 
 const AllClientsRow = (props: Props) => {
@@ -21,6 +23,7 @@ const AllClientsRow = (props: Props) => {
     });
     const data = await res.json();
     console.log('deleted', data);
+    props.setDeletedItem(true);
   };
   return (
     <div className=" grid grid-cols-5 gap-1">
@@ -33,22 +36,22 @@ const AllClientsRow = (props: Props) => {
 
       <div className="grid grid-cols-3 gap-1 my-auto">
         <p className="flex justify-center font-sans text-left">
-          <a href={`/clients/${slug}`}>
+          <Link href={`/clients/${slug}`}>
             <button
               type="button"
               className="bg-[rgba(217,216,214)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-2 py-1 text-sm font-normal text-black border border-transparent rounded-md shadow-sm">
               View
             </button>
-          </a>{' '}
+          </Link>{' '}
         </p>
         <p className="flex justify-center font-sans text-left">
-          <a href={`/clients/new?edit=${slug}`}>
+          <Link href={`/clients/new?edit=${slug}`}>
             <button
               type="button"
               className="bg-[rgba(217,216,214)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-1 py-1 text-sm font-normal text-black border border-transparent rounded-md shadow-sm">
               Edit
             </button>
-          </a>{' '}
+          </Link>{' '}
         </p>
         <p className="flex justify-center font-sans text-left">
           <button

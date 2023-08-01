@@ -5,6 +5,7 @@ import { useClient } from '../../../lib/useClient';
 import { useStateContext } from '../../../context/StateContext';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 type Props = {};
 
@@ -117,11 +118,11 @@ const Page = (props: Props) => {
               </h2>
               <p className="mt-2 text-sm text-center text-gray-600">
                 or{' '}
-                <a
+                <Link
                   href="https://downeystreetevents.com"
                   className="text-[#d98e48] hover:text-black hover:bg-transparent font-medium bg-transparent">
                   return to Downey Street Events website
-                </a>
+                </Link>
               </p>
             </div>
             <form action="/login" onSubmit={handleSubmit(onSubmit, onError)}>

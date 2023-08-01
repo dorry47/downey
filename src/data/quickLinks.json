@@ -56,7 +56,7 @@
     "active": false
   },
   {
-    "titleKey": "CONTACTS_URL",
+    "titleKey": "CONTRACT_URL",
     "title": "Contract",
     "subtitle": "quick link",
     "imageSrc": "/images/contract-icon.jpg",
@@ -64,7 +64,7 @@
     "active": false
   },
   {
-    "titleKey": "VENDOR_CONTRACT_URL",
+    "titleKey": "VENDOR_CONTACT_URL",
     "title": "Vendor Contact + Payment Log",
     "subtitle": "",
     "imageSrc": "/images/vendor-payment-icon.jpg",
@@ -80,7 +80,7 @@
     "active": false
   },
   {
-    "titleKey": "DESIGN_BOARD_URL",
+    "titleKey": "DESIGN_URL",
     "title": "Design",
     "subtitle": "",
     "imageSrc": "/images/design-icon.jpg",
@@ -88,7 +88,7 @@
     "active": false
   },
   {
-    "titleKey": "GUEST_INFO_URL",
+    "titleKey": "GUEST_SERVE_URL",
     "title": "Guest Services",
     "subtitle": "",
     "imageSrc": "/images/guest-services-icon.jpg",
