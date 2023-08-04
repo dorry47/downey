@@ -17,10 +17,16 @@ interface Event {
 interface Planner {
   planner: string;
   events: Event[];
+  plannerEmail: string;
 }
 
 interface LoggedInPlanner {
   name: string;
+  email: string;
+  phone: string;
+  address: string;
+  archived: boolean;
+  role: string;
 }
 
 export default function Page() {
@@ -37,7 +43,7 @@ export default function Page() {
     let { data, error } = await supabase
       .from('new_client')
       .select(
-        'plannerName, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_B_FNAME, EVENT_DETAILS->>WED_MONTH, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR, ADMIN_INFO->>ARCHIVED'
+        'plannerName, plannerEmail, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_B_FNAME, EVENT_DETAILS->>WED_MONTH, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR, ADMIN_INFO->>ARCHIVED'
       );
     if (error) {
       console.log(error);
@@ -54,9 +60,21 @@ export default function Page() {
     console.log('saved session', session);
     if (session) {
       setState({ ...state, session, user });
-      setIsLoading(false);
     }
-  }, []);
+  }, [window.location.href]);
+
+  useEffect(() => {
+    console.log('loggedInPlanner', loggedInPlanner);
+    if (loggedInPlanner && loggedInPlanner.role == 'planner') {
+      setIsLoading(false);
+    } else if (loggedInPlanner && loggedInPlanner.role == 'client') {
+      // replace "Luna + Sergio" with "Luna-Sergio"
+      window.location.href = `/clients/${loggedInPlanner?.name.replace(
+        ' + ',
+        '-'
+      )}`;
+    }
+  }, [loggedInPlanner]);
 
   // router.refresh();
 
@@ -65,11 +83,7 @@ export default function Page() {
 
     if (state.user !== null) {
       const loggedInUser = async () =>
-        await supabase
-          .from('users')
-          .select('*')
-          .eq('role', 'planner')
-          .eq('email', state.user.email);
+        await supabase.from('users').select('*').eq('email', state.user.email);
 
       loggedInUser().then((data: any) => {
         console.log('logfed in data', data.data[0]);
@@ -87,6 +101,7 @@ export default function Page() {
 
           return {
             planner: client.plannerName.trim(),
+            plannerEmail: client.plannerEmail,
             events: [
               {
                 names: [client.P_A_FNAME, client.P_B_FNAME],
@@ -168,7 +183,7 @@ export default function Page() {
                     clientData
                       .filter(
                         (planner: Planner) =>
-                          planner.planner == loggedInPlanner?.name
+                          planner.plannerEmail == loggedInPlanner?.email
                       )
                       .flatMap((planner: Planner) => planner.events)
                       .map((event: Event, id: number) => (
@@ -200,7 +215,7 @@ export default function Page() {
                 clientData
                   .filter(
                     (planner: Planner) =>
-                      planner.planner !== loggedInPlanner?.name
+                      planner.plannerEmail !== loggedInPlanner?.email
                   )
                   .map((list: Planner, id: number) => (
                     <div

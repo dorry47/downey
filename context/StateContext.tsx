@@ -4,11 +4,13 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 const initialState: StateType = {
   session: null,
   user: null,
+  showMobileMenu: false,
 };
 
 type StateType = {
   session: any;
   user: any;
+  showMobileMenu: boolean;
 };
 
 type StateContextType = {

@@ -1,10 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { useRouter } from 'next/navigation';
 import { useStateContext } from '../../context/StateContext';
-import { useClient } from '../../lib/useClient';
 import Link from 'next/link';
+import { useClient } from '../../lib/useClient';
 
 type Props = {};
 
@@ -18,7 +18,6 @@ const Page = (props: Props) => {
   useEffect(() => {
     const { data: authListener } =
       supabase.auth.onAuthStateChange(handleAuthChange);
-
     // Simulate a delay for the loading animation
     const timer = setTimeout(() => {
       setLoading(false);
@@ -32,6 +31,7 @@ const Page = (props: Props) => {
 
   const handleAuthChange = async (event: any, session: any) => {
     if (event === 'SIGNED_IN' && session !== null) {
+      console.log('session', event);
       localStorage.setItem('session', JSON.stringify(session));
       localStorage.setItem('user', JSON.stringify(session.user));
       setState({
@@ -39,9 +39,10 @@ const Page = (props: Props) => {
         session,
         user: session.user,
       });
+
       window.location.href = '/Homepage';
     } else {
-      router.push('/');
+      console.log('no session');
     }
   };
 

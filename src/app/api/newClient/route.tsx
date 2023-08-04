@@ -61,8 +61,7 @@ export async function POST(req: Request) {
           role: 'client',
         },
       ])
-      .eq('email', email)
-      .eq('role', 'client');
+      .eq('email', email);
     if (error) return NextResponse.json({ error: error.message });
   }
 
