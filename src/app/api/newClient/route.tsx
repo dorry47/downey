@@ -11,6 +11,15 @@ export async function POST(req: Request) {
   const supabase = useClient();
 
   if (!urlSlug) {
+    const { data: res, error: inviteError } =
+      await supabase.auth.admin.inviteUserByEmail(
+        data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+        {
+          data: { role: 'client' },
+          redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
+        }
+      );
+
     const { error } = await supabase.from('new_client').insert([
       {
         ...data,
@@ -52,8 +61,7 @@ export async function POST(req: Request) {
           role: 'client',
         },
       ])
-      .eq('email', email)
-      .eq('role', 'client');
+      .eq('email', email);
     if (error) return NextResponse.json({ error: error.message });
   }
 

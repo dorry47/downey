@@ -1,8 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { useRouter } from 'next/navigation';
 import { useStateContext } from '../../context/StateContext';
+import Link from 'next/link';
 import { useClient } from '../../lib/useClient';
 
 type Props = {};
@@ -17,7 +18,6 @@ const Page = (props: Props) => {
   useEffect(() => {
     const { data: authListener } =
       supabase.auth.onAuthStateChange(handleAuthChange);
-
     // Simulate a delay for the loading animation
     const timer = setTimeout(() => {
       setLoading(false);
@@ -31,6 +31,7 @@ const Page = (props: Props) => {
 
   const handleAuthChange = async (event: any, session: any) => {
     if (event === 'SIGNED_IN' && session !== null) {
+      console.log('session', event);
       localStorage.setItem('session', JSON.stringify(session));
       localStorage.setItem('user', JSON.stringify(session.user));
       setState({
@@ -38,9 +39,10 @@ const Page = (props: Props) => {
         session,
         user: session.user,
       });
-      router.push('/Homepage');
+
+      window.location.href = '/Homepage';
     } else {
-      router.push('/');
+      console.log('no session');
     }
   };
 
@@ -75,11 +77,11 @@ const Page = (props: Props) => {
               </h2>
               <p className="mt-2 text-sm text-center text-gray-600">
                 or{' '}
-                <a
+                <Link
                   href="https://downeystreetevents.com"
                   className="text-[#d98e48] hover:text-black hover:bg-transparent font-medium bg-transparent">
                   return to Downey Street Events website
-                </a>
+                </Link>
               </p>
             </div>
             <Auth

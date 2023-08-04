@@ -3,11 +3,12 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   const data = await req.json();
-  const documentID = data?.urlParameter;
+  const documentID = data.urlParameter;
 
   const supabase = useClient();
 
-  if (!documentID) {
+  if (documentID == undefined) {
+    console.log('no documentID');
     const { error } = await supabase.from('documents').insert([
       {
         ...data,
@@ -21,7 +22,6 @@ export async function POST(req: Request) {
       .update([
         {
           ...data,
-          urlParameter: undefined,
         },
       ])
       .eq('id', documentID);

@@ -68,8 +68,18 @@ export default function Page(props: Props) {
         <p>
           <strong>Archived:</strong> {plannerData?.archived ? 'true' : 'false'}
         </p>
-        <Link href={`/planners/edit/${plannerSlug}`}>Edit</Link> |{' '}
-        <Link href="/planners">Back</Link>
+        <div className=" flex gap-4 my-2">
+          <Link href="/planners">
+            <button className="bg-[rgba(219,96,53)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-4 py-2 text-sm font-normal text-white border border-transparent rounded-md shadow-sm">
+              Back
+            </button>
+          </Link>{' '}
+          <Link href={`/planners/edit/${plannerSlug}`}>
+            <button className="bg-[rgba(219,96,53)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-4 py-2 text-sm font-normal text-white border border-transparent rounded-md shadow-sm">
+              Edit
+            </button>
+          </Link>
+        </div>
       </section>
     </>
   );

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 type Props = {
@@ -13,7 +14,7 @@ const QuickLinks = (props: Props) => {
 
   return (
     <div className={`col-span-1 mb-4 ${!active ? 'visible' : 'hidden'}`}>
-      <a href={href}>
+      <Link href={href}>
         <img className="md:w-11/12 w-10/12 mx-auto" src={imageSrc}></img>
         <h4 className="text-xxs sm:text-xxs tracking-extrawide pt-4 font-normal text-black uppercase">
           {subtitle}
@@ -21,7 +22,7 @@ const QuickLinks = (props: Props) => {
         <h2 className="text-black hover:text-[rgba(217,142,72)] font-display font-normal uppercase text-xs sm:text-base leading-4 tracking-extrawide lining-nums ">
           {title}
         </h2>
-      </a>
+      </Link>
     </div>
   );
 };

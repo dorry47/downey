@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import AllClientsRow from '../../../../components/AllClientsRow';
 import Link from 'next/link';
 import { useClient } from '../../../../lib/useClient';
@@ -21,6 +21,7 @@ const Page = (props: Props) => {
   const [clientData, setClientData] = useState<ClientData[]>([]);
   const supabase = useClient();
   const { state, setState } = useStateContext();
+  const [deletedItem, setDeletedItem] = useState<any>(false);
 
   const fetchClientData = async () => {
     let { data, error } = await supabase.from('new_client').select('*');
@@ -43,6 +44,17 @@ const Page = (props: Props) => {
       setState({ ...state, session, user });
     }
   }, []);
+
+  useEffect(() => {
+    fetchClientData()
+      .then((data: any) => {
+        console.log(data);
+        setClientData(data);
+      })
+      .then(() => {
+        setDeletedItem(false);
+      });
+  }, [deletedItem]);
 
   return (
     <>
@@ -73,6 +85,7 @@ const Page = (props: Props) => {
                 <AllClientsRow
                   key={id}
                   planner={client.plannerName}
+                  setDeletedItem={setDeletedItem}
                   event={{
                     names: names,
                     slug: client.SLUG,
