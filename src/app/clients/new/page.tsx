@@ -364,8 +364,8 @@ const Page = (props: Props) => {
             <div className="md:items-center md:pb-16 md:pt-20 flex justify-center gap-6 py-8 mx-auto text-center">
               <div className=" md:py-16 md:mx-8 border-dse-peach bg-dse-peach md:bg-opacity-0 py-8 bg-opacity-50 border border-solid">
                 <h1 className="font-display text-small md:text-3xl font-normal leading-tight tracking-widest uppercase">
-                  Welcome to Downey Street Events!<br></br>We're so excited to
-                  start planning your big day.
+                  Welcome to Downey Street Events!<br></br>We&apos;re so excited
+                  to start planning your big day.
                 </h1>
                 <h2 className="font-display md:text-base tracking-extrawide lining-nums pt-4 pb-4 text-xs font-normal leading-tight uppercase">
                   To get started, please complete the information below
