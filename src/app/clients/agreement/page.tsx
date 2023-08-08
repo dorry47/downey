@@ -1,8 +1,80 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
+import { useClient } from '../../../../lib/useClient';
+import { useSearchParams } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDropzone } from 'react-dropzone';
+
+import { Document, Page } from 'react-pdf';
+
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 type Props = {};
 
-const Page = (props: Props) => {
+interface ClientData {
+  id: number;
+  P_A_FNAME: string;
+  P_A_LNAME: string;
+  P_B_FNAME: string;
+  P_B_LNAME: string;
+  AMMEND: string;
+  plannerName: string;
+  SLUG: string;
+}
+
+const Page1 = (props: Props) => {
+  const [clientData, setClientData] = useState<ClientData[]>([]);
+  const params = useSearchParams();
+  const clientSlug = params.get('edit');
+  const partner1Name =
+    clientData[0]?.P_A_FNAME + ' ' + clientData[0]?.P_A_LNAME;
+
+  const partner2Name =
+    clientData[0]?.P_B_FNAME + ' ' + clientData[0]?.P_B_LNAME;
+
+  const supabase = useClient();
+
+  const [numPages, setNumPages] = useState<number>();
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [fileUrl, setFileUrl] = useState(null);
+
+  const onDrop = async (acceptedFiles: any) => {
+    console.log(acceptedFiles);
+    // setFileUrl(acceptedFiles[0].path);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
+
+  const fetchEventData = async () => {
+    let { data, error } = await supabase
+      .from('new_client')
+      // take the client slug and look for it in the database
+      .select(
+        `plannerName, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_A_LNAME, 
+        PEOPLE->>P_B_FNAME, PEOPLE->>P_B_LNAME, ADMIN_INFO->>AMMEND`
+      )
+      .eq('SLUG', clientSlug);
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('client data', data);
+      return data;
+    }
+  };
+
+  React.useEffect(() => {
+    fetchEventData().then((data: any) => {
+      setClientData(data);
+    });
+  }, []);
+
   return (
     <main>
       <header
@@ -174,15 +246,95 @@ const Page = (props: Props) => {
 
                       <h2>Amendments</h2>
                       <div className="group unit1of1 agreement-holder">
-                        <p>No contract amendments</p>
+                        <p>{clientData[0]?.AMMEND || 'No ammendments.'}</p>
                       </div>
-                      <div className="bg-dse-peach py-16 mt-4 mb-10 text-center text-black">
-                        <h3 className="text-10px tracking-widewide block mb-2 font-sans font-normal uppercase">
-                          Agreement Accepted
-                        </h3>
-                        <h4 className="mt-1 font-serif text-base tracking-wider">
-                          by John Meany and Lauren Marshall on April 06, 2023
-                        </h4>
+
+                      <h2>Additional Contract Details</h2>
+                      {/* I want to include a PDF file viewer */}
+
+                      <div>
+                        <div {...getRootProps()}>
+                          <input {...getInputProps()} />
+                          <p>
+                            Drag 'n' drop some files here, or click to select
+                            files
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <Document
+                          className={`w-full border-2 p-4 flex flex-col border-[#eed9d4]`}
+                          onItemClick={(item) => console.log(item)}
+                          file={fileUrl}
+                          onLoadSuccess={onDocumentLoadSuccess}>
+                          <Page
+                            className="m-auto"
+                            height={500}
+                            renderAnnotationLayer={false}
+                            renderTextLayer={false}
+                            pageNumber={pageNumber}
+                          />
+                          <div className="flex justify-center gap-4 mt-2">
+                            <button
+                              type="button"
+                              className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
+                              onClick={() => {
+                                if (pageNumber == 1) {
+                                  toast.error('You are on the first page.');
+                                } else {
+                                  setPageNumber(pageNumber - 1);
+                                }
+                              }}>
+                              Back
+                            </button>
+                            <button
+                              type="button"
+                              className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
+                              onClick={() => {
+                                if (pageNumber == numPages) {
+                                  toast.error('You are on the last page.');
+                                } else {
+                                  setPageNumber(pageNumber + 1);
+                                }
+                              }}>
+                              Next
+                            </button>
+                          </div>
+                        </Document>
+                        <p>
+                          Page {pageNumber} of {numPages}
+                        </p>{' '}
+                        <ToastContainer
+                          position="bottom-right"
+                          autoClose={5000}
+                          hideProgressBar={false}
+                          newestOnTop={false}
+                          closeOnClick
+                          rtl={false}
+                          pauseOnFocusLoss
+                          draggable
+                          pauseOnHover
+                          theme="light"
+                        />
+                      </div>
+
+                      <div className="flex items-start col-span-1">
+                        <div className="flex items-center h-5">
+                          <input
+                            className=" text-dse-gold border-dse-gold w-4 h-4 font-serif text-sm rounded"
+                            type="checkbox"
+                            name="project[agreement_agree]"
+                            id="project_agreement_agree"
+                          />
+                        </div>
+                        <div className="ml-3 text-sm">
+                          <label
+                            className="pt-0.5 uppercase text-[12px] tracking-widewide font-normal font-sans"
+                            htmlFor="project_agreement_agree">
+                            We, {partner1Name} and {partner2Name}, accept the
+                            terms &amp; conditions as listed above.
+                          </label>
+                        </div>
                       </div>
                     </div>
                     <div className=" py-3 text-right">
@@ -204,4 +356,4 @@ const Page = (props: Props) => {
   );
 };
 
-export default Page;
+export default Page1;
