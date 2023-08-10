@@ -1,10 +1,11 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useClient } from '../../../../lib/useClient';
 import { useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDropzone } from 'react-dropzone';
+import Dropzone from '../../../../components/Dropzone';
 
 import { Document, Page } from 'react-pdf';
 
@@ -42,9 +43,24 @@ const Page1 = (props: Props) => {
   const [fileUrl, setFileUrl] = useState(null);
 
   const onDrop = async (acceptedFiles: any) => {
-    console.log(acceptedFiles);
-    // setFileUrl(acceptedFiles[0].path);
+    console.log(acceptedFiles[0]);
+    setFileUrl(acceptedFiles[0].path);
   };
+
+  const onFileDrop = useCallback((acceptedFiles: any) => {
+    acceptedFiles.forEach((file: any) => {
+      const reader = new FileReader();
+
+      reader.onabort = () => console.log('file reading was aborted');
+      reader.onerror = () => console.log('file reading has failed');
+      reader.onload = () => {
+        // Do whatever you want with the file contents
+        const binaryStr = reader.result;
+        console.log(binaryStr);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }, []);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -96,14 +112,8 @@ const Page1 = (props: Props) => {
       </header>
 
       <section className="max-w-7xl sm:px-6 lg:px-8 pb-40 mx-auto">
-        <form
-          action="/233/update?ref=agreement"
-          accept-charset="UTF-8"
-          method="post">
-          <div
-            className="sm:mt-0 mt-10"
-            data-controller="project"
-            data-project-image-selected-className="border-dse-peach">
+        <form action="/233/update?ref=agreement" method="post">
+          <div className="sm:mt-0 mt-10">
             <div className="md:grid md:grid-cols-3 md:gap-6">
               <div className="md:col-span-1">
                 <div className="md:px-0 px-4">
@@ -253,19 +263,20 @@ const Page1 = (props: Props) => {
                       {/* I want to include a PDF file viewer */}
 
                       <div>
-                        <div {...getRootProps()}>
+                        <Dropzone setFileUrl={setFileUrl} />
+                        {/* <div {...getRootProps()}>
                           <input {...getInputProps()} />
                           <p>
                             Drag 'n' drop some files here, or click to select
                             files
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                       <div>
                         <Document
                           className={`w-full border-2 p-4 flex flex-col border-[#eed9d4]`}
                           onItemClick={(item) => console.log(item)}
-                          file={fileUrl}
+                          file={`/${fileUrl}`}
                           onLoadSuccess={onDocumentLoadSuccess}>
                           <Page
                             className="m-auto"

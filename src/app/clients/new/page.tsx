@@ -1,6 +1,6 @@
 'use client';
 import React, { use, useEffect } from 'react';
-import { set, useForm } from 'react-hook-form';
+import { set, useController, useForm } from 'react-hook-form';
 // import planners from '../../../data/planners.json';
 import {
   days,
@@ -47,6 +47,7 @@ const Page = (props: Props) => {
     register,
     handleSubmit,
     reset,
+    control,
     setValue,
     formState: { errors },
   } = useForm({
@@ -122,6 +123,12 @@ const Page = (props: Props) => {
         TWITTER_URL: '',
       },
     },
+  });
+
+  const { field: archivedField } = useController({
+    name: 'ADMIN_INFO.ARCHIVED',
+    control,
+    defaultValue: false, // Initial value for the checkbox
   });
 
   const plannerData = async () => {
@@ -273,6 +280,8 @@ const Page = (props: Props) => {
 
     data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
     data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
+
+    console.log('data', data);
 
     try {
       const response = await fetch('/api/newClient', {
@@ -466,10 +475,15 @@ const Page = (props: Props) => {
                         <div className="sm:col-span-4 flex items-start col-span-6">
                           <div className="flex items-center h-5">
                             <input
-                              {...register('ADMIN_INFO.ARCHIVED')}
+                              {...archivedField}
                               id="ARCHIVED"
                               name="ARCHIVED"
                               type="checkbox"
+                              checked={archivedField.value}
+                              onChange={archivedField.onChange}
+                              onBlur={archivedField.onBlur}
+                              value="true"
+                              ref={archivedField.ref}
                               className="focus:ring-transparent text-dse-orange w-4 h-4 border-gray-300 rounded"
                             />
                           </div>

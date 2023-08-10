@@ -8,13 +8,16 @@ type Props = {
     names: string;
     slug: string;
     projectID: number;
+    archived: string;
   };
   setDeletedItem: (deletedItem: boolean) => void;
 };
 
 const AllClientsRow = (props: Props) => {
-  const { names, slug, projectID } = props.event;
+  const { names, slug, projectID, archived } = props.event;
   const { planner } = props;
+
+  console.log('props', props);
 
   const handleDelete = async () => {
     const res = await fetch(`/api/deleteClient`, {
@@ -26,12 +29,15 @@ const AllClientsRow = (props: Props) => {
     props.setDeletedItem(true);
   };
   return (
-    <div className=" grid grid-cols-5 gap-1">
+    <div className="grid grid-cols-6 gap-1">
       <p className="py-4 font-serif text-base text-left">{planner}</p>
       <p className="py-4 font-serif text-base text-left">{names}</p>
       <p className="py-4 font-serif text-base text-left">{slug}</p>
-      <p className=" py-4 overflow-auto font-serif text-base text-left">
+      <p className="py-4 font-serif text-base text-left">
         {projectID.toString().slice(0, 8)}
+      </p>
+      <p className="capitalize py-4 font-serif text-base text-left">
+        {archived.toString()}
       </p>
 
       <div className="grid grid-cols-3 gap-1 my-auto">
