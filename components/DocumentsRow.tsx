@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 type Props = {
@@ -13,6 +14,8 @@ type Props = {
 const DocumentsRow = (props: Props) => {
   const { title, status, id } = props.document;
 
+  const router = useRouter();
+
   const handleDelete = async () => {
     const res = await fetch(`/api/deleteDocument`, {
       method: 'DELETE',
@@ -20,6 +23,7 @@ const DocumentsRow = (props: Props) => {
     });
     const data = await res.json();
     console.log('deleted', data);
+    window.location.reload();
   };
   return (
     <div className="grid grid-cols-4 gap-1">
