@@ -73,7 +73,10 @@ function Previews({ setFileUrl }) {
             'w-full border-2 border-[#eaeaea] cursor-pointer p-4 text-center text-[#737373]',
         })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some PDF files here, or click to select files</p>
+        <p>
+          Drag &lsquo;n&lsquo; drop some PDF files here, or click to select
+          files
+        </p>
       </div>
       {/* <aside
         className="border-2 border-[#eaeaea] h-fit"
