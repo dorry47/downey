@@ -15,6 +15,8 @@ const Page = (props: Props) => {
   const [clientData, setClientData] = React.useState<any>([]);
   const [allAnswers, setAllAnswers] = React.useState<any>([]);
 
+  const router = useRouter();
+
   const supabase = useClient();
 
   const documentID = pathName.split('/documents/')[1];
@@ -51,11 +53,7 @@ const Page = (props: Props) => {
     }
   };
 
-  // i want to be able to search through allAnswers and find the title that matches the documentTitle and then set the value of the questions to those provided in data on submit
   const searchJSON = (newValues: any) => {
-    // check allAnswers for the title that matches the documentTitle
-    // if it matches, set the value of the questions to the newValues
-    // if it doesn't match, return false
     const found = allAnswers.some((answer: any) => {
       if (answer.title === documentTitle) {
         console.log('found answer', answer);
@@ -106,6 +104,11 @@ const Page = (props: Props) => {
       } else {
         toast.success('Successfully saved your answers!');
 
+        // delay by three seconds and then router.back();
+        setTimeout(() => {
+          router.back();
+        }, 2500);
+
         console.log('success', data);
       }
     }
@@ -138,12 +141,18 @@ const Page = (props: Props) => {
     }
   };
   useEffect(() => {
-    fetchDocumentData().then((data: any) => {
-      setDocumentData(data[0]);
-    });
-    fetchAllAnswers().then((data: any) => {
-      setAllAnswers(data[0]?.Q_ANSWERS);
-    });
+    if (clientSlug) {
+      fetchDocumentData().then((data: any) => {
+        setDocumentData(data[0]);
+      });
+      fetchAllAnswers().then((data: any) => {
+        if (!data[0]?.Q_ANSWERS) {
+          data[0].Q_ANSWERS = [];
+        } else {
+          setAllAnswers(data[0]?.Q_ANSWERS);
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -159,9 +168,6 @@ const Page = (props: Props) => {
   useEffect(() => {
     console.log('client data', clientData);
 
-    // search through clientData for the title that matches the documentTitle
-    // if it matches, set the value of the questions to the newValues
-    // if it doesn't match, return false
     clientData?.Q_ANSWERS?.some((answer: any) => {
       if (answer.title === documentTitle) {
         console.log('found answer', answer);
@@ -205,7 +211,7 @@ const Page = (props: Props) => {
                             return (
                               <section key={id} className="flex flex-col">
                                 <div className="col-span-6 mb-3">
-                                  <h4 className="md:w-5/6 block pb-1 font-sans text-xs font-normal tracking-widest uppercase">
+                                  <h4 className="md:w-5/6 block pb-1 font-sans text-[11px] leading-5 font-normal tracking-widest uppercase">
                                     {question?.prompt}
                                   </h4>
 
@@ -219,7 +225,7 @@ const Page = (props: Props) => {
                                   <textarea
                                     {...register(`questions.${id}.answer`)}
                                     className=" focus:border-dse-orange border-dse-peach block w-full my-1 mb-2 font-serif text-sm"
-                                    id="prompt"></textarea>
+                                    id="answer"></textarea>
                                 </div>
                               </section>
                             );

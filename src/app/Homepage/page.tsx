@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 interface Event {
   names: string[];
   date: string;
-  active: boolean;
+  active: string;
   slug: string;
 }
 
@@ -178,7 +178,6 @@ export default function Page() {
                   </p>
                 </div>
                 <div className="md:col-span-3 md:grid-cols-3 md:px-0 grid grid-cols-1 col-span-2 gap-4 px-3">
-                  {/* for every planner inside clientData i want you to list the events */}
                   {clientData &&
                     clientData
                       .filter(
@@ -186,15 +185,21 @@ export default function Page() {
                           planner.plannerEmail == loggedInPlanner?.email
                       )
                       .flatMap((planner: Planner) => planner.events)
-                      .map((event: Event, id: number) => (
-                        <ClientBox
-                          key={id}
-                          names={event.names}
-                          date={event.date}
-                          active={event.active}
-                          slug={event.slug}
-                        />
-                      ))}
+                      .map((event: Event, id: number) => {
+                        if (event.active == 'true') {
+                          return null;
+                        } else {
+                          return (
+                            <ClientBox
+                              key={id}
+                              names={event.names}
+                              date={event.date}
+                              active={event.active}
+                              slug={event.slug}
+                            />
+                          );
+                        }
+                      })}
 
                   <Link href="/clients/new">
                     <div className="md:col-span-1 bg-[rgba(219,96,53)] md:py-6 py-3">
@@ -232,15 +237,21 @@ export default function Page() {
                         </h2>
                       </div>
                       {activeList[list.planner] &&
-                        list.events.map((event: Event, id: number) => (
-                          <ClientBox
-                            key={id}
-                            names={event.names}
-                            date={event.date}
-                            active={event.active}
-                            slug={event.slug}
-                          />
-                        ))}
+                        list.events.map((event: Event, id: number) => {
+                          if (event.active == 'true') {
+                            return null;
+                          } else {
+                            return (
+                              <ClientBox
+                                key={id}
+                                names={event.names}
+                                date={event.date}
+                                active={event.active}
+                                slug={event.slug}
+                              />
+                            );
+                          }
+                        })}
                       {activeList[list.planner] && (
                         <Link href="/clients/new">
                           <div className="md:col-span-1 bg-[rgba(219,96,53)] md:py-6 py-3">

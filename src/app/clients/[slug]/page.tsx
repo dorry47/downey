@@ -114,9 +114,7 @@ const Page = () => {
     fetchEventData().then((data: any) => {
       if (documents) {
         // Leads to editable forms
-        data[0].PLANNING_LINKS.CONTRACT_URL = `/documents/${
-          documents.find((document: any) => document.title == 'Contract').id
-        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.CONTRACT_URL = `/clients/agreement?edit=${data[0].SLUG}`;
         data[0].PLANNING_LINKS.CATERING_URL = `/documents/${
           documents?.find((document: any) => document.title == 'Catering')?.id
         }?edit=${data[0].SLUG}`;
@@ -130,9 +128,9 @@ const Page = () => {
         data[0].PLANNING_LINKS.DESIGN_URL = `/documents/${
           documents?.find((document: any) => document.title == 'Design')?.id
         }?edit=${data[0].SLUG}`;
-        data[0].PLANNING_LINKS.WORKFLOW_URL = `/documents/${
-          documents?.find((document: any) => document.title == 'Workflow')?.id
-        }?edit=${data[0].SLUG}`;
+        // data[0].PLANNING_LINKS.WORKFLOW_URL = `/documents/${
+        //   documents?.find((document: any) => document.title == 'Workflow')?.id
+        // }?edit=${data[0].SLUG}`;
         // Rest of the data captured from the backend call.
         setClientData(data[0] as ClientData);
         setIsLoading(false);

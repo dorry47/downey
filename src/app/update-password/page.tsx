@@ -1,5 +1,4 @@
 'use client';
-import { Auth } from '@supabase/auth-ui-react';
 import React, { use, useEffect, useState } from 'react';
 import { useClient } from '../../../lib/useClient';
 import { useStateContext } from '../../../context/StateContext';
@@ -12,6 +11,7 @@ type Props = {};
 const Page = (props: Props) => {
   const { state, setState } = useStateContext();
   const [submitted, setSubmitted] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
   const supabase = useClient();
 
   const router = useRouter();
@@ -54,10 +54,8 @@ const Page = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    // read the url parameters and get the value from email=
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('inviteEmail');
-  }, []);
+    console.log('logged in user', loggedInUser);
+  }, [loggedInUser]);
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('user') as string);
@@ -74,6 +72,15 @@ const Page = (props: Props) => {
   useEffect(() => {
     console.log('session', state.session);
     console.log('user', state.user);
+    if (state.session && state.user) {
+      const loggedInUser = async () =>
+        await supabase.from('users').select('*').eq('email', state.user.email);
+
+      loggedInUser().then((data: any) => {
+        console.log('logged in data', data.data[0]);
+        setLoggedInUser(data.data[0]);
+      });
+    }
   }, [state]);
 
   const onSubmit = async (data: Record<string, any>) => {
@@ -108,13 +115,33 @@ const Page = (props: Props) => {
   }, [submitted]);
 
   return (
-    <div className="bg-gray-50 sm:px-6 lg:px-8 flex justify-center min-h-screen px-4 py-4">
-      <div className="flex flex-col w-full max-w-md space-y-8">
+    <div className="bg-gray-50 sm:px-6 lg:px-8 flex w-full justify-center min-h-screen px-4 py-4">
+      <div className="flex flex-col w-full max-w-2xl space-y-8">
         {!submitted ? (
           <section>
+            {loggedInUser.role == 'client' && (
+              <div className="py-4 flex flex-col gap-4">
+                <h2 className="text-xl font-bold text-center">
+                  We are so thrilled to be working with you on what we are sure
+                  will be a truly spectacular day!
+                </h2>
+                <p className="text-sm">
+                  We’ve started compiling your planning materials in your custom
+                  planning site. To begin, we’d love for you to supply some
+                  initial contact information and review your contract
+                  agreement.
+                </p>
+                <p className="text-sm">
+                  Along the way, if you have any questions, please don’t
+                  hesitate to contact us. We’re happy to help! Thank you so
+                  much, and we look forward getting started!
+                </p>{' '}
+              </div>
+            )}
+
             <div>
               <h2 className="mt-6 text-2xl font-extrabold text-center text-gray-900">
-                Reset your password
+                Set your password
               </h2>
               <p className="mt-2 text-sm text-center text-gray-600">
                 or{' '}

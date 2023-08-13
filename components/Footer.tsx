@@ -28,9 +28,14 @@ const Footer = (props: Props) => {
           setLoggedInUser(data?.data[0]);
         });
     loggedInUser();
+
+    setLoggedInUser(loggedInUser);
+  }, [state]);
+
+  useEffect(() => {
     const slug = loggedInUser?.name;
     setPlannerSlug(slug?.replace(/\s+/g, '-').toLowerCase());
-  }, [state]);
+  }, [loggedInUser]);
 
   const handleSignOut = async () => {
     try {

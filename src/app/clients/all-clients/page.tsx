@@ -13,6 +13,9 @@ interface ClientData {
     P_A_FNAME: string;
     P_B_FNAME: string;
   };
+  ADMIN_INFO: {
+    ARCHIVED: string;
+  };
   plannerName: string;
   SLUG: string;
 }
@@ -67,14 +70,16 @@ const Page = (props: Props) => {
       </header>
       <section className="max-w-7xl sm:px-6 lg:px-8 mx-auto overflow-auto overflow-x-auto">
         <div className="w-[1200px] flex flex-col">
-          <div className=" grid grid-cols-5 gap-1">
-            {['PLANNER', 'COUPLE', 'URL', '	PROJECT ID'].map((title, id) => (
-              <h2
-                key={id}
-                className={` py-4 font-sans font-normal tracking-widest text-left uppercase`}>
-                {title}
-              </h2>
-            ))}
+          <div className=" grid grid-cols-6 gap-1">
+            {['PLANNER', 'COUPLE', 'URL', 'PROJECT ID', 'ARCHIVED'].map(
+              (title, id) => (
+                <h2
+                  key={id}
+                  className={` py-4 font-sans font-normal tracking-widest text-left uppercase`}>
+                  {title}
+                </h2>
+              )
+            )}
           </div>
 
           {clientData &&
@@ -90,6 +95,7 @@ const Page = (props: Props) => {
                     names: names,
                     slug: client.SLUG,
                     projectID: client.id,
+                    archived: client.ADMIN_INFO.ARCHIVED,
                   }}
                 />
               );
