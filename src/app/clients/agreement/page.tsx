@@ -1,17 +1,25 @@
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { use, useCallback, useEffect, useState } from 'react';
 import { useClient } from '../../../../lib/useClient';
 import { useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDropzone } from 'react-dropzone';
 import Dropzone from '../../../../components/Dropzone';
+import { Cedarville_Cursive } from 'next/font/google';
 
 import { Document, Page } from 'react-pdf';
 
 import { pdfjs } from 'react-pdf';
+import { set, useForm } from 'react-hook-form';
+import { useStateContext } from '../../../../context/StateContext';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
+const cursive = Cedarville_Cursive({
+  weight: '400',
+  display: 'swap',
+  subsets: ['latin'],
+});
 
 type Props = {};
 
@@ -24,10 +32,18 @@ interface ClientData {
   AMMEND: string;
   plannerName: string;
   SLUG: string;
+  CONTRACT: {
+    data: {
+      additionalContract: string;
+      agreement_checkbox: string;
+      agreement_signature: string;
+    };
+  };
 }
 
 const Page1 = (props: Props) => {
   const [clientData, setClientData] = useState<ClientData[]>([]);
+  const [file, setFile] = useState('');
   const params = useSearchParams();
   const clientSlug = params.get('edit');
   const partner1Name =
@@ -42,31 +58,133 @@ const Page1 = (props: Props) => {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [fileUrl, setFileUrl] = useState(null);
 
-  const onDrop = async (acceptedFiles: any) => {
-    console.log(acceptedFiles[0]);
-    setFileUrl(acceptedFiles[0].path);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const { state, setState } = useStateContext();
+
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
   };
-
-  const onFileDrop = useCallback((acceptedFiles: any) => {
-    acceptedFiles.forEach((file: any) => {
-      const reader = new FileReader();
-
-      reader.onabort = () => console.log('file reading was aborted');
-      reader.onerror = () => console.log('file reading has failed');
-      reader.onload = () => {
-        // Do whatever you want with the file contents
-        const binaryStr = reader.result;
-        console.log(binaryStr);
-      };
-      reader.readAsArrayBuffer(file);
-    });
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
   }
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldUnregister: false,
+    defaultValues: {
+      additionalContract: '',
+      agreement_signature: '',
+      agreement_checkbox: '',
+    },
+  });
+
+  useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem('user') as string);
+    const savedSession = JSON.parse(localStorage.getItem('session') as string);
+    if (savedUser && savedSession) {
+      setState({
+        ...state,
+        user: savedUser,
+        session: savedSession,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log('session', state.session);
+    console.log('user', state.user);
+    if (state.session && state.user) {
+      const loggedInUser = async () =>
+        await supabase.from('users').select('*').eq('email', state.user.email);
+
+      loggedInUser().then((data: any) => {
+        console.log('logged in data', data.data[0]);
+        setLoggedInUser(data.data[0]);
+      });
+    }
+  }, [state]);
+
+  const retrieveFile = async () => {
+    const filePath = `${clientSlug}/${clientSlug}-contract.pdf`;
+
+    const { data: returnedFileData, error: returnedFileError } =
+      await supabase.storage.from('pdf_contracts').download(filePath);
+
+    if (returnedFileError) {
+      console.log('returned file error', returnedFileError);
+    } else {
+      console.log('returned file data', returnedFileData);
+      const reader = new FileReader();
+      reader.readAsDataURL(returnedFileData);
+      reader.onloadend = () => {
+        setFileUrl(reader.result as any);
+        const pdfUrl = reader.result;
+        console.log('pdf url', pdfUrl);
+      };
+    }
+  };
+
+  useEffect(() => {
+    retrieveFile();
+  }, []);
+
+  const onSubmit = async (data: any) => {
+    data.additionalContract = fileUrl;
+
+    console.log('submitted', data);
+
+    if (file) {
+      const fileSlug = clientSlug + '-contract';
+      const filePath = `${clientSlug}/${fileSlug}.pdf`;
+
+      // Upload PDF file to folder with slug
+      const { data: fileData, error: fileError } = await supabase.storage
+        .from('pdf_contracts')
+        .upload(filePath, file);
+
+      if (fileError?.message == 'The resource already exists') {
+        const { data: fileData, error: fileError } = await supabase.storage
+          .from('pdf_contracts')
+          .update(filePath, file);
+        console.log('file updated', fileData);
+      } else {
+        console.log('file data', fileData);
+      }
+    }
+
+    const { data: updatedClientData, error: updatedClientError } =
+      await supabase
+        .from('new_client')
+        .update({
+          CONTRACT: {
+            data,
+          },
+        })
+        .eq('SLUG', clientSlug);
+
+    if (updatedClientError) {
+      console.log('error', updatedClientError);
+    } else {
+      console.log('updated client data', updatedClientData);
+      toast.success('Successfully submitted your contract!');
+    }
+  };
+
+  const onError = (error: any) => {
+    Object.keys(error).forEach((key) => {
+      console.log('error', key, error[key]);
+      toast.error(error[key].message);
+    });
+  };
 
   const fetchEventData = async () => {
     let { data, error } = await supabase
@@ -74,7 +192,7 @@ const Page1 = (props: Props) => {
       // take the client slug and look for it in the database
       .select(
         `plannerName, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_A_LNAME, 
-        PEOPLE->>P_B_FNAME, PEOPLE->>P_B_LNAME, ADMIN_INFO->>AMMEND`
+        PEOPLE->>P_B_FNAME, PEOPLE->>P_B_LNAME, ADMIN_INFO->>AMMEND, CONTRACT`
       )
       .eq('SLUG', clientSlug);
     if (error) {
@@ -84,6 +202,19 @@ const Page1 = (props: Props) => {
       return data;
     }
   };
+
+  useEffect(() => {
+    if (clientData[0]?.CONTRACT) {
+      setValue(
+        'agreement_checkbox',
+        clientData[0]?.CONTRACT?.data?.agreement_checkbox
+      );
+      setValue(
+        'agreement_signature',
+        clientData[0]?.CONTRACT?.data?.agreement_signature
+      );
+    }
+  }, [clientData]);
 
   React.useEffect(() => {
     fetchEventData().then((data: any) => {
@@ -112,7 +243,7 @@ const Page1 = (props: Props) => {
       </header>
 
       <section className="max-w-7xl sm:px-6 lg:px-8 pb-40 mx-auto">
-        <form action="/233/update?ref=agreement" method="post">
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           <div className="sm:mt-0 mt-10">
             <div className="md:grid md:grid-cols-3 md:gap-6">
               <div className="md:col-span-1">
@@ -261,100 +392,116 @@ const Page1 = (props: Props) => {
 
                       <h2>Additional Contract Details</h2>
                       {/* I want to include a PDF file viewer */}
+                      {loggedInUser && loggedInUser.role == 'planner' && (
+                        <div>
+                          <Dropzone setFileUrl={setFileUrl} setFile={setFile} />
+                        </div>
+                      )}
 
-                      <div>
-                        <Dropzone setFileUrl={setFileUrl} />
-                        {/* <div {...getRootProps()}>
-                          <input {...getInputProps()} />
+                      {fileUrl && (
+                        <div>
+                          <Document
+                            className={`w-full ${
+                              isFullscreen &&
+                              'h-full overflow-y-auto m-auto bg-[#686868ab] fixed top-0 bottom-0 left-0 right-0'
+                            } border-2 p-4 flex flex-col border-[#eed9d4]`}
+                            onItemClick={(item) => console.log(item)}
+                            file={`${fileUrl}`}
+                            onLoadSuccess={onDocumentLoadSuccess}>
+                            <Page
+                              className="m-auto"
+                              height={isFullscreen ? 900 : 500}
+                              renderAnnotationLayer={false}
+                              renderTextLayer={false}
+                              pageNumber={pageNumber}
+                            />
+                            <div className="flex justify-center gap-4 mt-2">
+                              <button
+                                type="button"
+                                className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
+                                onClick={() => {
+                                  if (pageNumber == 1) {
+                                    toast.error('You are on the first page.');
+                                  } else {
+                                    setPageNumber(pageNumber - 1);
+                                  }
+                                }}>
+                                Back
+                              </button>
+                              <button
+                                type="button"
+                                className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
+                                onClick={toggleFullscreen}>
+                                {isFullscreen
+                                  ? 'Exit Fullscreen'
+                                  : 'View Fullscreen'}
+                              </button>
+                              <button
+                                type="button"
+                                className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
+                                onClick={() => {
+                                  if (pageNumber == numPages) {
+                                    toast.error('You are on the last page.');
+                                  } else {
+                                    setPageNumber(pageNumber + 1);
+                                  }
+                                }}>
+                                Next
+                              </button>
+                            </div>
+                          </Document>
                           <p>
-                            Drag 'n' drop some files here, or click to select
-                            files
-                          </p>
-                        </div> */}
-                      </div>
-                      <div>
-                        <Document
-                          className={`w-full border-2 p-4 flex flex-col border-[#eed9d4]`}
-                          onItemClick={(item) => console.log(item)}
-                          file={`/${fileUrl}`}
-                          onLoadSuccess={onDocumentLoadSuccess}>
-                          <Page
-                            className="m-auto"
-                            height={500}
-                            renderAnnotationLayer={false}
-                            renderTextLayer={false}
-                            pageNumber={pageNumber}
-                          />
-                          <div className="flex justify-center gap-4 mt-2">
-                            <button
-                              type="button"
-                              className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
-                              onClick={() => {
-                                if (pageNumber == 1) {
-                                  toast.error('You are on the first page.');
-                                } else {
-                                  setPageNumber(pageNumber - 1);
-                                }
-                              }}>
-                              Back
-                            </button>
-                            <button
-                              type="button"
-                              className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded"
-                              onClick={() => {
-                                if (pageNumber == numPages) {
-                                  toast.error('You are on the last page.');
-                                } else {
-                                  setPageNumber(pageNumber + 1);
-                                }
-                              }}>
-                              Next
-                            </button>
-                          </div>
-                        </Document>
-                        <p>
-                          Page {pageNumber} of {numPages}
-                        </p>{' '}
-                        <ToastContainer
-                          position="bottom-right"
-                          autoClose={5000}
-                          hideProgressBar={false}
-                          newestOnTop={false}
-                          closeOnClick
-                          rtl={false}
-                          pauseOnFocusLoss
-                          draggable
-                          pauseOnHover
-                          theme="light"
-                        />
-                      </div>
-
-                      <div className="flex items-start col-span-1">
-                        <div className="flex items-center h-5">
-                          <input
-                            className=" text-dse-gold border-dse-gold w-4 h-4 font-serif text-sm rounded"
-                            type="checkbox"
-                            name="project[agreement_agree]"
-                            id="project_agreement_agree"
+                            Page {pageNumber} of {numPages}
+                          </p>{' '}
+                          <ToastContainer
+                            position="bottom-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="light"
                           />
                         </div>
-                        <div className="ml-3 text-sm">
+                      )}
+
+                      <div className="flex flex-col col-span-1">
+                        <div className="text-sm align-middle my-4 flex gap-2">
+                          <input
+                            {...register('agreement_checkbox')}
+                            className=" text-dse-gold my-auto border-dse-gold w-4 h-4 font-serif text-sm rounded"
+                            type="checkbox"
+                            id="agreement_checkbox"
+                          />
                           <label
-                            className="pt-0.5 uppercase text-[12px] tracking-widewide font-normal font-sans"
-                            htmlFor="project_agreement_agree">
+                            className="pt-0.5 uppercase text-[12px] my-auto tracking-widewide font-normal font-sans"
+                            htmlFor="agreement_checkbox">
                             We, {partner1Name} and {partner2Name}, accept the
                             terms &amp; conditions as listed above.
                           </label>
                         </div>
+                        <input
+                          type="text"
+                          {...register('agreement_signature', {
+                            required: 'Signature required.',
+                          })}
+                          // i want a cursive font
+
+                          className={`border-dse-gold   signatureBox focus-visible:outline-none border-b-2 w-full`}
+                          placeholder="Signature"
+                        />
                       </div>
                     </div>
                     <div className=" py-3 text-right">
                       <button
                         type="submit"
                         name="commit"
-                        value="Continue"
-                        className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer"
-                        data-disable-with="Continue"></button>
+                        className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -57,8 +57,6 @@ const Page = () => {
     if (error) {
       console.log(error);
     } else {
-      // console.log(data);
-
       return data;
     }
   };
@@ -66,6 +64,11 @@ const Page = () => {
   useEffect(() => {
     if (urlParameter) {
       fetchDocuments().then((data: any) => {
+        // take the data and sort it by position number
+        data[0].questions.sort((a: any, b: any) => {
+          return a.position - b.position;
+        });
+        console.log('questions', data[0].questions);
         setDocument(data[0]);
       });
     }

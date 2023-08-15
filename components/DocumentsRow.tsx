@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {
   document: {
@@ -13,7 +15,6 @@ type Props = {
 
 const DocumentsRow = (props: Props) => {
   const { title, status, id } = props.document;
-
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -22,7 +23,7 @@ const DocumentsRow = (props: Props) => {
       body: JSON.stringify({ id: id }),
     });
     const data = await res.json();
-    console.log('deleted', data);
+    toast.success('Document deleted');
     window.location.reload();
   };
   return (
@@ -59,6 +60,18 @@ const DocumentsRow = (props: Props) => {
           </button>
         </p>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

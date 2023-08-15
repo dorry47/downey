@@ -1,5 +1,5 @@
 'use client';
-import React, { use, useEffect } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useClient } from '../../../../lib/useClient';
 import Link from 'next/link';
@@ -14,12 +14,15 @@ const Page = (props: Props) => {
   const [documentData, setDocumentData] = React.useState<any>([]);
   const [clientData, setClientData] = React.useState<any>([]);
   const [allAnswers, setAllAnswers] = React.useState<any>([]);
+  const [printing, setPrinting] = useState(false);
 
   const router = useRouter();
 
   const supabase = useClient();
 
   const documentID = pathName.split('/documents/')[1];
+
+  console.log('document id', documentID);
 
   const params = useSearchParams();
 
@@ -137,14 +140,15 @@ const Page = (props: Props) => {
     if (error) {
       console.log(error);
     } else {
+      console.log('document data', data);
       return data;
     }
   };
   useEffect(() => {
+    fetchDocumentData().then((data: any) => {
+      setDocumentData(data[0]);
+    });
     if (clientSlug) {
-      fetchDocumentData().then((data: any) => {
-        setDocumentData(data[0]);
-      });
       fetchAllAnswers().then((data: any) => {
         if (!data[0]?.Q_ANSWERS) {
           data[0].Q_ANSWERS = [];
@@ -175,6 +179,12 @@ const Page = (props: Props) => {
       }
     });
   }, [clientData]);
+
+  const handlePrint = () => {
+    setPrinting(true);
+    window.print();
+    setTimeout(() => setPrinting(false), 500); // Reset printing state after a brief delay
+  };
 
   return (
     <main className="edit-documents">
@@ -233,17 +243,26 @@ const Page = (props: Props) => {
                         )}
                         <div className="md:mx-0 print:hidden py-3 mx-4 text-right">
                           {clientSlug ? (
-                            <button
-                              type="submit"
-                              className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
-                              Save
-                            </button>
+                            <div className="gap-6 flex justify-end">
+                              <button
+                                type="button"
+                                onClick={handlePrint}
+                                className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                                Print Questionnaire
+                              </button>
+                              <button
+                                type="submit"
+                                className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                                Save
+                              </button>
+                            </div>
                           ) : (
-                            <Link
-                              className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer"
-                              href="">
+                            <button
+                              type="button"
+                              onClick={handlePrint}
+                              className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
                               Print Questionnaire
-                            </Link>
+                            </button>
                           )}
                         </div>
                       </div>
@@ -267,6 +286,19 @@ const Page = (props: Props) => {
           theme="light"
         />
       </section>
+
+      <style>
+        {`
+        @media print {
+          /* Hide unnecessary elements */
+          header, nav, footer, .print-hidden {
+            display: none;
+          }
+
+          /* Add additional print styles here */
+        }
+        `}
+      </style>
     </main>
   );
 };

@@ -23,11 +23,15 @@ const thumb = {
   boxSizing: 'border-box',
 };
 
-function Previews({ setFileUrl }) {
+function Previews({ setFileUrl, setFile }) {
   const [files, setFiles] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'application/pdf',
+    // accept: 'application/pdf',
     onDrop: (acceptedFiles) => {
+      const formData = new FormData();
+      formData.append('pdf', acceptedFiles[0]);
+      console.log('pdf formData', formData);
+
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -35,9 +39,19 @@ function Previews({ setFileUrl }) {
           })
         )
       );
-      setFileUrl(acceptedFiles[0].path);
+
+      // setFileUrl(acceptedFiles[0].path);
     },
   });
+
+  useEffect(() => {
+    console.log(files);
+
+    if (files.length > 0) {
+      setFileUrl(files[0].preview);
+      setFile(files[0]);
+    }
+  }, [files]);
 
   // const thumbs = files.map((file) => (
   //   <div style={thumb} key={file.name}>
