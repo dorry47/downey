@@ -1223,7 +1223,8 @@ const Page = (props: Props) => {
                           type="submit"
                           name="commit"
                           className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
-                          {loggedInUser?.role !== 'client'
+                          {loggedInUser?.role == 'planner' &&
+                          urlParameter == null
                             ? 'Create'
                             : 'Update'}
                         </button>

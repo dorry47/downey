@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {
   planner: string;
@@ -25,6 +27,7 @@ const AllClientsRow = (props: Props) => {
       body: JSON.stringify({ slug: slug }),
     });
     const data = await res.json();
+    toast.success('Client deleted');
     console.log('deleted', data);
     props.setDeletedItem(true);
   };
@@ -68,6 +71,18 @@ const AllClientsRow = (props: Props) => {
           </button>
         </p>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };
