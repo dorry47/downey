@@ -1,34 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DSE Dashboard App
+
+The DSE Dashboard App is a web application that allows wedding planners to manage and organize their clients and events in a streamlined and efficient manner. The app provides features to view and manage client information, event details, and track the progress of different weddings.
+
+## Features
+
+- **Client Management**: The app allows wedding planners to view and manage their clients' information, including names, contact details, and event details.
+
+- **Event Tracking**: Wedding planners can keep track of different events for each client, including event dates, participant names, and event status.
+
+- **New Client Addition**: The app includes a feature to add new clients to the system. Planners can easily input client information and start managing their weddings.
+
+- **User Authentication**: The app supports user authentication, allowing planners to securely log in to their accounts to access and manage their data.
+
+## Technologies Used
+
+- **React**: The app is built using the React JavaScript library, enabling the creation of dynamic and interactive user interfaces.
+
+- **Next.js**: Next.js is used as a framework for server-rendered React applications. It provides features such as routing and server-side rendering.
+
+- **Supabase**: Supabase is used as the backend service to store and manage data. It offers features like database storage and authentication.
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository: `git clone https://github.com/your-username/wedding-planner-app.git`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+2. Install dependencies: `cd wedding-planner-app` and `npm install`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Create a Supabase account and configure your Supabase credentials in the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Run the app locally: `npm run dev`
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+5. Access the app in your browser at `http://localhost:3000`
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. Log in with your credentials to access the dashboard.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. View the list of your clients and their event details.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. Click on a client to view and manage their specific event details.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4. Add new clients using the "New Client" feature.
