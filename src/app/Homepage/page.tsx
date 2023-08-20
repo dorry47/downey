@@ -68,7 +68,6 @@ export default function Page() {
     if (loggedInPlanner && loggedInPlanner.role == 'planner') {
       setIsLoading(false);
     } else if (loggedInPlanner && loggedInPlanner.role == 'client') {
-      // replace "Luna + Sergio" with "Luna-Sergio"
       window.location.href = `/clients/${loggedInPlanner?.name.replace(
         ' + ',
         '-'

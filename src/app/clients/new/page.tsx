@@ -278,7 +278,7 @@ const Page = (props: Props) => {
       (planner: Planner) => planner.name === data.ADMIN_INFO.PLANNER
     )?.name;
 
-    data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId;
+    data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId || bgImages[0].id;
     data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
 
     console.log('data', data);
@@ -795,13 +795,22 @@ const Page = (props: Props) => {
                             />
                           </div>
                           <div className="col-span-6">
-                            <label
-                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="P_A_EMAIL">
-                              Email
-                            </label>
+                            {errors.PEOPLE?.P_A_EMAIL ? (
+                              <p className="text-red-500">
+                                {errors.PEOPLE?.P_A_EMAIL.message}
+                              </p>
+                            ) : (
+                              <label
+                                className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                                htmlFor="P_A_EMAIL">
+                                Email
+                              </label>
+                            )}
+
                             <input
-                              {...register('PEOPLE.P_A_EMAIL', {})}
+                              {...register('PEOPLE.P_A_EMAIL', {
+                                required: 'Please provide an email address',
+                              })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -962,13 +971,22 @@ const Page = (props: Props) => {
                             />
                           </div>
                           <div className="col-span-6">
-                            <label
-                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                              htmlFor="P_B_EMAIL">
-                              Email
-                            </label>
+                            {errors.PEOPLE?.P_B_EMAIL ? (
+                              <p className="text-red-500">
+                                {errors.PEOPLE?.P_B_EMAIL.message}
+                              </p>
+                            ) : (
+                              <label
+                                className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                                htmlFor="P_B_EMAIL">
+                                Email
+                              </label>
+                            )}
+
                             <input
-                              {...register('PEOPLE.P_B_EMAIL', {})}
+                              {...register('PEOPLE.P_B_EMAIL', {
+                                required: 'Please provide an email address.',
+                              })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"

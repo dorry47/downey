@@ -20,8 +20,8 @@ const Navigation = (props: Props) => {
   const handleSession = async () => {
     const session = JSON.parse(localStorage.getItem('session') as string);
     const user = JSON.parse(localStorage.getItem('user') as string);
-    console.log('get session', session);
-    console.log('get user', user);
+    // console.log('get session', session);
+    // console.log('get user', user);
     if (session) {
       setState({ ...state, session, user });
     }
@@ -47,7 +47,7 @@ const Navigation = (props: Props) => {
         .select('*')
         .eq('email', state?.user?.email)
         .then((data: any) => {
-          console.log('signed in user', data?.data[0]);
+          // console.log('signed in user', data?.data[0]);
           setLoggedInUser(data?.data[0]);
         });
     };

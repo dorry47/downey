@@ -34,6 +34,9 @@ const Page = (props: Props) => {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           localStorage.setItem('access_token', session.access_token);
           localStorage.setItem('refresh_token', session.refresh_token);
+          localStorage.setItem('user', JSON.stringify(session.user));
+          localStorage.setItem('session', JSON.stringify(session));
+
           console.log('handled session', session);
 
           setState({
@@ -53,34 +56,60 @@ const Page = (props: Props) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log('logged in user', loggedInUser);
-  }, [loggedInUser]);
+  // useEffect(() => {
+  //   console.log('logged in user', loggedInUser);
+  // }, [loggedInUser]);
+
+  // useEffect(() => {
+  //   const savedUser = JSON.parse(localStorage.getItem('user') as string);
+  //   const savedSession = JSON.parse(localStorage.getItem('session') as string);
+  //   if (savedUser && savedSession) {
+  //     setState({
+  //       ...state,
+  //       user: savedUser,
+  //       session: savedSession,
+  //     });
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log('session', state.session);
+  //   console.log('user', state.user);
+  //   if (state.session && state.user) {
+  //     const loggedInUser = async () =>
+  //       await supabase.from('users').select('*').eq('email', state.user.email);
+
+  //     loggedInUser().then((data: any) => {
+  //       console.log('logged in data', data.data[0]);
+  //       setLoggedInUser(data.data[0]);
+  //     });
+  //   }
+  // }, [state]);
 
   useEffect(() => {
-    const savedUser = JSON.parse(localStorage.getItem('user') as string);
-    const savedSession = JSON.parse(localStorage.getItem('session') as string);
-    if (savedUser && savedSession) {
-      setState({
-        ...state,
-        user: savedUser,
-        session: savedSession,
-      });
-    }
-  }, []);
+    console.log('state', state);
+    const fetchUserData = async () => {
+      if (state.user && state.user.email !== undefined) {
+        console.log('state user', state.user);
+        try {
+          const { data, error } = await supabase
+            .from('users')
+            .select()
+            .eq('email', state.user.email);
+          if (data) {
+            console.log('user data', data);
 
-  useEffect(() => {
-    console.log('session', state.session);
-    console.log('user', state.user);
-    if (state.session && state.user) {
-      const loggedInUser = async () =>
-        await supabase.from('users').select('*').eq('email', state.user.email);
+            setLoggedInUser(data[0]);
+          } else {
+            console.error(error);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
 
-      loggedInUser().then((data: any) => {
-        console.log('logged in data', data.data[0]);
-        setLoggedInUser(data.data[0]);
-      });
-    }
+    fetchUserData();
   }, [state]);
 
   const onSubmit = async (data: Record<string, any>) => {
@@ -119,12 +148,15 @@ const Page = (props: Props) => {
       <div className="flex flex-col w-full max-w-2xl space-y-8">
         {!submitted ? (
           <section>
-            {loggedInUser.role == 'client' && (
+            {loggedInUser?.role == 'client' && (
               <div className="py-4 flex flex-col gap-4">
-                <h2 className="text-xl font-bold text-center">
+                <h1 className="text-2xl text-[#C39B6B] font-bold text-center">
+                  Welcome to Downey Street Events!
+                </h1>
+                <p className="text-sm">
                   We are so thrilled to be working with you on what we are sure
                   will be a truly spectacular day!
-                </h2>
+                </p>
                 <p className="text-sm">
                   We’ve started compiling your planning materials in your custom
                   planning site. To begin, we’d love for you to supply some
@@ -184,7 +216,7 @@ const Page = (props: Props) => {
                 <input
                   type="submit"
                   name="commit"
-                  value="Reset"
+                  value="Submit"
                   className="group bg-dse-gold hover:bg-dse-orange focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md cursor-pointer"
                 />{' '}
               </div>
