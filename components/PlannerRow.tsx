@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {
   planner: {
@@ -24,7 +26,10 @@ const PlannerRow = (props: Props) => {
       method: 'DELETE',
       body: JSON.stringify({ email: email }),
     });
+
     const data = await res.json();
+    toast.success('Planner deleted');
+
     console.log('deleted', data);
   };
   return (
@@ -68,6 +73,18 @@ const PlannerRow = (props: Props) => {
           </button>
         </p>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };
