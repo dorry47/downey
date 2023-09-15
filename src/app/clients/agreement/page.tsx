@@ -486,7 +486,10 @@ const Page1 = (props: Props) => {
                         <input
                           type="text"
                           {...register('agreement_signature', {
-                            required: 'Signature required.',
+                            required:
+                              loggedInUser &&
+                              loggedInUser.role !== 'planner' &&
+                              'Signature required.',
                           })}
                           // i want a cursive font
 
