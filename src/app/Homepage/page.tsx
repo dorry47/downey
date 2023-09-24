@@ -68,7 +68,8 @@ export default function Page() {
     if (loggedInPlanner && loggedInPlanner.role == 'planner') {
       setIsLoading(false);
     } else if (loggedInPlanner && loggedInPlanner.role == 'client') {
-      window.location.href = `/clients/${loggedInPlanner?.name.replace(
+      localStorage.setItem('loggedInUser', JSON.stringify(loggedInPlanner));
+      window.location.href = `/clients/new?edit=${loggedInPlanner?.name.replace(
         ' + ',
         '-'
       )}`;

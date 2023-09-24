@@ -984,9 +984,7 @@ const Page = (props: Props) => {
                             )}
 
                             <input
-                              {...register('PEOPLE.P_B_EMAIL', {
-                                required: 'Please provide an email address.',
-                              })}
+                              {...register('PEOPLE.P_B_EMAIL')}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1236,7 +1234,21 @@ const Page = (props: Props) => {
                           </div>
                         ))}
                       </div>
-                      <div className="md:px-0 px-4 py-3 text-right">
+                      <div className="md:px-0 px-4 py-3 gap-4 flex justify-end text-right">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // go back to homepage
+                            router.push(
+                              `/clients/${loggedInUser?.name.replace(
+                                ' + ',
+                                '-'
+                              )}`
+                            );
+                          }}
+                          className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                          Back
+                        </button>
                         <button
                           type="submit"
                           name="commit"

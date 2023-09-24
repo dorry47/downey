@@ -118,29 +118,6 @@ const Page = (props: Props) => {
       <div className="flex flex-col w-full max-w-2xl space-y-8">
         {!submitted ? (
           <section>
-            {loggedInUser?.role == 'client' && (
-              <div className="py-4 flex flex-col gap-4">
-                <h1 className="text-2xl text-[#C39B6B] font-bold text-center">
-                  Welcome to Downey Street Events!
-                </h1>
-                <p className="text-sm">
-                  We are so thrilled to be working with you on what we are sure
-                  will be a truly spectacular day!
-                </p>
-                <p className="text-sm">
-                  We’ve started compiling your planning materials in your custom
-                  planning site. To begin, we’d love for you to supply some
-                  initial contact information and review your contract
-                  agreement.
-                </p>
-                <p className="text-sm">
-                  Along the way, if you have any questions, please don’t
-                  hesitate to contact us. We’re happy to help! Thank you so
-                  much, and we look forward getting started!
-                </p>{' '}
-              </div>
-            )}
-
             <div>
               <h2 className="mt-6 text-2xl font-extrabold text-center text-gray-900">
                 Set your password
