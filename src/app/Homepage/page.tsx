@@ -61,7 +61,7 @@ export default function Page() {
     if (session) {
       setState({ ...state, session, user });
     }
-  }, [window.location.href]);
+  }, []);
 
   useEffect(() => {
     console.log('loggedInPlanner', loggedInPlanner);
@@ -85,7 +85,7 @@ export default function Page() {
         await supabase.from('users').select('*').eq('email', state.user.email);
 
       loggedInUser().then((data: any) => {
-        console.log('logfed in data', data.data[0]);
+        console.log('logged in data', data);
         setLoggedInPlanner(data.data[0]);
       });
     }

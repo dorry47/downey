@@ -56,36 +56,6 @@ const Page = (props: Props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log('logged in user', loggedInUser);
-  // }, [loggedInUser]);
-
-  // useEffect(() => {
-  //   const savedUser = JSON.parse(localStorage.getItem('user') as string);
-  //   const savedSession = JSON.parse(localStorage.getItem('session') as string);
-  //   if (savedUser && savedSession) {
-  //     setState({
-  //       ...state,
-  //       user: savedUser,
-  //       session: savedSession,
-  //     });
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log('session', state.session);
-  //   console.log('user', state.user);
-  //   if (state.session && state.user) {
-  //     const loggedInUser = async () =>
-  //       await supabase.from('users').select('*').eq('email', state.user.email);
-
-  //     loggedInUser().then((data: any) => {
-  //       console.log('logged in data', data.data[0]);
-  //       setLoggedInUser(data.data[0]);
-  //     });
-  //   }
-  // }, [state]);
-
   useEffect(() => {
     console.log('state', state);
     const fetchUserData = async () => {

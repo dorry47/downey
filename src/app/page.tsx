@@ -73,7 +73,7 @@ const Page = (props: Props) => {
           <React.Fragment>
             <div>
               <h2 className="mt-6 text-2xl font-extrabold text-center text-gray-900">
-                Sign in to your planner account
+                Sign in to your account.
               </h2>
               <p className="mt-2 text-sm text-center text-gray-600">
                 or{' '}

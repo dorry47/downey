@@ -10,69 +10,46 @@ export async function POST(req: Request) {
   const supabase = useClient();
 
   // Invite the user by email
-  const { data: res, error } = await supabase.auth.admin.inviteUserByEmail(
-    email,
-    {
-      data: { role: 'planner' },
-      redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
-    }
-  );
+  // const { data: res, error } = await supabase.auth.resetPasswordForEmail(
+  //   email,
+  //   {
+  //     redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
+  //   }
+  // );
+
+  const { data: res, error } = await supabase.auth.signUp({
+    email: email,
+    password: 'password',
+    options: {
+      emailRedirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
+      data: {
+        role: 'planner',
+      },
+    },
+  });
+
+  console.log('res', res);
 
   if (error) {
     console.log('error', error.message);
-    if (
-      error.message ===
-      'A user with this email address has already been registered'
-    ) {
-      const { error } = await supabase
-        .from('users')
-        .update([
-          {
-            name: name,
-            address: address,
-            phone: phone,
-            archived: archived,
-          },
-        ])
-        .eq('email', email);
 
-      // await supabase
-      //   .from('new_planner')
-      //   .update([
-      //     {
-      //       name: name,
-      //       email: email,
-      //       phone: phone,
-      //       address: address,
-      //     },
-      //   ])
-      //   .eq('email', email);
+    const { error: updateError } = await supabase
+      .from('users')
+      .update([
+        {
+          name: name,
+          address: address,
+          phone: phone,
+          archived: archived,
+        },
+      ])
+      .eq('email', email);
 
-      // const { data: id } = await supabase
-      //   .from('auth.users')
-      //   .select('id')
-      //   .eq('email', email);
+    if (updateError) return NextResponse.json({ error: updateError.message });
 
-      // await supabase
-      //   .from('auth.users')
-      //   .update({
-      //     raw_user_metadata: {
-      //       name: name,
-      //       email: email,
-      //       phone: phone,
-      //       address: address,
-      //     },
-      //   })
-      //   .eq('id', id);
-
-      if (error) return NextResponse.json({ error: error.message });
-
-      return NextResponse.json({ data });
-    }
+    return NextResponse.json({ data });
   } else {
-    // const { error } = await supabase
-    //   .from('new_planner')
-    //   .insert([{ name: name, email: email, phone: phone, address: address }]);
+    console.log('no error');
     const { error } = await supabase.from('users').insert([
       {
         name: name,
@@ -83,9 +60,8 @@ export async function POST(req: Request) {
         archived: archived,
       },
     ]);
+
     if (error) return NextResponse.json({ error: error.message });
     return NextResponse.json({ data });
   }
-
-  return NextResponse.json({ res, error });
 }
