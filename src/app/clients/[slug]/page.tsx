@@ -254,31 +254,44 @@ const Page = () => {
         className="bg-center bg-cover"
         style={{
           backgroundImage: `url(${bgImageURL})`,
+          backgroundPosition: 'top center',
         }}>
         <div className="max-w-7xl sm:px-6 lg:px-8 p-4 mx-auto text-white">
           <div className="md:items-center md:py-16 md:border-none border-[rgba(238,217,212)] grid grid-cols-12 gap-6 py-8 text-center border">
             <div className="md:col-span-3 md:order-1 order-2 col-span-6">
-              <h1 className="font-display tracking-extrawide lining-nums text-base font-normal leading-tight uppercase">
-                {countdown(date)} days
-              </h1>
-              <h2 className="text-xxs tracking-extrawide font-normal uppercase">
-                until the big day
-              </h2>
+              {clientData?.WED_DAY &&
+                clientData.WED_MONTH &&
+                clientData.WED_YEAR && (
+                  <>
+                    <h1 className="font-display tracking-extrawide lining-nums text-base font-normal leading-tight uppercase">
+                      {countdown(date)} days
+                    </h1>
+                    <h2 className="text-xxs tracking-extrawide font-normal uppercase">
+                      until the big day
+                    </h2>
+                  </>
+                )}
             </div>
             <div className="md:col-span-6 md:py-16 md:border border-[rgba(238,217,212)] md:order-2 order-1 col-span-12 mx-8 border-b border-solid">
               <h1 className="font-display text-3xl font-normal leading-tight tracking-widest uppercase">
                 {names.join(' & ')}
               </h1>
+
               <h2 className="font-display tracking-extrawide lining-nums pt-2 pb-4 text-base font-normal leading-tight uppercase">
-                {formatDate(date)}
+                {clientData?.WED_DAY &&
+                  clientData.WED_MONTH &&
+                  clientData.WED_YEAR &&
+                  date}
               </h2>
             </div>
             <div className="md:col-span-3 order-3 col-span-6">
               <h1 className="font-display tracking-extrawide text-base font-normal leading-tight uppercase">
                 {clientData?.VENUE_NAME}
               </h1>
-              <h2 className="font-cursive -rotate-6 text-lg tracking-wider transform">
-                {clientData?.VENUE_CITY}, {clientData?.VENUE_STATE}
+              <h2 className="font-display text-lg tracking-wider transform">
+                {clientData?.VENUE_CITY &&
+                  clientData?.VENUE_STATE &&
+                  clientData?.VENUE_CITY + ',' + clientData?.VENUE_STATE}
               </h2>
             </div>
           </div>
@@ -291,7 +304,7 @@ const Page = () => {
         </div>
       </section>
 
-      <section className="bg-dse-gold h-16">
+      {/* <section className="bg-dse-gold h-16">
         <div className="max-w-7xl sm:px-6 lg:px-8 py-6 mx-auto">
           <ul className="flex justify-center space-x-4">
             <li className="">
@@ -317,13 +330,9 @@ const Page = () => {
             </li>
           </ul>
         </div>
-      </section>
+      </section> */}
 
       <section className="sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <h3 className="font-display py-10 text-2xl font-normal leading-tight tracking-widest text-center uppercase">
-          Sign Up Forms
-        </h3>
-
         <div className="sm:grid-cols-3 md:grid-cols-4 sm:gap-6 sm:py-10 grid grid-cols-2 gap-2 py-4 text-center">
           {planningLinks[0].required.map((quickLink, id) => {
             const { title, subtitle, href, imageSrc, active, titleKey } =
@@ -339,14 +348,8 @@ const Page = () => {
               />
             );
           })}
-        </div>
-
-        {planningLinks[0].notRequired.length > 0 && (
-          <>
-            <h3 className="font-display pt-10 text-2xl font-normal leading-tight tracking-widest text-center uppercase border-t-2 border-gray-100">
-              Additional Information
-            </h3>
-            <div className="sm:grid-cols-3 md:grid-cols-4 sm:gap-6 sm:py-10 grid grid-cols-2 gap-2 py-4 text-center">
+          {planningLinks[0].notRequired.length > 0 && (
+            <>
               {planningLinks[0].notRequired.map((quickLink, id) => {
                 const { title, subtitle, href, imageSrc, active, titleKey } =
                   quickLink;
@@ -361,9 +364,9 @@ const Page = () => {
                   />
                 );
               })}
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </section>
 
       <section className="bg-[rgba(238,217,212)]">
@@ -425,9 +428,9 @@ const Page = () => {
             </div>
             <div className="col-span-3">
               <Link href={`/clients/new?edit=${clientData?.SLUG}`}>
-                <h4 className="text-xxs tracking-extrawide pt-3 mb-1 font-sans font-normal text-black uppercase">
+                <button className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
                   Edit Event Details
-                </h4>
+                </button>
               </Link>{' '}
             </div>
           </div>

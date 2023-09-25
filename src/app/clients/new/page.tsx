@@ -536,7 +536,7 @@ const Page = (props: Props) => {
                             </p>
                           ) : (
                             <label
-                              className="text-xxs tracking-extrawide font-sans font-normal uppercase"
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="WED_MONTH">
                               Wedding date
                             </label>
@@ -544,7 +544,7 @@ const Page = (props: Props) => {
                           <div className=" flex justify-between w-full">
                             <select
                               {...register('EVENT_DETAILS.WED_MONTH', {
-                                required: 'Wedding date required.',
+                                // required: 'Wedding date required.',
                               })}
                               id="WED_MONTH"
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
@@ -556,7 +556,7 @@ const Page = (props: Props) => {
                             </select>
                             <select
                               {...register('EVENT_DETAILS.WED_DAY', {
-                                required: 'First name required.',
+                                // required: 'First name required.',
                               })}
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
                               {days.map((day: any, id: number) => (
@@ -567,7 +567,7 @@ const Page = (props: Props) => {
                             </select>
                             <select
                               {...register('EVENT_DETAILS.WED_YEAR', {
-                                required: 'First name required.',
+                                // required: 'First name required.',
                               })}
                               id="project_wedding_date_3i"
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
@@ -594,7 +594,7 @@ const Page = (props: Props) => {
                           )}
                           <input
                             {...register('EVENT_DETAILS.VENUE_NAME', {
-                              required: 'Venue name required.',
+                              // required: 'Venue name required.',
                             })}
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             type="text"
@@ -616,7 +616,7 @@ const Page = (props: Props) => {
                           )}
                           <input
                             {...register('EVENT_DETAILS.VENUE_CITY', {
-                              required: 'Venue city required.',
+                              // required: 'Venue city required.',
                             })}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -639,7 +639,7 @@ const Page = (props: Props) => {
                           )}
                           <input
                             {...register('EVENT_DETAILS.VENUE_STATE', {
-                              required: 'Venue state required.',
+                              // required: 'Venue state required.',
                             })}
                             placeholder=""
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -1075,10 +1075,7 @@ const Page = (props: Props) => {
                 </div>
               </div>
             </div>
-            <div
-              className={`mt-10 sm:mt-0 ${
-                loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
-              } `}>
+            <div className={`mt-10 sm:mt-0  `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
                   <div className="md:px-0 px-4">
@@ -1152,7 +1149,7 @@ const Page = (props: Props) => {
                       <div className="grid grid-cols-6 gap-6">
                         {[
                           // 'WORKFLOW',
-                          'BUDGET',
+                          'BUDGET_AND_WORKFLOW',
                           'ADDRESS',
                           'DESIGN_BOARD',
                           'CLIENT_DOCS',
@@ -1162,21 +1159,38 @@ const Page = (props: Props) => {
                           'CALENDAR',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
-                            <label className="text-[12px] tracking-widewide font-sans font-normal uppercase">
-                              {/* {title} url */}
-                              {/* REGEX the title to remove '_' from DESIGN_BOARD */}
-                              {title.split('_').join(' ')} url
-                            </label>
+                            {/* @ts-ignore */}
+                            {errors?.PLANNING_LINKS?.[`${title}_URL`] ? (
+                              <span className="text-red-500 text-sm">
+                                {/* @ts-ignore */}
+                                {errors.PLANNING_LINKS[`${title}_URL`].message}
+                              </span>
+                            ) : (
+                              <label className="text-[12px] tracking-widewide font-sans font-normal uppercase">
+                                {title.split('_').join(' ')} url
+                              </label>
+                            )}
+
                             <input
                               {...register(
                                 // @ts-ignore
-                                `PLANNING_LINKS.${title}_URL`
+                                `PLANNING_LINKS.${title}_URL`,
+
+                                // check if the url is valid
+                                {
+                                  pattern: {
+                                    // make it so it accepts links with or without http(s):// but needs www.
+                                    value:
+                                      /^(https?:\/\/)(www\.)[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
+                                    message: 'Please enter a valid URL',
+                                  },
+                                }
                               )}
                               placeholder={`${title
                                 .split('_')
                                 .join(' ')
                                 .toLowerCase()}`}
-                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
+                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm placeholder:capitalize"
                               type="text"
                               id={`${title}_URL`}
                             />
@@ -1220,14 +1234,31 @@ const Page = (props: Props) => {
                           'REGISTRY',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
-                            <label className="text-[12px]  tracking-widewide font-sans font-normal uppercase">
-                              {title} url
-                            </label>
+                            {/* @ts-ignore */}
+                            {errors?.PUBLIC_LINKS?.[`${title}_URL`] ? (
+                              <span className="text-red-500 text-sm">
+                                {/* @ts-ignore */}
+                                {errors.PUBLIC_LINKS[`${title}_URL`].message}
+                              </span>
+                            ) : (
+                              <label className="text-[12px]  tracking-widewide font-sans font-normal uppercase">
+                                {title} url
+                              </label>
+                            )}
                             <input
                               // @ts-ignore
-                              {...register(`PUBLIC_LINKS.${title}_URL`)}
+                              {...register(`PUBLIC_LINKS.${title}_URL`, {
+                                pattern: {
+                                  // make it so it accepts links https://www.npmjs.com/package/react-pdf or http://www.react-pdf.org/
+
+                                  value:
+                                    /^(https?:\/\/)(www\.)[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
+
+                                  message: 'Please enter a valid URL',
+                                },
+                              })}
                               placeholder={`${title.toLowerCase()}`}
-                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm capitalize"
+                              className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm placeholder:capitalize"
                               type="text"
                               id={`${title}_URL`}
                             />

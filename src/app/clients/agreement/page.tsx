@@ -113,6 +113,8 @@ const Page1 = (props: Props) => {
     }
   }, [state]);
 
+  console.log('fileURL', fileUrl);
+
   const retrieveFile = async () => {
     const filePath = `${clientSlug}/${clientSlug}-contract.pdf`;
 
@@ -141,20 +143,28 @@ const Page1 = (props: Props) => {
     data.additionalContract = fileUrl;
 
     console.log('submitted', data);
+    console.log('file', file);
 
     if (file) {
       const fileSlug = clientSlug + '-contract';
       const filePath = `${clientSlug}/${fileSlug}.pdf`;
 
+      const formData = new FormData();
+      formData.append('file', new Blob([file], { type: 'application/pdf' }));
+
       // Upload PDF file to folder with slug
       const { data: fileData, error: fileError } = await supabase.storage
         .from('pdf_contracts')
-        .upload(filePath, file);
+        .upload(filePath, formData);
+
+      if (fileError) {
+        console.log('file error', fileError);
+      }
 
       if (fileError?.message == 'The resource already exists') {
         const { data: fileData, error: fileError } = await supabase.storage
           .from('pdf_contracts')
-          .update(filePath, file);
+          .update(filePath, formData);
         console.log('file updated', fileData);
       } else {
         console.log('file data', fileData);
@@ -213,12 +223,14 @@ const Page1 = (props: Props) => {
         'agreement_signature',
         clientData[0]?.CONTRACT?.data?.agreement_signature
       );
+      setFile(clientData[0]?.CONTRACT?.data?.additionalContract);
     }
   }, [clientData]);
 
   React.useEffect(() => {
     fetchEventData().then((data: any) => {
       setClientData(data);
+      console.log('client data', data);
     });
   }, []);
 
@@ -387,7 +399,7 @@ const Page1 = (props: Props) => {
 
                       <h2>Amendments</h2>
                       <div className="group unit1of1 agreement-holder">
-                        <p>{clientData[0]?.AMMEND || 'No ammendments.'}</p>
+                        <p>{clientData[0]?.AMMEND || 'No amendments.'}</p>
                       </div>
 
                       <h2>Additional Contract Details</h2>
@@ -447,6 +459,35 @@ const Page1 = (props: Props) => {
                                   }
                                 }}>
                                 Next
+                              </button>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  // Construct the path to the file you want to remove
+                                  const filePath = `${clientSlug}/${clientSlug}-contract.pdf`;
+
+                                  console.log('file path', filePath);
+
+                                  // Remove the file from Supabase Storage
+                                  const { data, error } = await supabase.storage
+                                    .from('pdf_contracts')
+                                    .remove([filePath]);
+
+                                  if (error) {
+                                    console.error(
+                                      'Error removing the file:',
+                                      error
+                                    );
+                                  } else {
+                                    // File removed successfully, update the state
+                                    console.log('file removed', data);
+                                    setFileUrl(null);
+                                    setFile('');
+                                    toast.success('File removed successfully');
+                                  }
+                                }}
+                                className="bg-dse-gold hover:bg-dse-orange px-4 py-2 text-xs font-bold text-white rounded">
+                                Remove
                               </button>
                             </div>
                           </Document>

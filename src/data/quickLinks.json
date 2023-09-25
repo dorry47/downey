@@ -57,7 +57,7 @@
       {
         "titleKey": "DESIGN_BOARD_URL",
         "title": "Design Boards + Documents",
-        "subtitle": "",
+        "subtitle": "quick link",
         "imageSrc": "/images/design-boards-icon.jpg",
         "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
         "active": false
@@ -66,7 +66,7 @@
         {
           "titleKey": "GUEST_INFO_URL",
           "title": "Guest Information",
-          "subtitle": "",
+          "subtitle": "quick link",
           "imageSrc": "/images/guest-information-icon.jpg",
           "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
           "active": false
@@ -83,7 +83,7 @@
         {
           "titleKey": "CLIENT_DOCS_URL",
           "title": "Client Documents",
-          "subtitle": "",
+          "subtitle": "quick link",
           "imageSrc": "/images/client-documents-icon.jpg",
           "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
           "active": false
@@ -93,7 +93,7 @@
         {
           "titleKey": "VENDOR_CONTACT_URL",
           "title": "Vendor Contact + Payment Log",
-          "subtitle": "",
+          "subtitle": "quick link",
           "imageSrc": "/images/vendor-payment-icon.jpg",
           "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
           "active": false
@@ -101,10 +101,10 @@
       
         
         {
-          "titleKey": "BUDGET_URL",
-          "title": "Budget",
+          "titleKey": "BUDGET_AND_WORKFLOW_URL",
+          "title": "Budget + Workflow",
           "subtitle": "quick link",
-          "imageSrc": "/images/budget-icon.jpg",
+          "imageSrc": "/images/workflow-icon.jpg",
           "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
           "active": false
         },
