@@ -30,27 +30,9 @@ export async function POST(req: Request) {
 
   console.log('res', res);
 
-  if (error) {
-    console.log('error', error.message);
-
-    const { error: updateError } = await supabase
-      .from('users')
-      .update([
-        {
-          name: name,
-          address: address,
-          phone: phone,
-          archived: archived,
-        },
-      ])
-      .eq('email', email);
-
-    if (updateError) return NextResponse.json({ error: updateError.message });
-
-    return NextResponse.json({ data });
-  } else {
-    console.log('no error');
-    const { error } = await supabase.from('users').insert([
+  const { data: insertedData, error: insertedError } = await supabase
+    .from('users')
+    .insert([
       {
         name: name,
         email: email,
@@ -61,7 +43,24 @@ export async function POST(req: Request) {
       },
     ]);
 
-    if (error) return NextResponse.json({ error: error.message });
-    return NextResponse.json({ data });
+  if (insertedError) {
+    console.log('error', insertedError.message);
+
+    const { data: updatedData, error: updateError } = await supabase
+      .from('users')
+      .update([
+        {
+          name: name,
+          email: email,
+          address: address,
+          role: 'planner',
+          phone: phone,
+          archived: archived,
+        },
+      ])
+      .eq('email', email);
+
+    return NextResponse.json({ updatedData });
   }
+  return NextResponse.json({ res });
 }

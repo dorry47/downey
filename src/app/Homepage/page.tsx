@@ -78,6 +78,57 @@ export default function Page() {
 
   // router.refresh();
 
+  const allPlanners = async () => {
+    let { data, error } = await supabase
+      .from('users')
+      .select('name, email, phone, address, archived, role')
+      .eq('role', 'planner');
+
+    if (error) {
+      console.log(error);
+    } else {
+      // check data.archived is true, if so delete from data array
+      data?.map((planner: any, id: number) => {
+        if (planner.archived == true) {
+          data?.splice(id, 1);
+        }
+      });
+      return data;
+    }
+  };
+
+  const groupClientsByPlanner = (
+    clients: any[],
+    validPlannerEmails: Set<string>
+  ): Planner[] => {
+    const groupedClients: { [plannerEmail: string]: Planner } = {};
+
+    clients.forEach((client) => {
+      const plannerEmail: string = client.plannerEmail;
+      if (
+        !groupedClients[plannerEmail] &&
+        validPlannerEmails.has(plannerEmail)
+      ) {
+        groupedClients[plannerEmail] = {
+          planner: client.plannerName.trim(), // Set the planner property correctly
+          events: [],
+          plannerEmail: plannerEmail,
+        };
+      }
+
+      if (validPlannerEmails.has(plannerEmail)) {
+        groupedClients[plannerEmail].events.push({
+          names: [client.P_A_FNAME, client.P_B_FNAME],
+          date: `${client.WED_MONTH} ${client.WED_DAY}, ${client.WED_YEAR}`,
+          active: client.ARCHIVED,
+          slug: client.SLUG,
+        });
+      }
+    });
+
+    return Object.values(groupedClients);
+  };
+
   useEffect(() => {
     console.log('planner email', `${state?.user?.email}`);
 
@@ -92,30 +143,29 @@ export default function Page() {
     }
 
     if (state.session !== null) {
-      allClients().then((data: any) => {
-        console.log('pre organized', data);
+      allPlanners().then((plannerData: any) => {
+        console.log('planner data', plannerData);
 
-        // i want you to seperate the data by planners sort of like planner1: [client1, client2, client3] planner2: [client1, client2, client3] but ensure that the client is only listed once
-        data = data?.map((client: any) => {
-          console.log(client);
+        // Create a Set of valid planner emails (non-archived)
+        const validPlannerEmails = new Set(
+          plannerData
+            .filter((planner: any) => !planner.archived)
+            .map((planner: any) => planner.email)
+        );
 
-          return {
-            planner: client.plannerName.trim(),
-            plannerEmail: client.plannerEmail,
-            events: [
-              {
-                names: [client.P_A_FNAME, client.P_B_FNAME],
-                date: `${client.WED_MONTH} ${client.WED_DAY}, ${client.WED_YEAR}`,
-                active: client.ARCHIVED,
-                slug: client.SLUG,
-              },
-            ],
-          };
+        allClients().then((data: any) => {
+          console.log('pre organized', data);
+
+          // Group clients by planner email and include only valid planners
+          const groupedClients = groupClientsByPlanner(
+            data,
+            validPlannerEmails as Set<string>
+          );
+
+          console.log('post organized', groupedClients);
+
+          setClientData(groupedClients as Planner[]);
         });
-
-        console.log('post organized', data);
-
-        setClientData(data as any[]);
       });
     }
   }, [state]);
