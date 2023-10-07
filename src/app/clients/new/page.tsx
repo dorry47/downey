@@ -1149,12 +1149,13 @@ const Page = (props: Props) => {
                       <div className="grid grid-cols-6 gap-6">
                         {[
                           // 'WORKFLOW',
-                          'BUDGET_AND_WORKFLOW',
-                          'ADDRESS',
+
+                          'Workflow_+_Budget_+_Payment',
+                          // 'ADDRESS',
                           'DESIGN_BOARD',
                           'CLIENT_DOCS',
                           'VENDOR_PROPOSALS',
-                          'VENDOR_CONTACT',
+                          // 'VENDOR_CONTACT',
                           'GUEST_INFO',
                           'CALENDAR',
                         ].map((title, id) => (

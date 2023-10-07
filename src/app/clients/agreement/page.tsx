@@ -113,10 +113,11 @@ const Page1 = (props: Props) => {
     }
   }, [state]);
 
-  console.log('fileURL', fileUrl);
+  // console.log('fileURL', fileUrl);
 
   const retrieveFile = async () => {
     const filePath = `${clientSlug}/${clientSlug}-contract.pdf`;
+    console.log('file path', filePath);
 
     const { data: returnedFileData, error: returnedFileError } =
       await supabase.storage.from('pdf_contracts').download(filePath);
@@ -270,7 +271,7 @@ const Page1 = (props: Props) => {
                 <div className=" overflow-hidden">
                   <div className="md:p-0 p-4 mb-10">
                     <div className="agreement-holder grid grid-cols-1 gap-6">
-                      <h2>PAYMENT POLICY</h2>
+                      {/* <h2>PAYMENT POLICY</h2>
                       <p>
                         Downey Street Events accepts cash, money order, or
                         personal check. There is a down payment of 50% of the
@@ -395,14 +396,14 @@ const Page1 = (props: Props) => {
                         decision to use assistants is at the sole discretion of
                         Downey Street Events, and the cost is included in the
                         contract amount.
-                      </p>
+                      </p> */}
 
-                      <h2>Amendments</h2>
+                      {/* <h2>Amendments</h2>
                       <div className="group unit1of1 agreement-holder">
                         <p>{clientData[0]?.AMMEND || 'No amendments.'}</p>
-                      </div>
+                      </div> */}
 
-                      <h2>Additional Contract Details</h2>
+                      <h2>Contract Details</h2>
                       {/* I want to include a PDF file viewer */}
                       {loggedInUser && loggedInUser.role == 'planner' && (
                         <div>
@@ -511,7 +512,7 @@ const Page1 = (props: Props) => {
 
                       <div className="flex flex-col col-span-1">
                         <div className="text-sm align-middle my-4 flex gap-2">
-                          <input
+                          {/* <input
                             {...register('agreement_checkbox')}
                             className=" text-dse-gold my-auto border-dse-gold w-4 h-4 font-serif text-sm rounded"
                             type="checkbox"
@@ -522,9 +523,9 @@ const Page1 = (props: Props) => {
                             htmlFor="agreement_checkbox">
                             We, {partner1Name} and {partner2Name}, accept the
                             terms &amp; conditions as listed above.
-                          </label>
+                          </label> */}
                         </div>
-                        <input
+                        {/* <input
                           type="text"
                           {...register('agreement_signature', {
                             required:
@@ -536,7 +537,7 @@ const Page1 = (props: Props) => {
 
                           className={`border-dse-gold   signatureBox focus-visible:outline-none border-b-2 w-full`}
                           placeholder="Signature"
-                        />
+                        /> */}
                       </div>
                     </div>
                     <div className=" py-3 text-right">
