@@ -11,14 +11,14 @@ export async function POST(req: Request) {
   const supabase = useClient();
 
   if (!urlSlug) {
-    const { data: res, error: inviteError } =
-      await supabase.auth.admin.inviteUserByEmail(
-        data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
-        {
-          data: { role: 'client' },
-          redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
-        }
-      );
+    // const { data: res, error: inviteError } =
+    //   await supabase.auth.admin.inviteUserByEmail(
+    //     data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+    //     {
+    //       data: { role: 'client' },
+    //       redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
+    //     }
+    //   );
 
     const { error } = await supabase.from('new_client').insert([
       {
