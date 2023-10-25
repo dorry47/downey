@@ -24,15 +24,26 @@ export default function RootLayout({
   const pathName = usePathname();
   const isMainPage = pathName === '/';
   const queryClient = new QueryClient();
-
   const router = useRouter();
-
   const [screenHeight, setScreenHeight] = useState(0);
+  const [appReady, setAppReady] = useState(false); // Add a state for app readiness
 
   useEffect(() => {
     const footerHeight = document.querySelector('footer')?.clientHeight || 0;
     setScreenHeight(window.innerHeight - footerHeight);
+
+    setTimeout(() => {
+      setAppReady(true); // Set app readiness to true when loading is complete
+    }, 500); // Replace 2000 with your loading time
   }, []);
+
+  function LoadingScreen() {
+    return (
+      <div className=" h-fit w-fit m-auto flex text-center text-2xl">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <StateProvider>
@@ -50,12 +61,21 @@ export default function RootLayout({
             />
             <meta name="title" content="Downey Street Events - Planning App" />
           </Head>
-          <body className={`${inter.className} `}>
-            <Navigation showLinks={!isMainPage} />
-            <div style={{ minHeight: screenHeight - 120 + 'px' }}>
-              {children}
-            </div>
-            {!isMainPage && <Footer links={footerLinks} />}
+          <body
+            className={`${inter.className} ${
+              !appReady && 'flex align-middle h-screen'
+            }`}>
+            {appReady ? (
+              <>
+                <Navigation showLinks={!isMainPage} />
+                <div style={{ minHeight: screenHeight - 120 + 'px' }}>
+                  {children}
+                </div>
+                {!isMainPage && <Footer links={footerLinks} />}
+              </>
+            ) : (
+              <LoadingScreen />
+            )}
           </body>
         </html>
       </QueryClientProvider>

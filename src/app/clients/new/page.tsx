@@ -55,7 +55,7 @@ const Page = (props: Props) => {
     defaultValues: {
       ADMIN_INFO: {
         PLANNER: '',
-        AMMEND: '',
+        // AMMEND: '',
         ARCHIVED: false,
       },
       EVENT_DETAILS: {
@@ -112,7 +112,7 @@ const Page = (props: Props) => {
         VENDOR_PROPOSALS_URL: '',
         VENDOR_CONTACT_URL: '',
         GUEST_INFO_URL: '',
-        CALENDAR_URL: '',
+        // CALENDAR_URL: '',
       },
       PUBLIC_LINKS: {
         YELP_URL: '',
@@ -206,7 +206,7 @@ const Page = (props: Props) => {
       Object.entries({
         plannerName: ADMIN_INFO.PLANNER,
         'ADMIN_INFO.PLANNER': ADMIN_INFO.PLANNER,
-        'ADMIN_INFO.AMMEND': ADMIN_INFO.AMMEND,
+        // 'ADMIN_INFO.AMMEND': ADMIN_INFO.AMMEND,
         'ADMIN_INFO.ARCHIVED': ADMIN_INFO.ARCHIVED,
         'EVENT_DETAILS.DATE': EVENT_DETAILS.DATE.toString(),
         'EVENT_DETAILS.WED_MONTH': EVENT_DETAILS.WED_MONTH,
@@ -248,7 +248,7 @@ const Page = (props: Props) => {
           PLANNING_LINKS.VENDOR_PROPOSALS_URL,
         'PLANNING_LINKS.VENDOR_CONTACT_URL': PLANNING_LINKS.VENDOR_CONTACT_URL,
         'PLANNING_LINKS.GUEST_INFO_URL': PLANNING_LINKS.GUEST_INFO_URL,
-        'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
+        // 'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
         'PUBLIC_LINKS.TWITTER_URL': PUBLIC_LINKS.TWITTER_URL,
         'PUBLIC_LINKS.YELP_URL': PUBLIC_LINKS.YELP_URL,
         'PUBLIC_LINKS.FACEBOOK_URL': PUBLIC_LINKS.FACEBOOK_URL,
@@ -461,7 +461,7 @@ const Page = (props: Props) => {
                           </select>
                         </div>
 
-                        <div className="sm:col-span-6 col-span-6">
+                        {/* <div className="sm:col-span-6 col-span-6">
                           <label
                             className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                             htmlFor="AMMEND">
@@ -471,7 +471,7 @@ const Page = (props: Props) => {
                             {...register('ADMIN_INFO.AMMEND')}
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                             id="AMMEND"></textarea>
-                        </div>
+                        </div> */}
                         <div className="sm:col-span-4 flex items-start col-span-6">
                           <div className="flex items-center h-5">
                             <input
@@ -1157,7 +1157,7 @@ const Page = (props: Props) => {
                           'VENDOR_PROPOSALS',
                           // 'VENDOR_CONTACT',
                           'GUEST_INFO',
-                          'CALENDAR',
+                          // 'CALENDAR',
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
                             {/* @ts-ignore */}
@@ -1175,17 +1175,17 @@ const Page = (props: Props) => {
                             <input
                               {...register(
                                 // @ts-ignore
-                                `PLANNING_LINKS.${title}_URL`,
+                                `PLANNING_LINKS.${title}_URL`
 
-                                // check if the url is valid
-                                {
-                                  pattern: {
-                                    // make it so it accepts links with or without http(s):// but needs www.
-                                    value:
-                                      /^(https?:\/\/)(www\.)[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
-                                    message: 'Please enter a valid URL',
-                                  },
-                                }
+                                // // check if the url is valid
+                                // {
+                                //   pattern: {
+                                //     // make it so it accepts links with or without http(s):// but needs www.
+                                //     value:
+                                //       /^(https?:\/\/)(www\.)[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
+                                //     message: 'Please enter a valid URL',
+                                //   },
+                                // }
                               )}
                               placeholder={`${title
                                 .split('_')
@@ -1249,14 +1249,12 @@ const Page = (props: Props) => {
                             <input
                               // @ts-ignore
                               {...register(`PUBLIC_LINKS.${title}_URL`, {
-                                pattern: {
-                                  // make it so it accepts links https://www.npmjs.com/package/react-pdf or http://www.react-pdf.org/
-
-                                  value:
-                                    /^(https?:\/\/)(www\.)[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
-
-                                  message: 'Please enter a valid URL',
-                                },
+                                // pattern: {
+                                //   // make it so it accepts links https://www.npmjs.com/package/react-pdf or http://www.react-pdf.org/ or https://drive.google.com/drive/u/1/folders/1NCzyNwCQXEKwOrx63QaBnGv8kwBe9eCH
+                                //   value:
+                                //     /^(https?:\/\/)(www\.)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
+                                //   message: 'Please enter a valid URL',
+                                // },
                               })}
                               placeholder={`${title.toLowerCase()}`}
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm placeholder:capitalize"

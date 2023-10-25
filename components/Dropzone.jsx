@@ -39,8 +39,6 @@ function Previews({ setFileUrl, setFile }) {
           })
         )
       );
-
-      // setFileUrl(acceptedFiles[0].path);
     },
   });
 
@@ -52,27 +50,6 @@ function Previews({ setFileUrl, setFile }) {
       setFile(files[0]);
     }
   }, [files]);
-
-  // const thumbs = files.map((file) => (
-  //   <div style={thumb} key={file.name}>
-  //     <Document
-  //       file={file.preview}
-  //       renderMode="canvas"
-  //       onLoadSuccess={({ numPages }) => {
-  //         if (numPages > 1) {
-  //           console.log('This file has multiple pages!');
-  //         }
-  //       }}>
-  //       <Page
-  //         pageNumber={1}
-  //         width={100}
-  //         height={100}
-  //         renderAnnotationLayer={false}
-  //         renderTextLayer={false}
-  //       />
-  //     </Document>
-  //   </div>
-  // ));
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
@@ -92,11 +69,6 @@ function Previews({ setFileUrl, setFile }) {
           files
         </p>
       </div>
-      {/* <aside
-        className="border-2 border-[#eaeaea] h-fit"
-        style={thumbsContainer}>
-        {thumbs}
-      </aside> */}
     </section>
   );
 }
