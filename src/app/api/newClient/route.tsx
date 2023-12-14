@@ -9,16 +9,19 @@ export async function POST(req: Request) {
   const phone = data.PEOPLE.P_A_PHONE || data.PEOPLE.P_B_PHONE;
   const archived = data.ADMIN_INFO.ARCHIVED;
   const supabase = useClient();
+  const isDev = process.env.NODE_ENV === 'development';
 
   if (!urlSlug) {
-    // const { data: res, error: inviteError } =
-    //   await supabase.auth.admin.inviteUserByEmail(
-    //     data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
-    //     {
-    //       data: { role: 'client' },
-    //       redirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
-    //     }
-    //   );
+    const { data: res, error: inviteError } =
+      await supabase.auth.admin.inviteUserByEmail(
+        data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+        {
+          data: { role: 'client' },
+          redirectTo: isDev
+            ? `http://localhost:3000/auth/callback?next=/update-password`
+            : `https://planning.downeystreetevents.com/auth/callback?next=/update-password`,
+        }
+      );
 
     const { error } = await supabase.from('new_client').insert([
       {
