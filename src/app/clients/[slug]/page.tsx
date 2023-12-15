@@ -1,12 +1,13 @@
 'use client';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import QuickLink from '../../../../components/Slug/QuickLink';
 import quickLinks from '../../../data/quickLinks.json';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useClient } from '../../../../lib/useClient';
 import { bgImages } from '../../../../constants/NEW_CLIENT_CONSTS';
 import { set } from 'react-hook-form';
+import { useStateContext } from '../../../../context/StateContext';
 interface PlanningLinks {
   workflow_url: string;
   budget_url: string;
@@ -59,13 +60,18 @@ interface ClientData {
 }
 
 const Page = () => {
-  const router = usePathname();
-  const clientSlug = router.split('/clients/')[1];
+  const pathName = usePathname();
+  const router = useRouter();
+  const clientSlug = pathName.split('/clients/')[1];
   const [clientData, setClientData] = useState<ClientData>();
   const [plannerData, setPlannerData] = useState<any>();
   const [bgImageURL, setBgImageURL] = useState<any>('');
   const [documents, setDocuments] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
+  const { state, setState } = useStateContext();
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  const supabase = useClient();
+
   const fetchedPlanningLinks = useMemo(
     () => clientData?.PLANNING_LINKS,
     [clientData]
@@ -99,9 +105,21 @@ const Page = () => {
     ];
   }, [fetchedPlanningLinks]);
 
-  console.log('planningLinks', planningLinks);
+  // useEffect(() => {
+  //   const loggedInUser = async () => {
+  //     await supabase
+  //       .from('users')
+  //       .select('*')
+  //       .eq('email', state?.user?.email)
+  //       .then((data: any) => {
+  //         console.log('slug signed in user', data?.data[0]);
+  //         setLoggedInUser(data?.data[0]);
+  //       });
+  //   };
+  //   loggedInUser();
+  // }, [state?.user?.email]);
 
-  const supabase = useClient();
+  console.log('planningLinks', planningLinks);
 
   useEffect(() => {
     fetchDocuments().then((data: any) => {

@@ -17,11 +17,10 @@ export async function POST(req: Request) {
         data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
         {
           data: { role: 'client' },
-          redirectTo: isDev
-            ? `http://localhost:3000/auth/callback?next=/update-password`
-            : `https://planning.downeystreetevents.com/auth/callback?next=/update-password`,
         }
       );
+
+    if (inviteError) return NextResponse.json({ error: inviteError.message });
 
     const { error } = await supabase.from('new_client').insert([
       {
@@ -41,6 +40,8 @@ export async function POST(req: Request) {
     ]);
 
     if (error) return NextResponse.json({ error: 'Client already exists.' });
+
+    return NextResponse.json({ data: res });
   } else {
     const { error } = await supabase
       .from('new_client')

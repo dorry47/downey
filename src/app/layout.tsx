@@ -39,8 +39,8 @@ export default function RootLayout({
 
   function LoadingScreen() {
     return (
-      <div className=" h-fit w-fit m-auto flex text-center text-2xl">
-        Loading...
+      <div className="fixed z-[1000] bg-white justify-center align-middle top-0 bottom-0 left-0 right-0  h-full w-full m-auto flex text-center text-2xl">
+        <div className="m-auto">Loading...</div>
       </div>
     );
   }
@@ -61,21 +61,13 @@ export default function RootLayout({
             />
             <meta name="title" content="Downey Street Events - Planning App" />
           </Head>
-          <body
-            className={`${inter.className} ${
-              !appReady && 'flex align-middle h-screen'
-            }`}>
-            {appReady ? (
-              <>
-                <Navigation showLinks={!isMainPage} />
-                <div style={{ minHeight: screenHeight - 120 + 'px' }}>
-                  {children}
-                </div>
-                {!isMainPage && <Footer links={footerLinks} />}
-              </>
-            ) : (
-              <LoadingScreen />
-            )}
+          <body className={`${inter.className} `}>
+            {!appReady && <LoadingScreen />}
+            <Navigation showLinks={!isMainPage} />
+            <div style={{ minHeight: screenHeight - 120 + 'px' }}>
+              {children}
+            </div>
+            {!isMainPage && <Footer links={footerLinks} />}
           </body>
         </html>
       </QueryClientProvider>
