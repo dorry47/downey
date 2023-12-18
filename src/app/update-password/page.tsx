@@ -89,9 +89,10 @@ const Page = (props: Props) => {
     console.log('password', data.PASSWORD);
 
     // Update the user's password
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: data.PASSWORD,
-    });
+    const { data: userUpdateData, error: updateError } =
+      await supabase.auth.updateUser({
+        password: data.PASSWORD,
+      });
 
     if (updateError) {
       console.error(updateError);
@@ -99,7 +100,7 @@ const Page = (props: Props) => {
       return;
     } else {
       setSubmitted(true);
-      console.log('Password updated successfully');
+      console.log('Password updated successfully', userUpdateData);
     }
   };
 
@@ -111,7 +112,7 @@ const Page = (props: Props) => {
   useEffect(() => {
     if (submitted) {
       setTimeout(() => {
-        router.push('/');
+        router.push('/Homepage');
       }, 3000);
     }
   }, [submitted]);
