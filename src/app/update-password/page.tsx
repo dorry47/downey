@@ -5,6 +5,8 @@ import { useStateContext } from '../../../context/StateContext';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {};
 
@@ -93,6 +95,7 @@ const Page = (props: Props) => {
 
     if (updateError) {
       console.error(updateError);
+      toast.error(updateError.message);
       return;
     } else {
       setSubmitted(true);
@@ -198,6 +201,18 @@ const Page = (props: Props) => {
             </div>
           </div>
         )}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </div>
   );
