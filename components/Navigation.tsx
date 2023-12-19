@@ -46,29 +46,30 @@ const Navigation = (props: Props) => {
     }
   };
 
+  const pathSlug = path.split('/clients/')[1];
+  console.log('path slug', pathSlug);
+
+  const checkLoggedInUser = async () => {
+    await supabase
+      .from('users')
+      .select('*')
+      .eq('email', state?.user?.email)
+      .then((data: any) => {
+        console.log('signed in user', data?.data[0]);
+        setLoggedInUser(data?.data[0]);
+        const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
+        console.log('formatted name', formattedName);
+        if (formattedName != pathSlug && role == 'client') {
+          console.log('redirecting to', `/clients/${formattedName}`);
+          // If not, redirect the user to their own portal
+          router.push(`/clients/new?edit=${formattedName}`);
+        }
+      });
+  };
+
   useEffect(() => {
-    const loggedInUser = async () => {
-      await supabase
-        .from('users')
-        .select('*')
-        .eq('email', state?.user?.email)
-        .then((data: any) => {
-          console.log('signed in user', data?.data[0]);
-          setLoggedInUser(data?.data[0]);
-          const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
-          console.log('formatted name', formattedName);
-          if (
-            formattedName !== clientSlug &&
-            state.user !== null &&
-            role == 'client'
-          ) {
-            // If not, redirect the user to their own portal
-            router.push(`/clients/new?edit=${formattedName}`);
-          }
-        });
-    };
-    loggedInUser();
-  }, [state?.user]);
+    checkLoggedInUser();
+  }, [state?.user, path, router]);
 
   useEffect(() => {
     handleSession();
