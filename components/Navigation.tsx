@@ -35,7 +35,7 @@ const Navigation = (props: Props) => {
     try {
       await supabase.auth.signOut();
       localStorage.clear();
-      setState({ ...state, session: null, user: null });
+      setState({ ...state, session: null, user: null, showMobileMenu: false });
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
@@ -139,11 +139,13 @@ const Navigation = (props: Props) => {
       <div className="md:hidden relative flex border-t-[1px] border-white">
         {/* mobile menu */}
         <div className="flex items-center">
-          <Link
-            className="text-[rgba(219,96,53)] px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em]  font-normal"
-            href="/clients/new">
-            + New Client
-          </Link>
+          {role != 'client' && state.session != null && (
+            <Link
+              className="text-[rgba(219,96,53)] px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em]  font-normal"
+              href="/clients/new">
+              + New Client
+            </Link>
+          )}
         </div>
         <div className=" flex justify-center w-1/3 h-12 m-auto">
           <Link className="relative w-full h-full m-auto" href="/Homepage">
@@ -158,29 +160,31 @@ const Navigation = (props: Props) => {
         </div>
         {/* hamburger icon */}
         <div className=" flex items-center justify-end">
-          <button
-            type="button"
-            onClick={() => {
-              setState({ ...state, showMobileMenu: !state.showMobileMenu });
-            }}
-            className="focus:outline-none focus:ring-offset-2 focus:ring-transparent inline-flex items-center px-4 my-0 text-sm font-normal text-white border-0 border-transparent rounded-md shadow-sm"
-            aria-controls="mobile-menu"
-            aria-expanded="false">
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="block w-6 h-6"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24">
-              <path
-                stroke="#db6035"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+          {state.session != null && (
+            <button
+              type="button"
+              onClick={() => {
+                setState({ ...state, showMobileMenu: !state.showMobileMenu });
+              }}
+              className="focus:outline-none focus:ring-offset-2 focus:ring-transparent inline-flex items-center px-4 my-0 text-sm font-normal text-white border-0 border-transparent rounded-md shadow-sm"
+              aria-controls="mobile-menu"
+              aria-expanded="false">
+              <span className="sr-only">Open main menu</span>
+              <svg
+                className="block w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24">
+                <path
+                  stroke="#db6035"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
       <div className=" overflow-hidden">
@@ -197,21 +201,25 @@ const Navigation = (props: Props) => {
           style={{ maxHeight: state.showMobileMenu ? '100vh' : '0' }}
           id="mobile-menu">
           <div className="sm:px-3 px-2 pt-2 pb-3 space-y-1">
-            <Link
-              className="block px-3 py-2 text-base font-normal text-black rounded-md"
-              href="/Homepage">
-              Clients
-            </Link>
-            <Link
-              className="block px-3 py-2 text-base font-normal text-black rounded-md"
-              href="/planners">
-              Planners
-            </Link>
-            <Link
-              className="block px-3 py-2 text-base font-normal text-black rounded-md"
-              href={`/planners/edit/${plannerSlug}`}>
-              My Info
-            </Link>
+            {role != 'client' && (
+              <>
+                <Link
+                  className="block px-3 py-2 text-base font-normal text-black rounded-md"
+                  href="/Homepage">
+                  Clients
+                </Link>
+                <Link
+                  className="block px-3 py-2 text-base font-normal text-black rounded-md"
+                  href="/planners">
+                  Planners
+                </Link>
+                <Link
+                  className="block px-3 py-2 text-base font-normal text-black rounded-md"
+                  href={`/planners/edit/${plannerSlug}`}>
+                  My Info
+                </Link>
+              </>
+            )}
             <button
               className="block px-3 py-2 mx-auto text-base font-normal text-black rounded-md"
               rel="nofollow"
