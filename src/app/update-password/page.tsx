@@ -100,6 +100,7 @@ const Page = (props: Props) => {
       return;
     } else {
       setSubmitted(true);
+
       console.log('Password updated successfully', userUpdateData);
     }
   };
@@ -109,10 +110,28 @@ const Page = (props: Props) => {
     console.log('errors: ', errors);
   };
 
+  const handleAuthChange = async (event: any, session: any) => {
+    if (event === 'SIGNED_IN' && session !== null) {
+      console.log('session', event);
+      localStorage.setItem('session', JSON.stringify(session));
+      localStorage.setItem('user', JSON.stringify(session.user));
+      setState({
+        ...state,
+        session,
+        user: session.user,
+      });
+
+      window.location.href = '/Homepage';
+    } else {
+      console.log('no session');
+    }
+  };
+
   useEffect(() => {
     if (submitted) {
       setTimeout(() => {
-        router.push('/Homepage');
+        const { data: authListener } =
+          supabase.auth.onAuthStateChange(handleAuthChange);
       }, 3000);
     }
   }, [submitted]);
