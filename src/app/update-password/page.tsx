@@ -112,7 +112,7 @@ const Page = (props: Props) => {
   useEffect(() => {
     if (submitted) {
       setTimeout(() => {
-        router.push('/Homepage');
+        router.push('/');
       }, 3000);
     }
   }, [submitted]);
