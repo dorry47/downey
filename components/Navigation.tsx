@@ -24,6 +24,8 @@ const Navigation = (props: Props) => {
     // console.log('get user', user);
     if (session) {
       setState({ ...state, session, user });
+    } else {
+      router.push('/');
     }
   };
 
@@ -65,17 +67,7 @@ const Navigation = (props: Props) => {
   }, [state?.user]);
 
   useEffect(() => {
-    if (state.session == null) {
-      router.push('/');
-    }
-  }, [path, params]);
-
-  useEffect(() => {
-    console.log('state', state);
     handleSession();
-    if (state.session == null) {
-      router.push('/');
-    }
   }, []);
 
   const slug = loggedInUser?.name;

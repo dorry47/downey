@@ -40,7 +40,11 @@ const Page = (props: Props) => {
         user: session.user,
       });
 
-      window.location.href = '/Homepage';
+      console.log('session', session);
+
+      if (session != null) {
+        window.location.href = '/Homepage';
+      }
     } else {
       console.log('no session');
     }
