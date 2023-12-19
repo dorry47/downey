@@ -125,7 +125,9 @@ const Navigation = (props: Props) => {
           <Link
             className="relative w-full h-full m-auto"
             onClick={() => {
-              router.back();
+              if (pathSlug != 'Lucy-Kevin') {
+                router.back();
+              }
             }}
             href={
               role == 'client'
@@ -183,7 +185,9 @@ const Navigation = (props: Props) => {
           <Link
             className="relative w-full h-full m-auto"
             onClick={() => {
-              router.back();
+              if (pathSlug != 'Lucy-Kevin') {
+                router.back();
+              }
             }}
             href={
               role == 'client'
