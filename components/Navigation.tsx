@@ -82,8 +82,11 @@ const Navigation = (props: Props) => {
     console.log('path slug', pathSlug);
     console.log('client slug', clientSlug);
     if (
+      clientSlug != undefined &&
+      pathSlug != undefined &&
       pathSlug != 'Lucy-Kevin' &&
       clientSlug != pathSlug &&
+      pathSlug != 'new' &&
       role == 'client'
     ) {
       router.push(`/clients/${clientSlug}`);
