@@ -76,7 +76,7 @@ const Navigation = (props: Props) => {
 
   useEffect(() => {
     checkLoggedInUser();
-  }, [state?.user]);
+  }, [state?.user != null]);
 
   useEffect(() => {
     console.log('path slug', pathSlug);
