@@ -124,7 +124,16 @@ const Navigation = (props: Props) => {
         <div className=" lg:w-96 flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
           <Link
             className="relative w-full h-full m-auto"
-            href={role == 'client' ? `/clients/${clientSlug}` : `/Homepage`}>
+            onClick={() => {
+              router.back();
+            }}
+            href={
+              role == 'client'
+                ? `/clients/${clientSlug}`
+                : state.session != null
+                ? `/Homepage`
+                : ''
+            }>
             <Image
               priority
               className="p-2"
@@ -142,9 +151,7 @@ const Navigation = (props: Props) => {
                 href={` ${
                   role == 'client'
                     ? `/clients/${clientSlug}`
-                    : state.session != null
-                    ? `/Homepage`
-                    : '/'
+                    : `/planners/edit/${plannerSlug}`
                 }`}>
                 Hi {loggedInUser?.name}
               </Link>{' '}
@@ -175,12 +182,15 @@ const Navigation = (props: Props) => {
         <div className=" flex justify-center w-1/3 h-12 m-auto">
           <Link
             className="relative w-full h-full m-auto"
+            onClick={() => {
+              router.back();
+            }}
             href={
               role == 'client'
                 ? `/clients/${clientSlug}`
                 : state.session != null
                 ? `/Homepage`
-                : '/'
+                : ''
             }>
             <Image
               priority
