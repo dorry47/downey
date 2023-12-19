@@ -34,7 +34,7 @@ export default function RootLayout({
 
     setTimeout(() => {
       setAppReady(true); // Set app readiness to true when loading is complete
-    }, 500); // Replace 2000 with your loading time
+    }, 1000); // Replace 2000 with your loading time
   }, []);
 
   function LoadingScreen() {
