@@ -395,8 +395,8 @@ const Page = () => {
                 <h4 className="text-left text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-normal uppercase text-xxs tracking-extrawide">
                   Couples Details
                 </h4>
-                <div className="flex gap-6">
-                  <div className="md:w-1/2 pb-6">
+                <div className="flex flex-wrap gap-6">
+                  <div className="md:w-1/2 w-full pb-6">
                     <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                       {clientData?.P_A_FNAME} {clientData?.P_A_LNAME}
                     </h2>
@@ -411,7 +411,7 @@ const Page = () => {
                       {clientData?.P_A_STATE}
                     </p>
                   </div>
-                  <div className="md:w-1/2">
+                  <div className="md:w-1/2 w-full">
                     <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                       {clientData?.P_B_FNAME} {clientData?.P_B_LNAME}
                     </h2>
@@ -446,7 +446,7 @@ const Page = () => {
             </div>
             <div className="col-span-3">
               <Link href={`/clients/new?edit=${clientData?.SLUG}`}>
-                <button className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                <button className="md:py-2 mt-4 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
                   Edit Event Details
                 </button>
               </Link>{' '}
