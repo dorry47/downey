@@ -16,7 +16,13 @@ const Navigation = (props: Props) => {
   const path = usePathname();
   const params = useSearchParams();
   const [loggedInUser, setLoggedInUser] = React.useState<any>(null);
+  const slug = loggedInUser?.name;
+  const plannerSlug = slug?.replace(/\s+/g, '-').toLowerCase();
+  const clientSlug = loggedInUser?.name.replace(' + ', '-');
+  const pathSlug = path.split('/clients/')[1];
+  console.log('path slug', pathSlug);
 
+  const role = loggedInUser?.role;
   console.log('path', path);
 
   const handleSession = async () => {
@@ -46,9 +52,6 @@ const Navigation = (props: Props) => {
     }
   };
 
-  const pathSlug = path.split('/clients/')[1];
-  console.log('path slug', pathSlug);
-
   const checkLoggedInUser = async () => {
     await supabase
       .from('users')
@@ -69,17 +72,23 @@ const Navigation = (props: Props) => {
 
   useEffect(() => {
     checkLoggedInUser();
-  }, [state?.user, path, router]);
+  }, [state?.user]);
+
+  useEffect(() => {
+    console.log('path slug', pathSlug);
+    console.log('client slug', clientSlug);
+    if (
+      pathSlug != 'Lucy-Kevin' &&
+      clientSlug != pathSlug &&
+      role == 'client'
+    ) {
+      router.push(`/clients/${clientSlug}`);
+    }
+  }, [clientSlug]);
 
   useEffect(() => {
     handleSession();
   }, []);
-
-  const slug = loggedInUser?.name;
-  const plannerSlug = slug?.replace(/\s+/g, '-').toLowerCase();
-  const clientSlug = loggedInUser?.name.replace(' + ', '-');
-
-  const role = loggedInUser?.role;
 
   return (
     <nav className="bg-[#eed9d4]  relative h-12 md:h-16 w-full text-xl px-[2rem]">
