@@ -171,7 +171,9 @@ const Navigation = (props: Props) => {
           )}
         </div>
         <div className=" flex justify-center w-1/3 h-12 m-auto">
-          <Link className="relative w-full h-full m-auto" href="/Homepage">
+          <Link
+            className="relative w-full h-full m-auto"
+            href={role == 'client' ? `/clients/${clientSlug}` : `/Homepage`}>
             <Image
               priority
               className=""
