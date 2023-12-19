@@ -62,7 +62,11 @@ const Navigation = (props: Props) => {
         setLoggedInUser(data?.data[0]);
         const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
         console.log('formatted name', formattedName);
-        if (formattedName != pathSlug && role == 'client') {
+        if (
+          formattedName != pathSlug &&
+          role == 'client' &&
+          state.session != null
+        ) {
           console.log('redirecting to', `/clients/${formattedName}`);
           // If not, redirect the user to their own portal
           router.push(`/clients/new?edit=${formattedName}`);
