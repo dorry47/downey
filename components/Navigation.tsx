@@ -49,7 +49,6 @@ const Navigation = (props: Props) => {
         .then((data: any) => {
           console.log('signed in user', data?.data[0]);
           setLoggedInUser(data?.data[0]);
-          // "Luna12 + Taylor12"
           const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
           console.log('formatted name', formattedName);
           if (
@@ -66,7 +65,17 @@ const Navigation = (props: Props) => {
   }, [state?.user]);
 
   useEffect(() => {
+    if (state.session == null) {
+      router.push('/');
+    }
+  }, [path, params]);
+
+  useEffect(() => {
+    console.log('state', state);
     handleSession();
+    if (state.session == null) {
+      router.push('/');
+    }
   }, []);
 
   const slug = loggedInUser?.name;
