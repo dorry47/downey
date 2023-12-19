@@ -17,6 +17,8 @@ const Navigation = (props: Props) => {
   const params = useSearchParams();
   const [loggedInUser, setLoggedInUser] = React.useState<any>(null);
 
+  console.log('path', path);
+
   const handleSession = async () => {
     const session = JSON.parse(localStorage.getItem('session') as string);
     const user = JSON.parse(localStorage.getItem('user') as string);
@@ -25,7 +27,9 @@ const Navigation = (props: Props) => {
     if (session) {
       setState({ ...state, session, user });
     } else {
-      router.push('/');
+      if (path !== '/clients/Lucy-Kevin') {
+        router.push('/');
+      }
     }
   };
 
@@ -80,7 +84,7 @@ const Navigation = (props: Props) => {
     <nav className="bg-[#eed9d4]  relative h-12 md:h-16 w-full text-xl px-[2rem]">
       <div className="md:flex max-w-7xl items-center justify-between hidden h-full m-auto">
         <div className="flex items-baseline flex-1 space-x-1">
-          {props.showLinks && role != 'client' && (
+          {props.showLinks && role != 'client' && state.session != null && (
             <>
               <Link
                 className="text-[rgba(219,96,53)] px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em]  font-normal"
@@ -101,7 +105,9 @@ const Navigation = (props: Props) => {
           )}
         </div>
         <div className=" lg:w-96 flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
-          <Link className="relative w-full h-full m-auto" href="/Homepage">
+          <Link
+            className="relative w-full h-full m-auto"
+            href={role == 'client' ? `/clients/${clientSlug}` : `/Homepage`}>
             <Image
               priority
               className="p-2"
@@ -112,7 +118,7 @@ const Navigation = (props: Props) => {
           </Link>
         </div>
         <div className="flex justify-end flex-1">
-          {props.showLinks && (
+          {props.showLinks && state.session != null && (
             <>
               <Link
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"
