@@ -142,7 +142,9 @@ const Navigation = (props: Props) => {
                 href={` ${
                   role == 'client'
                     ? `/clients/${clientSlug}`
-                    : `/planners/edit/${plannerSlug}`
+                    : state.session != null
+                    ? `/Homepage`
+                    : '/'
                 }`}>
                 Hi {loggedInUser?.name}
               </Link>{' '}
@@ -173,7 +175,13 @@ const Navigation = (props: Props) => {
         <div className=" flex justify-center w-1/3 h-12 m-auto">
           <Link
             className="relative w-full h-full m-auto"
-            href={role == 'client' ? `/clients/${clientSlug}` : `/Homepage`}>
+            href={
+              role == 'client'
+                ? `/clients/${clientSlug}`
+                : state.session != null
+                ? `/Homepage`
+                : '/'
+            }>
             <Image
               priority
               className=""
