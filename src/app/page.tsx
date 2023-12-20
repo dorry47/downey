@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useStateContext } from '../../context/StateContext';
 import Link from 'next/link';
 import { useClient } from '../../lib/useClient';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {};
 
@@ -12,6 +14,9 @@ const Page = (props: Props) => {
   const router = useRouter();
   const { state, setState } = useStateContext();
   const [loading, setLoading] = useState(true);
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   const supabase = useClient();
 
@@ -28,6 +33,22 @@ const Page = (props: Props) => {
       clearTimeout(timer);
     };
   }, []);
+
+  const forgotPasswordFunction = async () => {
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      forgotPasswordEmail,
+      {
+        redirectTo: 'http://localhost:3000/update-password',
+      }
+    );
+    if (error) {
+      console.log(error);
+      toast.error(error.message);
+    } else {
+      console.log('email sent');
+      setEmailSent(true);
+    }
+  };
 
   const handleAuthChange = async (event: any, session: any) => {
     if (event === 'SIGNED_IN' && session !== null) {
@@ -88,40 +109,97 @@ const Page = (props: Props) => {
                 </Link>
               </p>
             </div>
-            <Auth
-              supabaseClient={supabase}
-              appearance={{
-                style: {
-                  button: {
-                    background: '#d98e48',
-                    color: 'white',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '0.375rem',
-                  },
-                  input: {
-                    padding: '0.5rem 0.75rem',
-                  },
-                },
-              }}
-              localization={{
-                variables: {
-                  sign_in: {
-                    email_label: '',
-                    password_label: '',
-                    email_input_placeholder: 'Email address',
-                    password_input_placeholder: 'Password',
-                    button_label: 'Log in',
-                  },
-                  sign_up: {
-                    link_text: '',
-                  },
-                },
-              }}
-              providers={[]}
-            />
+            {!forgotPassword ? (
+              <>
+                <Auth
+                  supabaseClient={supabase}
+                  appearance={{
+                    style: {
+                      button: {
+                        background: '#d98e48',
+                        color: 'white',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '0.375rem',
+                      },
+                      input: {
+                        padding: '0.5rem 0.75rem',
+                      },
+                    },
+                  }}
+                  localization={{
+                    variables: {
+                      sign_in: {
+                        email_label: '',
+                        password_label: '',
+                        email_input_placeholder: 'Email address',
+                        password_input_placeholder: 'Password',
+                        button_label: 'Log in',
+                      },
+                      sign_up: {
+                        link_text: '',
+                      },
+                      forgotten_password: {
+                        link_text: '',
+                      },
+                    },
+                  }}
+                  providers={[]}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForgotPassword(true);
+                  }}
+                  className="!mt-0 underline">
+                  Forgot Password
+                </button>
+              </>
+            ) : (
+              <>
+                {!emailSent ? (
+                  <>
+                    <input
+                      onChange={(e) => {
+                        setForgotPasswordEmail(e.target.value);
+                      }}
+                      type="email"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        forgotPasswordFunction();
+                      }}
+                      style={{
+                        background: '#d98e48',
+                        color: 'white',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '0.375rem',
+                      }}>
+                      Send Password Reset Instructions
+                    </button>
+                  </>
+                ) : (
+                  <p className="m-auto font-bold">
+                    Check your email for password reset instructions.
+                  </p>
+                )}
+              </>
+            )}
           </React.Fragment>
         )}
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

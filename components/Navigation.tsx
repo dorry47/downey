@@ -33,7 +33,12 @@ const Navigation = (props: Props) => {
     if (session) {
       setState({ ...state, session, user });
     } else {
-      if (path !== '/clients/Lucy-Kevin' && path !== '/update-password') {
+      if (
+        path !== '/clients/Lucy-Kevin' &&
+        path !== '/update-password' &&
+        path != '/' &&
+        path != ' /auth/callback'
+      ) {
         router.push('/');
       }
     }
