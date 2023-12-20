@@ -58,30 +58,33 @@ const Navigation = (props: Props) => {
   };
 
   const checkLoggedInUser = async () => {
-    await supabase
-      .from('users')
-      .select('*')
-      .eq('email', state?.user?.email)
-      .then((data: any) => {
-        console.log('signed in user', data?.data[0]);
-        setLoggedInUser(data?.data[0]);
-        const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
-        console.log('formatted name', formattedName);
-        if (
-          formattedName != pathSlug &&
-          role == 'client' &&
-          state.session != null
-        ) {
-          console.log('redirecting to', `/clients/${formattedName}`);
-          // If not, redirect the user to their own portal
-          router.push(`/clients/new?edit=${formattedName}`);
-        }
-      });
+    if (state.user != null) {
+      await supabase
+        .from('users')
+        .select('*')
+        .eq('email', state?.user?.email)
+        .then((data: any) => {
+          console.log('signed in user', data?.data[0]);
+          const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
+          console.log('formatted name', formattedName);
+          setLoggedInUser(data?.data[0]);
+
+          if (
+            formattedName != pathSlug &&
+            role == 'client' &&
+            state.session != null
+          ) {
+            console.log('redirecting to', `/clients/${formattedName}`);
+            // If not, redirect the user to their own portal
+            router.push(`/clients/new?edit=${formattedName}`);
+          }
+        });
+    }
   };
 
   useEffect(() => {
     checkLoggedInUser();
-  }, [state?.user != null]);
+  }, [state.user]);
 
   useEffect(() => {
     console.log('path slug', pathSlug);
@@ -160,7 +163,7 @@ const Navigation = (props: Props) => {
                     ? `/clients/${clientSlug}`
                     : `/planners/edit/${plannerSlug}`
                 }`}>
-                Hi {loggedInUser?.name}
+                Hi {loggedInUser && loggedInUser.name}
               </Link>{' '}
               <button
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"

@@ -7,7 +7,7 @@ import footerLinks from '../data/footerLinks.json';
 import { usePathname, useRouter } from 'next/navigation';
 import { StateProvider } from '../../context/StateContext';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import {
   QueryClient,
   QueryClientProvider,
@@ -63,10 +63,14 @@ export default function RootLayout({
           </Head>
           <body className={`${inter.className} `}>
             {!appReady && <LoadingScreen />}
-            <Navigation showLinks={!isMainPage} />
+            <Suspense fallback={<LoadingScreen />}>
+              <Navigation showLinks={!isMainPage} />
+            </Suspense>
+
             <div style={{ minHeight: screenHeight - 120 + 'px' }}>
               {children}
             </div>
+
             {!isMainPage && <Footer links={footerLinks} />}
           </body>
         </html>
