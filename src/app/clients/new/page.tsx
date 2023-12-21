@@ -36,12 +36,10 @@ const Page = (props: Props) => {
   const supabase = useClient();
   const router = useRouter();
   const params = useSearchParams();
+  const slug = editClientData[0]?.SLUG;
+  console.log('slug', slug);
 
   const urlParameter = params.get('edit');
-
-  console.log('url parameter', urlParameter);
-
-  console.log('state', state);
 
   const {
     register,
@@ -130,6 +128,32 @@ const Page = (props: Props) => {
     control,
     defaultValue: false, // Initial value for the checkbox
   });
+
+  const checkAndRedirectIfVisited = (slug: string | undefined) => {
+    // Use a unique key for identifying whether the user has visited the page
+    const visitedKey = 'hasVisitedPage';
+
+    // Check if the user has visited the page before
+    const hasVisited = localStorage.getItem(visitedKey);
+
+    // If the user has visited and a valid slug is provided, redirect them to the specified URL
+    if (hasVisited == 'true' && slug != undefined) {
+      // Use Next.js router for redirection
+      router.push(`/clients/${slug}`);
+      console.log('redirecting to', `/clients/${slug}`);
+    } else {
+      // If the user hasn't visited or no valid slug, set the flag in local storage
+      localStorage.setItem(visitedKey, 'true');
+      console.log('setting visited key');
+    }
+  };
+
+  useEffect(() => {
+    if (!slug) return;
+    if (slug && !isLoading) {
+      checkAndRedirectIfVisited(slug);
+    }
+  }, [slug]);
 
   const plannerData = async () => {
     let { data, error } = await supabase

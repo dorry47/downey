@@ -49,7 +49,12 @@ const Navigation = (props: Props) => {
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
-      localStorage.clear();
+      // localStorage clear except for visited key
+      localStorage.removeItem('session');
+      localStorage.removeItem('user');
+      localStorage.removeItem('loggedInUser');
+      localStorage.removeItem('myAppState');
+
       setState({ ...state, session: null, user: null, showMobileMenu: false });
       router.push('/');
     } catch (error) {
