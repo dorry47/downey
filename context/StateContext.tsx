@@ -38,17 +38,24 @@ const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
   // Use the local storage key for your state
   const localStorageKey = 'myAppState';
 
-  // Retrieve the state from local storage on component mount
-  const storedState =
-    JSON.parse(localStorage.getItem(localStorageKey) || 'null') || initialState;
+  // Check if localStorage is available
+  const isLocalStorageAvailable = typeof localStorage !== 'undefined';
+
+  // Retrieve the state from local storage on component mount (or use initialState)
+  const storedState = isLocalStorageAvailable
+    ? JSON.parse(localStorage.getItem(localStorageKey) || 'null') ||
+      initialState
+    : initialState;
 
   // Use state with the initial value from local storage
   const [state, setState] = useState<StateType>(storedState);
 
-  // Save the state to local storage whenever it changes
+  // Save the state to local storage whenever it changes (if localStorage is available)
   useEffect(() => {
-    localStorage.setItem(localStorageKey, JSON.stringify(state));
-  }, [state]);
+    if (isLocalStorageAvailable) {
+      localStorage.setItem(localStorageKey, JSON.stringify(state));
+    }
+  }, [state, isLocalStorageAvailable]);
 
   return (
     <StateContext.Provider value={{ state, setState }}>
