@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       },
     ]);
 
-    if (error) return NextResponse.json({ error: 'Client already exists.' });
+    if (error) return NextResponse.json({ error: error });
 
     return NextResponse.json({ data: res });
   } else {

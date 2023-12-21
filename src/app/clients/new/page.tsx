@@ -301,7 +301,7 @@ const Page = (props: Props) => {
       if (responseData.error) {
         if (responseData.error) {
           console.log('error', responseData.error);
-          toast.error('Clients with those names already exist.', {
+          toast.error(responseData.error, {
             position: 'bottom-right',
             autoClose: 5000,
             hideProgressBar: false,
