@@ -31,6 +31,8 @@ const Page = (props: Props) => {
   const [editClientData, setEditClientData] = React.useState<any>([]);
   const [submitted, setSubmitted] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [password, setPassword] = React.useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = React.useState('');
   const { state, setState } = useStateContext();
   const supabase = useClient();
   const router = useRouter();
@@ -55,6 +57,7 @@ const Page = (props: Props) => {
         // AMMEND: '',
         ARCHIVED: false,
       },
+
       EVENT_DETAILS: {
         DATE: '',
         WED_MONTH: '',
@@ -286,7 +289,60 @@ const Page = (props: Props) => {
     data.SLUG =
       data.PEOPLE.P_A_FNAME.trim() + '-' + data.PEOPLE.P_B_FNAME.trim();
 
-    console.log('data', data);
+    if (password !== passwordConfirmation) {
+      toast.error('Passwords do not match', {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+      return;
+    } else if (password !== '') {
+      const { data: refreshedSession, error: refreshError } =
+        await supabase.auth.refreshSession({
+          refresh_token: state.session?.refresh_token,
+        });
+      if (refreshError) {
+        console.log('session', state.session);
+
+        console.log('refresh error', refreshError);
+        return toast.error(refreshError.message, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      }
+      console.log('refreshed session', refreshedSession);
+
+      const { data: userUpdateData, error: updateError } =
+        await supabase.auth.updateUser({
+          password: password,
+        });
+      if (updateError) {
+        console.log('update error', updateError);
+        return toast.error(updateError.message, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      } else {
+        console.log('Password updated successfully', userUpdateData);
+      }
+    }
 
     try {
       const response = await fetch('/api/newClient', {
@@ -1279,6 +1335,107 @@ const Page = (props: Props) => {
                             />
                           </div>
                         ))}
+                      </div>
+                      <div
+                        className={`md:px-0 px-4 py-3 gap-4 flex justify-end text-right ${
+                          state.loggedInUser?.role !== 'client'
+                            ? 'visible'
+                            : 'hidden'
+                        }`}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // go back to homepage
+                            router.push(
+                              `/clients/${state.loggedInUser?.name.replace(
+                                ' + ',
+                                '-'
+                              )}`
+                            );
+                          }}
+                          className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                          Back
+                        </button>
+                        <button
+                          type="submit"
+                          name="commit"
+                          className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                          {state.loggedInUser?.role == 'planner' &&
+                          urlParameter == null
+                            ? 'Create'
+                            : 'Update'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={`sm:mt-0 mt-10 mb-20 ${
+                state.loggedInUser?.role == 'client' ? 'visible' : 'hidden'
+              }`}>
+              <div className="md:grid md:grid-cols-3 md:gap-6">
+                <div className="md:col-span-1">
+                  <div className="md:px-0 px-4">
+                    <h3 className="font-display tracking-extrawide lining-nums text-base font-normal leading-tight uppercase">
+                      Reset Password
+                    </h3>
+                    <p className="mt-1 font-serif text-sm">
+                      Reset your password here
+                    </p>
+                  </div>
+                </div>
+                <div className="md:mt-0 md:col-span-2 mt-5">
+                  <div className=" overflow-hidden">
+                    <div className="md:p-0 p-4">
+                      <div className="grid grid-cols-6 gap-6">
+                        <div className="sm:col-span-3 col-span-6">
+                          {password !== passwordConfirmation ? (
+                            <p className="text-red-500">
+                              Passwords do not match
+                            </p>
+                          ) : (
+                            <label
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                              htmlFor="password">
+                              Password
+                            </label>
+                          )}
+                          <input
+                            onChange={(e) => {
+                              setPassword(e.target.value);
+                            }}
+                            placeholder="Password"
+                            className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
+                          />
+                        </div>
+                        <div className="sm:col-span-3 col-span-6">
+                          {password !== passwordConfirmation ? (
+                            <p className="text-red-500">
+                              Passwords do not match
+                            </p>
+                          ) : (
+                            <label
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                              htmlFor="password_confirmation">
+                              Password confirmation
+                            </label>
+                          )}
+                          <input
+                            onChange={(e) => {
+                              setPasswordConfirmation(e.target.value);
+                            }}
+                            placeholder="Confirm Password"
+                            className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                            type="password"
+                            id="password_confirmation"
+                          />
+                        </div>
                       </div>
                       <div className="md:px-0 px-4 py-3 gap-4 flex justify-end text-right">
                         <button

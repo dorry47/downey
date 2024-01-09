@@ -394,11 +394,11 @@ const Page = () => {
         <div className="sm:px-6 lg:px-8 md:py-10 max-w-6xl px-4 py-6 mx-auto">
           <div className="flex flex-col text-center">
             <div className="md:flex-row flex flex-col justify-center gap-6">
-              <div className="md:w-1/2 w-full mx-auto font-serif text-left">
-                <h4 className="text-left text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-normal uppercase text-xxs tracking-extrawide">
+              <div className="md:w-1/2 w-full text-center md:text-left mx-auto font-serif ">
+                <h4 className="md:text-left text-center  text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-semibold uppercase text-xs tracking-extrawide">
                   Couples Details
                 </h4>
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap ">
                   <div className="md:w-1/2 w-full pb-6">
                     <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                       {clientData?.P_A_FNAME} {clientData?.P_A_LNAME}
@@ -431,8 +431,8 @@ const Page = () => {
                   </div>
                 </div>
               </div>
-              <div className="md:w-1/3 w-full mx-auto text-left">
-                <h4 className="text-left text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-normal uppercase text-xxs tracking-extrawide">
+              <div className="md:w-1/3 w-full mx-auto text-center md:text-left">
+                <h4 className="md:text-left text-center text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-semibold uppercase text-xs tracking-extrawide">
                   Planners Details
                 </h4>
                 <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
