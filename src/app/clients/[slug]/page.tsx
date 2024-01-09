@@ -130,7 +130,8 @@ const Page = () => {
 
   useEffect(() => {
     fetchEventData().then((data: any) => {
-      if (documents) {
+      if (documents && data && data[0]) {
+        console.log('data', data);
         // Leads to editable forms
         data[0].PLANNING_LINKS.CONTRACT_URL = `/clients/agreement?edit=${data[0].SLUG}`;
         data[0].PLANNING_LINKS.CATERING_URL = `/documents/${
@@ -182,6 +183,7 @@ const Page = () => {
   }, [clientData, plannerData]);
 
   const fetchEventData = async () => {
+    console.log('client slug', clientSlug);
     let { data, error } = await supabase
       .from('new_client')
       // take the client slug and look for it in the database
@@ -201,6 +203,7 @@ const Page = () => {
     if (error) {
       console.log(error);
     } else {
+      console.log('event data', data);
       return data;
     }
   };
@@ -446,7 +449,12 @@ const Page = () => {
             </div>
             <div className="col-span-3">
               <Link href={`/clients/new?edit=${clientData?.SLUG}`}>
-                <button className="md:py-2 mt-4 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.setItem('hasVisitedPage', 'false');
+                  }}
+                  className="md:py-2 mt-4 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
                   Edit Event Details
                 </button>
               </Link>{' '}

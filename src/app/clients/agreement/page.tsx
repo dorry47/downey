@@ -61,8 +61,6 @@ const Page1 = (props: Props) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { state, setState } = useStateContext();
 
-  const [loggedInUser, setLoggedInUser] = useState<any>(null);
-
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
@@ -87,31 +85,19 @@ const Page1 = (props: Props) => {
     },
   });
 
-  useEffect(() => {
-    const savedUser = JSON.parse(localStorage.getItem('user') as string);
-    const savedSession = JSON.parse(localStorage.getItem('session') as string);
-    if (savedUser && savedSession) {
-      setState({
-        ...state,
-        user: savedUser,
-        session: savedSession,
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   console.log('session', state.session);
+  //   console.log('user', state.user);
+  //   if (state.session && state.user) {
+  //     const loggedInUser = async () =>
+  //       await supabase.from('users').select('*').eq('email', state.user.email);
 
-  useEffect(() => {
-    console.log('session', state.session);
-    console.log('user', state.user);
-    if (state.session && state.user) {
-      const loggedInUser = async () =>
-        await supabase.from('users').select('*').eq('email', state.user.email);
-
-      loggedInUser().then((data: any) => {
-        console.log('logged in data', data.data[0]);
-        setLoggedInUser(data.data[0]);
-      });
-    }
-  }, [state]);
+  //     loggedInUser().then((data: any) => {
+  //       console.log('logged in data', data.data[0]);
+  //       setLoggedInUser(data.data[0]);
+  //     });
+  //   }
+  // }, [state]);
 
   // console.log('fileURL', fileUrl);
 
@@ -405,11 +391,15 @@ const Page1 = (props: Props) => {
 
                       <h2>Contract Details</h2>
                       {/* I want to include a PDF file viewer */}
-                      {loggedInUser && loggedInUser.role == 'planner' && (
-                        <div>
-                          <Dropzone setFileUrl={setFileUrl} setFile={setFile} />
-                        </div>
-                      )}
+                      {state.loggedInUser &&
+                        state.loggedInUser.role == 'planner' && (
+                          <div>
+                            <Dropzone
+                              setFileUrl={setFileUrl}
+                              setFile={setFile}
+                            />
+                          </div>
+                        )}
 
                       {fileUrl && (
                         <div>

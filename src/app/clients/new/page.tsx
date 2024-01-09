@@ -30,7 +30,6 @@ const Page = (props: Props) => {
   const [planners, setPlanners] = React.useState<any>([]);
   const [editClientData, setEditClientData] = React.useState<any>([]);
   const [submitted, setSubmitted] = React.useState(false);
-  const [loggedInUser, setLoggedInUser] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const { state, setState } = useStateContext();
   const supabase = useClient();
@@ -174,28 +173,9 @@ const Page = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    const loggedInUser = async () => {
-      await supabase
-        .from('users')
-        .select('*')
-        .eq('email', state?.user?.email)
-        .then((data: any) => {
-          console.log('signed in user', data?.data[0]);
-          setLoggedInUser(data?.data[0]);
-        });
-    };
-    loggedInUser();
-  }, [state?.user?.email]);
-
-  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const editClientSlug = urlParams.get('edit');
     console.log('edit client slug', editClientSlug);
-
-    const savedSession = JSON.parse(localStorage.getItem('session') as string);
-    const savedUser = JSON.parse(localStorage.getItem('user') as string);
-
-    setState({ ...state, session: savedSession, user: savedUser });
 
     const getClientData = async () => {
       let { data, error } = await supabase
@@ -303,7 +283,8 @@ const Page = (props: Props) => {
     )?.name;
 
     data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId || bgImages[0].id;
-    data.SLUG = data.PEOPLE.P_A_FNAME + '-' + data.PEOPLE.P_B_FNAME;
+    data.SLUG =
+      data.PEOPLE.P_A_FNAME.trim() + '-' + data.PEOPLE.P_B_FNAME.trim();
 
     console.log('data', data);
 
@@ -337,7 +318,7 @@ const Page = (props: Props) => {
           });
         }
       } else {
-        if (loggedInUser?.role != 'client') {
+        if (state.loggedInUser?.role != 'client') {
           setSubmitted(true);
           reset();
         } else {
@@ -347,8 +328,18 @@ const Page = (props: Props) => {
           window.location.href = `/clients/${data.SLUG}`;
         }
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error: any) {
+      console.error('Error:', error.message);
+      toast.error(error.message, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
     }
   };
 
@@ -390,7 +381,7 @@ const Page = (props: Props) => {
 
   return (
     <main className="newContainer">
-      {loggedInUser?.role == 'client' && !isLoading ? (
+      {state.loggedInUser?.role === 'client' && !isLoading ? (
         <header
           className="mb-10 bg-center bg-cover"
           style={{ backgroundImage: 'url(/images/signup-bg.jpg)' }}>
@@ -441,7 +432,7 @@ const Page = (props: Props) => {
           <form onSubmit={handleSubmit(onSubmit, onError)}>
             <div
               className={`mt-10 ${
-                loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -537,7 +528,7 @@ const Page = (props: Props) => {
 
             <div
               className={`mt-10 sm:mt-0 ${
-                loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -722,7 +713,7 @@ const Page = (props: Props) => {
 
             <div
               className={`   ${
-                loggedInUser?.role !== 'client' && 'sm:mt-0'
+                state.loggedInUser?.role !== 'client' && 'sm:mt-0'
               } mt-10`}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -1155,7 +1146,7 @@ const Page = (props: Props) => {
             </div>
             <div
               className={`mt-10 sm:mt-0 ${
-                loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -1295,7 +1286,7 @@ const Page = (props: Props) => {
                           onClick={() => {
                             // go back to homepage
                             router.push(
-                              `/clients/${loggedInUser?.name.replace(
+                              `/clients/${state.loggedInUser?.name.replace(
                                 ' + ',
                                 '-'
                               )}`
@@ -1308,7 +1299,7 @@ const Page = (props: Props) => {
                           type="submit"
                           name="commit"
                           className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
-                          {loggedInUser?.role == 'planner' &&
+                          {state.loggedInUser?.role == 'planner' &&
                           urlParameter == null
                             ? 'Create'
                             : 'Update'}
@@ -1338,7 +1329,7 @@ const Page = (props: Props) => {
           className="h-1/3 opacity-90 rounded-xl fixed inset-0 z-10 flex flex-col w-1/3 p-4 m-auto bg-white border-4 border-gray-300"
           id="successModal">
           <p className="m-auto text-xl text-center">
-            {loggedInUser?.role != 'client'
+            {state.loggedInUser?.role != 'client'
               ? 'Successful creation. Please wait while we redirect you to the homepage.'
               : 'Successful update. Please wait while we redirect you to your portal.'}
           </p>

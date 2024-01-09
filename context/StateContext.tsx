@@ -12,6 +12,7 @@ const initialState: StateType = {
   session: null,
   user: null,
   showMobileMenu: false,
+  loggedInUser: null,
 };
 
 // Define the types
@@ -19,6 +20,7 @@ type StateType = {
   session: any;
   user: any;
   showMobileMenu: boolean;
+  loggedInUser: any;
 };
 
 type StateContextType = {
@@ -35,27 +37,66 @@ const StateContext = createContext<StateContextType | undefined>(undefined);
 
 // Create the StateProvider component
 const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
-  // Use the local storage key for your state
-  const localStorageKey = 'myAppState';
+  const isLocalStorageAvailable =
+    typeof localStorage !== 'undefined' && typeof window !== 'undefined';
 
-  // Check if localStorage is available
-  const isLocalStorageAvailable = typeof localStorage !== 'undefined';
+  // Use individual local storage keys for each piece of state
+  const localStorageKeys = {
+    session: 'session',
+    user: 'user',
+    showMobileMenu: 'showMobileMenu',
+    noUser: 'noUser',
+    imgUploadPopUp: 'imgUploadPopUp',
+    aboutYou: 'aboutYou',
+    isSubscribed: 'isSubscribed',
+    loggedInUser: 'loggedInUser',
+    stripe: 'stripe',
+    activeNavButtons: 'activeNavButton',
+  };
 
-  // Retrieve the state from local storage on component mount (or use initialState)
-  const storedState = isLocalStorageAvailable
-    ? JSON.parse(localStorage.getItem(localStorageKey) || 'null') ||
-      initialState
-    : initialState;
+  const [state, setState] = useState<StateType>(initialState);
+
+  // Retrieve each piece of state from local storage on component mount (or use initialState)
+  useEffect(() => {
+    setState({
+      session:
+        JSON.parse(localStorage.getItem(localStorageKeys.session) || 'null') ||
+        initialState.session,
+      user:
+        JSON.parse(localStorage.getItem(localStorageKeys.user) || 'null') ||
+        initialState.user,
+      showMobileMenu:
+        JSON.parse(
+          localStorage.getItem(localStorageKeys.showMobileMenu) || 'false'
+        ) || initialState.showMobileMenu,
+      loggedInUser:
+        JSON.parse(
+          localStorage.getItem(localStorageKeys.loggedInUser) || 'null'
+        ) || initialState.loggedInUser,
+    });
+  }, []);
 
   // Use state with the initial value from local storage
-  const [state, setState] = useState<StateType>(storedState);
 
-  // Save the state to local storage whenever it changes (if localStorage is available)
+  // Save each piece of state to local storage whenever it changes
   useEffect(() => {
     if (isLocalStorageAvailable) {
-      localStorage.setItem(localStorageKey, JSON.stringify(state));
+      localStorage.setItem(
+        localStorageKeys.session,
+        JSON.stringify(state.session)
+      );
+      localStorage.setItem(localStorageKeys.user, JSON.stringify(state.user));
+      localStorage.setItem(
+        localStorageKeys.showMobileMenu,
+        JSON.stringify(state.showMobileMenu)
+      );
+
+      localStorage.setItem(
+        localStorageKeys.loggedInUser,
+        JSON.stringify(state.loggedInUser)
+      );
     }
-  }, [state, isLocalStorageAvailable]);
+  }, [state, localStorageKeys, isLocalStorageAvailable]);
 
   return (
     <StateContext.Provider value={{ state, setState }}>

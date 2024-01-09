@@ -25,37 +25,38 @@ const Navigation = (props: Props) => {
   const role = loggedInUser?.role;
   console.log('path', path);
 
-  const handleSession = async () => {
-    const session = JSON.parse(localStorage.getItem('session') as string);
-    const user = JSON.parse(localStorage.getItem('user') as string);
-    // console.log('get session', session);
-    // console.log('get user', user);
-    if (session) {
-      setState({ ...state, session, user });
-    } else {
-      if (
-        path !== '/clients/Lucy-Kevin' &&
-        path !== '/update-password' &&
-        path != '/' &&
-        path != ' /auth/callback'
-      ) {
-        router.push('/');
-      }
-    }
-  };
+  // const handleSession = async () => {
+  //   // const session = JSON.parse(localStorage.getItem('session') as string);
+  //   // const user = JSON.parse(localStorage.getItem('user') as string);
+  //   // console.log('get session', session);
+  //   // console.log('get user', user);
+  //   // if (session) {
+  //   //   setState({ ...state, session, user });
+  //   // } else {
+  //   if (
+  //     path !== '/clients/Lucy-Kevin' &&
+  //     path !== '/update-password' &&
+  //     path != '/' &&
+  //     path != ' /auth/callback'
+  //   ) {
+  //     router.push('/');
+  //   }
+  //   // }
+  // };
 
   const supabase = useClient();
 
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
-      // localStorage clear except for visited key
-      localStorage.removeItem('session');
-      localStorage.removeItem('user');
-      localStorage.removeItem('loggedInUser');
-      localStorage.removeItem('myAppState');
 
-      setState({ ...state, session: null, user: null, showMobileMenu: false });
+      setState({
+        ...state,
+        session: null,
+        user: null,
+        showMobileMenu: false,
+        loggedInUser: null,
+      });
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
@@ -73,6 +74,7 @@ const Navigation = (props: Props) => {
           const formattedName = data?.data[0]?.name.replace(/[ +]+/g, '-');
           console.log('formatted name', formattedName);
           setLoggedInUser(data?.data[0]);
+          setState({ ...state, loggedInUser: data?.data[0] });
 
           if (
             formattedName != pathSlug &&
@@ -88,7 +90,9 @@ const Navigation = (props: Props) => {
   };
 
   useEffect(() => {
-    checkLoggedInUser();
+    if (state.user != null) {
+      checkLoggedInUser();
+    }
   }, [state.user]);
 
   useEffect(() => {
@@ -106,16 +110,16 @@ const Navigation = (props: Props) => {
     }
   }, [clientSlug]);
 
-  useEffect(() => {
-    handleSession();
-  }, []);
+  // useEffect(() => {
+  //   handleSession();
+  // }, []);
 
   return (
     <nav className="bg-[#eed9d4]  relative h-12 md:h-16 w-full text-xl px-[2rem]">
       <div className="md:flex max-w-7xl items-center justify-between hidden h-full m-auto">
         <div className="flex items-baseline flex-1 space-x-1">
           {props.showLinks && role != 'client' && state.session != null && (
-            <>
+            <div>
               <Link
                 className="text-[rgba(219,96,53)] px-3 uppercase text-[.5rem] tracking-[.2em] lg:tracking-[.3em]  font-normal"
                 href="/clients/new">
@@ -131,7 +135,7 @@ const Navigation = (props: Props) => {
                 href="/planners">
                 Planners
               </Link>
-            </>
+            </div>
           )}
         </div>
         <div className=" lg:w-96 flex justify-center flex-shrink-0 w-1/4 h-full m-auto">
@@ -160,7 +164,7 @@ const Navigation = (props: Props) => {
         </div>
         <div className="flex justify-end flex-1">
           {props.showLinks && state.session != null && (
-            <>
+            <div>
               <Link
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"
                 href={` ${
@@ -178,7 +182,7 @@ const Navigation = (props: Props) => {
                 }}>
                 Log Out
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>
@@ -262,7 +266,7 @@ const Navigation = (props: Props) => {
           id="mobile-menu">
           <div className="sm:px-3 px-2 pt-2 pb-3 space-y-1">
             {role != 'client' && (
-              <>
+              <div>
                 <Link
                   className="block px-3 py-2 text-base font-normal text-black rounded-md"
                   href="/Homepage">
@@ -278,7 +282,7 @@ const Navigation = (props: Props) => {
                   href={`/planners/edit/${plannerSlug}`}>
                   My Info
                 </Link>
-              </>
+              </div>
             )}
             <button
               className="block px-3 py-2 mx-auto text-base font-normal text-black rounded-md"
