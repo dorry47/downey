@@ -39,6 +39,16 @@ export default function Page() {
 
   const router = useRouter();
 
+  // const updatePassword = async () => {
+  //   const { data: user, error } = await supabase.auth.admin.updateUserById(
+  //     '25f4f821-04f7-4774-810b-9ba202fa52c3',
+  //     { password: 'password', email_confirm: true }
+  //   );
+  //   if (error) console.log(error);
+  //   else console.log(user);
+  // };
+  // updatePassword();
+
   const allClients = async () => {
     let { data, error } = await supabase
       .from('new_client')

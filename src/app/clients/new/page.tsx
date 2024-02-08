@@ -104,6 +104,7 @@ const Page = (props: Props) => {
         GUEST_SERVE_URL: '',
         CATERING_URL: '',
         CONTRACT_URL: '',
+        Workflow_Budget_Payment_URL: '',
         // EXTERNAL LINKS
         ADDRESS_URL: '',
         BUDGET_URL: '',
@@ -255,6 +256,8 @@ const Page = (props: Props) => {
           PLANNING_LINKS.VENDOR_PROPOSALS_URL,
         'PLANNING_LINKS.VENDOR_CONTACT_URL': PLANNING_LINKS.VENDOR_CONTACT_URL,
         'PLANNING_LINKS.GUEST_INFO_URL': PLANNING_LINKS.GUEST_INFO_URL,
+        'PLANNING_LINKS.Workflow_Budget_Payment_URL':
+          PLANNING_LINKS.Workflow_Budget_Payment_URL,
         // 'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
         'PUBLIC_LINKS.TWITTER_URL': PUBLIC_LINKS.TWITTER_URL,
         'PUBLIC_LINKS.YELP_URL': PUBLIC_LINKS.YELP_URL,
@@ -1222,7 +1225,7 @@ const Page = (props: Props) => {
                         {[
                           // 'WORKFLOW',
 
-                          'Workflow_+_Budget_+_Payment',
+                          'Workflow_Budget_Payment',
                           // 'ADDRESS',
                           'DESIGN_BOARD',
                           'CLIENT_DOCS',
