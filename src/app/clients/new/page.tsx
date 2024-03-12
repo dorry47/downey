@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 interface Planner {
   name: string;
+  role: string;
   email: string;
   phone: string;
   address: string;
@@ -48,14 +49,15 @@ const Page = (props: Props) => {
     reset,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     shouldUnregister: false,
     defaultValues: {
       ADMIN_INFO: {
         PLANNER: '',
-        // AMMEND: '',
         ARCHIVED: false,
+        ROLE: '',
       },
 
       EVENT_DETAILS: {
@@ -114,6 +116,7 @@ const Page = (props: Props) => {
         VENDOR_CONTACT_URL: '',
         GUEST_INFO_URL: '',
         // CALENDAR_URL: '',
+        STYLING_FOLDER_URL: '',
       },
       PUBLIC_LINKS: {
         YELP_URL: '',
@@ -125,6 +128,8 @@ const Page = (props: Props) => {
       },
     },
   });
+
+  const role = watch('ADMIN_INFO.ROLE');
 
   const { field: archivedField } = useController({
     name: 'ADMIN_INFO.ARCHIVED',
@@ -161,8 +166,8 @@ const Page = (props: Props) => {
   const plannerData = async () => {
     let { data, error } = await supabase
       .from('users')
-      .select('name, email')
-      .eq('role', 'planner');
+      .select('name, email, role') // Fix: Pass a single string instead of an array of strings
+      .in('role', ['planner', 'stylist']);
     if (error) {
       console.log(error);
     } else {
@@ -214,7 +219,7 @@ const Page = (props: Props) => {
       Object.entries({
         plannerName: ADMIN_INFO.PLANNER,
         'ADMIN_INFO.PLANNER': ADMIN_INFO.PLANNER,
-        // 'ADMIN_INFO.AMMEND': ADMIN_INFO.AMMEND,
+        'ADMIN_INFO.ROLE': ADMIN_INFO.ROLE,
         'ADMIN_INFO.ARCHIVED': ADMIN_INFO.ARCHIVED,
         'EVENT_DETAILS.DATE': EVENT_DETAILS.DATE.toString(),
         'EVENT_DETAILS.WED_MONTH': EVENT_DETAILS.WED_MONTH,
@@ -258,6 +263,7 @@ const Page = (props: Props) => {
         'PLANNING_LINKS.GUEST_INFO_URL': PLANNING_LINKS.GUEST_INFO_URL,
         'PLANNING_LINKS.Workflow_Budget_Payment_URL':
           PLANNING_LINKS.Workflow_Budget_Payment_URL,
+        'PLANNING_LINKS.STYLING_FOLDER_URL': PLANNING_LINKS.STYLING_FOLDER_URL,
         // 'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
         'PUBLIC_LINKS.TWITTER_URL': PUBLIC_LINKS.TWITTER_URL,
         'PUBLIC_LINKS.YELP_URL': PUBLIC_LINKS.YELP_URL,
@@ -518,7 +524,7 @@ const Page = (props: Props) => {
                             <label
                               className="text-[12px] tracking-widewide font-sans font-normal uppercase"
                               htmlFor="PLANNER">
-                              Planner
+                              Planner or Stylist
                             </label>
                           )}
 
@@ -528,11 +534,29 @@ const Page = (props: Props) => {
                             })}
                             className="border-dse-peach focus:outline-none focus:ring-transparent focus:border-dse-orange w-full px-3 py-2 mt-1 font-serif text-sm bg-white border"
                             id="PLANNER">
-                            {planners?.map((planner: Planner, id: number) => (
-                              <option value={`${planner.name}`} key={id}>
-                                {planner.name}
-                              </option>
-                            ))}
+                            <optgroup label="Planners">
+                              {planners?.map((planner: Planner, id: number) => {
+                                if (planner.role == 'planner') {
+                                  return (
+                                    <option value={`${planner.name}`} key={id}>
+                                      {planner.name}
+                                    </option>
+                                  );
+                                }
+                              })}
+                            </optgroup>
+                            {/* i want a unselectable title Stylists and then the stylists as options below  */}
+                            <optgroup label="Stylists">
+                              {planners?.map((planner: Planner, id: number) => {
+                                if (planner.role == 'stylist') {
+                                  return (
+                                    <option value={`${planner.name}`} key={id}>
+                                      {planner.name}
+                                    </option>
+                                  );
+                                }
+                              })}
+                            </optgroup>
                           </select>
                         </div>
 
@@ -572,6 +596,64 @@ const Page = (props: Props) => {
                               Archived clients will not show on main client page
                             </p>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="sm:visible" aria-hidden="true">
+                <div className="py-5">
+                  <div className="border-t border-gray-200"></div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={`sm:mt-0 mt-10  ${
+                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+              } `}>
+              <div className="md:grid md:grid-cols-3 md:gap-6">
+                <div className="md:col-span-1">
+                  <div className="md:px-0 px-4">
+                    <h3 className="font-display tracking-extrawide lining-nums text-base font-normal leading-tight uppercase">
+                      Client Role
+                    </h3>
+                    <p className="mt-1 font-serif text-sm">
+                      Select a role for the client.
+                    </p>
+                  </div>
+                </div>
+                <div className="md:mt-0 md:col-span-2 mt-5">
+                  <div className=" overflow-hidden">
+                    <div className="md:p-0 p-4">
+                      <div className="grid grid-cols-6 gap-6">
+                        <div className="sm:col-span-6 col-span-6">
+                          {errors.ADMIN_INFO?.ROLE ? (
+                            <p className="text-red-500">
+                              {/* @ts-ignore */}
+                              {errors.ADMIN_INFO?.ROLE.message}
+                            </p>
+                          ) : (
+                            <label
+                              className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                              htmlFor="ROLE">
+                              Role
+                            </label>
+                          )}
+
+                          <select
+                            {...register('ADMIN_INFO.ROLE', {
+                              required: 'Role required.',
+                            })}
+                            className="border-dse-peach focus:outline-none focus:ring-transparent focus:border-dse-orange w-full px-3 py-2 mt-1 font-serif text-sm bg-white border"
+                            id="ROLE">
+                            <option value="wedding">Wedding</option>
+                            <option value="styling">Styling</option>
+                            <option value="wedding+styling">
+                              Wedding + Styling
+                            </option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -723,41 +805,51 @@ const Page = (props: Props) => {
                           />
                         </div>
 
-                        <div className="sm:col-span-3 col-span-6">
-                          <label
-                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="GUEST_RANGE_START">
-                            Guest range
-                          </label>
-                          <select
-                            {...register('EVENT_DETAILS.GUEST_RANGE_START', {})}
-                            className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                            id="GUEST_RANGE_START">
-                            {guestRange.map((guest: any, id: number) => (
-                              <option value={guest.value} key={id}>
-                                {guest.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="sm:col-span-3 col-span-6">
-                          <label
-                            className="text-[12px] tracking-widewide font-sans font-normal uppercase"
-                            htmlFor="GUEST_RANGE_END">
-                            Guest range end
-                          </label>
-                          <select
-                            {...register('EVENT_DETAILS.GUEST_RANGE_END', {})}
-                            className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
-                            name="GUEST_RANGE_END"
-                            id="GUEST_RANGE_END">
-                            {guestRange.map((guest: any, id: number) => (
-                              <option value={guest.value} key={id}>
-                                {guest.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                        {(role == 'wedding' || role == 'wedding+styling') && (
+                          <>
+                            <div className={`sm:col-span-3 col-span-6`}>
+                              <label
+                                className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                                htmlFor="GUEST_RANGE_START">
+                                Guest range
+                              </label>
+                              <select
+                                {...register(
+                                  'EVENT_DETAILS.GUEST_RANGE_START',
+                                  {}
+                                )}
+                                className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                                id="GUEST_RANGE_START">
+                                {guestRange.map((guest: any, id: number) => (
+                                  <option value={guest.value} key={id}>
+                                    {guest.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="sm:col-span-3 col-span-6">
+                              <label
+                                className="text-[12px] tracking-widewide font-sans font-normal uppercase"
+                                htmlFor="GUEST_RANGE_END">
+                                Guest range end
+                              </label>
+                              <select
+                                {...register(
+                                  'EVENT_DETAILS.GUEST_RANGE_END',
+                                  {}
+                                )}
+                                className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
+                                name="GUEST_RANGE_END"
+                                id="GUEST_RANGE_END">
+                                {guestRange.map((guest: any, id: number) => (
+                                  <option value={guest.value} key={id}>
+                                    {guest.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1223,18 +1315,24 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          // 'WORKFLOW',
-
                           'Workflow_Budget_Payment',
-                          // 'ADDRESS',
                           'DESIGN_BOARD',
                           'CLIENT_DOCS',
                           'VENDOR_PROPOSALS',
-                          // 'VENDOR_CONTACT',
                           'GUEST_INFO',
-                          // 'CALENDAR',
+                          'STYLING_FOLDER',
                         ].map((title, id) => (
-                          <div key={id} className="sm:col-span-3 col-span-6">
+                          <div
+                            key={id}
+                            className={`sm:col-span-3 col-span-6
+                            ${
+                              title != 'STYLING_FOLDER'
+                                ? ''
+                                : role != 'styling' && role != 'wedding+styling'
+                                ? 'hidden'
+                                : ''
+                            }
+                          `}>
                             {/* @ts-ignore */}
                             {errors?.PLANNING_LINKS?.[`${title}_URL`] ? (
                               <span className="text-red-500 text-sm">
@@ -1251,16 +1349,6 @@ const Page = (props: Props) => {
                               {...register(
                                 // @ts-ignore
                                 `PLANNING_LINKS.${title}_URL`
-
-                                // // check if the url is valid
-                                // {
-                                //   pattern: {
-                                //     // make it so it accepts links with or without http(s):// but needs www.
-                                //     value:
-                                //       /^(https?:\/\/)(www\.)[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
-                                //     message: 'Please enter a valid URL',
-                                //   },
-                                // }
                               )}
                               placeholder={`${title
                                 .split('_')

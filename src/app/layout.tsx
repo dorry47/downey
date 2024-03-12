@@ -63,9 +63,7 @@ export default function RootLayout({
           </Head>
           <body className={`${inter.className} `}>
             {!appReady && <LoadingScreen />}
-            {/* <Suspense fallback={<LoadingScreen />}> */}
             <Navigation showLinks={!isMainPage} />
-            {/* </Suspense> */}
 
             <div style={{ minHeight: screenHeight - 120 + 'px' }}>
               {children}

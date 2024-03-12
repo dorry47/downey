@@ -49,7 +49,7 @@ const Footer = (props: Props) => {
   };
 
   return (
-    loggedInUser?.role == 'planner' && (
+    (loggedInUser?.role == 'planner' || loggedInUser?.role == 'stylist') && (
       <footer className="mt-6 mb-4">
         <div className="max-w-7xl sm:px-6 lg:px-8 px-4 mx-auto">
           <div className="md:flex-row md:space-x-10 md:space-y-0 flex flex-col justify-center py-4 space-x-0 space-y-4">

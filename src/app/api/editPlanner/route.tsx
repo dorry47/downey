@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   const data = await req.json();
   console.log('data', data);
-  const { email, name, address, phone, archived } = data;
+  const { email, name, address, phone, archived, role } = data;
 
   const supabase = useClient();
 
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     options: {
       emailRedirectTo: `http://localhost:3000/auth/callback?next=/update-password`,
       data: {
-        role: 'planner',
+        role: role,
       },
     },
   });
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         name: name,
         email: email,
         address: address,
-        role: 'planner',
+        role: role,
         phone: phone,
         archived: archived,
       },
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
           name: name,
           email: email,
           address: address,
-          role: 'planner',
+          role: role,
           phone: phone,
           archived: archived,
         },

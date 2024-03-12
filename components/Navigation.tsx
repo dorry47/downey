@@ -4,7 +4,6 @@ import React, { use, useEffect } from 'react';
 import { useStateContext } from '../context/StateContext';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useClient } from '../lib/useClient';
-import { set } from 'react-hook-form';
 
 type Props = {
   showLinks: boolean;
@@ -163,7 +162,7 @@ const Navigation = (props: Props) => {
           </Link>
         </div>
         <div className="flex justify-end flex-1">
-          {props.showLinks && state.session != null && (
+          {props.showLinks && (
             <div>
               <Link
                 className="text-black px-3 uppercase text-[.5rem] tracking-[.3em] font-normal"

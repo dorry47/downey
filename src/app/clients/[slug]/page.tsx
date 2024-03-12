@@ -22,6 +22,7 @@ interface PlanningLinks {
 interface ClientData {
   plannerName: string;
   SLUG: string;
+  ROLE: string;
   P_A_FNAME: string;
   P_A_LNAME: string;
   P_A_PHONE: string;
@@ -80,30 +81,68 @@ const Page = () => {
   // i want to compare the titleKey in the quickLinks.json to the key in the PLANNING_LINKS object
 
   const planningLinks = useMemo(() => {
-    const planningLinks = quickLinks[0].required.filter((quickLink) => {
-      const { titleKey } = quickLink;
-      // but i also want to se the href to the value of the key in the PLANNING_LINKS object
-      quickLink.href = fetchedPlanningLinks?.[
-        titleKey as keyof PlanningLinks
-      ] as string; // cast titleKey to keyof PlanningLinks
-      return fetchedPlanningLinks?.[titleKey as keyof PlanningLinks]; // cast titleKey to keyof PlanningLinks
-    });
+    let linksToDisplay = [];
+
+    // Check if the role is related to styling or styling+wedding
+    if (clientData?.ROLE === 'styling') {
+      // Define the keys for the links we want to include
+      const keysToShow = [
+        'CONTRACT_URL',
+        'STYLING_FOLDER_URL',
+        'STYLING_QUESTIONNAIRE_URL',
+      ];
+
+      linksToDisplay = quickLinks[0].required.filter((quickLink) => {
+        const { titleKey } = quickLink;
+        // Include the link if its key is one of the specified keysToShow
+        if (keysToShow.includes(titleKey) && fetchedPlanningLinks?.[titleKey]) {
+          quickLink.href = fetchedPlanningLinks[titleKey]; // Set the href to the value from fetchedPlanningLinks
+          return true;
+        }
+        return false;
+      });
+    } else if (clientData?.ROLE === 'wedding+styling') {
+      // If the role is not specifically related to styling, filter the links as before
+      linksToDisplay = quickLinks[0].required.filter((quickLink) => {
+        const { titleKey } = quickLink;
+        quickLink.href = fetchedPlanningLinks?.[
+          titleKey as keyof PlanningLinks
+        ] as string;
+        return fetchedPlanningLinks?.[titleKey as keyof PlanningLinks];
+      });
+    } else {
+      const keysToExclude = ['STYLING_FOLDER_URL', 'STYLING_QUESTIONNAIRE_URL'];
+
+      linksToDisplay = quickLinks[0].required.filter((quickLink) => {
+        const { titleKey } = quickLink;
+        // Exclude the link if its key is one of the specified keysToExclude
+        if (
+          !keysToExclude.includes(titleKey) &&
+          fetchedPlanningLinks?.[titleKey]
+        ) {
+          quickLink.href = fetchedPlanningLinks[titleKey]; // Set the href to the value from fetchedPlanningLinks
+          return true;
+        }
+        return false;
+      });
+    }
+
+    // Keep notRequired links as they are, or apply any role-based filtering as needed
     const optionalLinks = quickLinks[0].notRequired.filter((quickLink) => {
       const { titleKey } = quickLink;
-      // but i also want to se the href to the value of the key in the PLANNING_LINKS object
       quickLink.href = fetchedPlanningLinks?.[
         titleKey as keyof PlanningLinks
-      ] as string; // cast titleKey to keyof PlanningLinks
-      return fetchedPlanningLinks?.[titleKey as keyof PlanningLinks]; // cast titleKey to keyof PlanningLinks
+      ] as string;
+      return fetchedPlanningLinks?.[titleKey as keyof PlanningLinks];
     });
 
     return [
       {
-        required: planningLinks,
+        required: linksToDisplay,
         notRequired: optionalLinks,
       },
     ];
-  }, [fetchedPlanningLinks]);
+  }, [fetchedPlanningLinks, clientData?.ROLE]); // Make sure to include clientData?.role in the dependency array
 
   // useEffect(() => {
   //   const loggedInUser = async () => {
@@ -146,6 +185,9 @@ const Page = () => {
         }?edit=${data[0].SLUG}`;
         data[0].PLANNING_LINKS.DESIGN_URL = `/documents/${
           documents?.find((document: any) => document.title == 'Design')?.id
+        }?edit=${data[0].SLUG}`;
+        data[0].PLANNING_LINKS.STYLING_QUESTIONNAIRE_URL = `/documents/${
+          documents?.find((document: any) => document.title == 'Styling')?.id
         }?edit=${data[0].SLUG}`;
         // data[0].PLANNING_LINKS.WORKFLOW_URL = `/documents/${
         //   documents?.find((document: any) => document.title == 'Workflow')?.id
@@ -196,7 +238,8 @@ const Page = () => {
         PEOPLE->>P_B_PHONE, PEOPLE->>P_B_EMAIL, PEOPLE->>P_B_FNAME, 
         PEOPLE->>P_B_LNAME, PEOPLE->>P_B_ADDRESS, EVENT_DETAILS->>VENUE_NAME, 
         EVENT_DETAILS->>VENUE_CITY, EVENT_DETAILS->>WED_MONTH, 
-        EVENT_DETAILS->>VENUE_STATE, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR, 
+        EVENT_DETAILS->>VENUE_STATE, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR,
+        ADMIN_INFO->>ROLE,
         ADMIN_INFO->>ARCHIVED, PLANNING_LINKS, PUBLIC_LINKS, SITE_INFO->>BG_IMAGE_ID`
       )
       .eq('SLUG', clientSlug);
@@ -325,39 +368,12 @@ const Page = () => {
         </div>
       </section>
 
-      {/* <section className="bg-dse-gold h-16">
-        <div className="max-w-7xl sm:px-6 lg:px-8 py-6 mx-auto">
-          <ul className="flex justify-center space-x-4">
-            <li className="">
-              <Link
-                href="#"
-                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase pointer-events-none">
-                Onboarding Links:
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase"
-                href={`/clients/new?edit=${clientSlug}`}>
-                Signup
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="text-xxs tracking-extrawide hover:bg-transparent font-normal uppercase"
-                href={`/clients/agreement?edit=${clientSlug}`}>
-                Agreement
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </section> */}
-
       <section className="sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <div className="sm:grid-cols-3 md:grid-cols-4 sm:gap-6 sm:py-10 grid grid-cols-2 gap-2 py-4 text-center">
           {planningLinks[0].required.map((quickLink, id) => {
             const { title, subtitle, href, imageSrc, active, titleKey } =
               quickLink;
+
             return (
               <QuickLink
                 key={id}
@@ -396,7 +412,7 @@ const Page = () => {
             <div className="md:flex-row flex flex-col justify-center gap-6">
               <div className="md:w-1/2 w-full text-center md:text-left mx-auto font-serif ">
                 <h4 className="md:text-left text-center  text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-semibold uppercase text-xs tracking-extrawide">
-                  Couples Details
+                  Couple Details
                 </h4>
                 <div className="flex flex-wrap ">
                   <div className="md:w-1/2 w-full pb-6">
@@ -433,7 +449,7 @@ const Page = () => {
               </div>
               <div className="md:w-1/3 w-full mx-auto text-center md:text-left">
                 <h4 className="md:text-left text-center text-[rgba(217,142,72)] pt-3 mb-1 font-sans font-semibold uppercase text-xs tracking-extrawide">
-                  Planners Details
+                  Planner Details
                 </h4>
                 <h2 className="font-display md:text-sm mb-1 text-lg tracking-widest">
                   {plannerData?.name}
