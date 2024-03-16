@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import PlannerRow from '../../../components/PlannerRow';
 import Link from 'next/link';
 import { useClient } from '../../../lib/useClient';
@@ -19,6 +19,7 @@ interface Planner {
 export default function Page(props: Props) {
   const supabase = useClient();
   const { state, setState } = useStateContext();
+  const queryClient = useQueryClient();
 
   const fetchPlannerData = async () => {
     let { data, error } = await supabase

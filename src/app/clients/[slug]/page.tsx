@@ -128,13 +128,28 @@ const Page = () => {
     }
 
     // Keep notRequired links as they are, or apply any role-based filtering as needed
-    const optionalLinks = quickLinks[0].notRequired.filter((quickLink) => {
+    let optionalLinks = quickLinks[0].notRequired.filter((quickLink) => {
       const { titleKey } = quickLink;
       quickLink.href = fetchedPlanningLinks?.[
         titleKey as keyof PlanningLinks
       ] as string;
       return fetchedPlanningLinks?.[titleKey as keyof PlanningLinks];
     });
+
+    if (clientData?.ROLE === 'styling') {
+      // remove optionalLinks that are not related to styling
+      const keysToShow = ['STYLING_FOLDER_URL'];
+      optionalLinks = optionalLinks.filter((quickLink) => {
+        const { titleKey } = quickLink;
+        return keysToShow.includes(titleKey);
+      });
+    } else if (clientData?.ROLE === 'wedding') {
+      const keysToExclude = ['STYLING_FOLDER_URL', 'STYLING_QUESTIONNAIRE_URL'];
+      optionalLinks = optionalLinks.filter((quickLink) => {
+        const { titleKey } = quickLink;
+        return !keysToExclude.includes(titleKey);
+      });
+    }
 
     return [
       {

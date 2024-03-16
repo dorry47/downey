@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,6 +18,7 @@ type Props = {
 
 const PlannerRow = (props: Props) => {
   const { name, email, phone, archived, role } = props.planner;
+  const router = useRouter();
 
   const firstName = name.split(' ')[0];
   const lastName = name.split(' ')[1];
@@ -32,7 +34,9 @@ const PlannerRow = (props: Props) => {
     toast.success('Planner deleted');
 
     console.log('deleted', data);
+    router.push('/planners');
   };
+
   return (
     <div className=" grid grid-cols-8 gap-1">
       <p className="py-4 font-serif text-base text-left capitalize">

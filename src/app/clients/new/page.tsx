@@ -417,6 +417,8 @@ const Page = (props: Props) => {
     }
   }, [submitted]);
 
+  console.log('state.loggedInUser?.role', state.loggedInUser?.role);
+
   const onError = (errors: any) => {
     // your code here
     console.log('errors: ', errors);
@@ -1326,9 +1328,15 @@ const Page = (props: Props) => {
                             key={id}
                             className={`sm:col-span-3 col-span-6
                             ${
-                              title != 'STYLING_FOLDER'
-                                ? ''
-                                : role != 'styling' && role != 'wedding+styling'
+                              // title != 'STYLING_FOLDER'
+                              //   ? ''
+                              //   : role != 'styling' && role != 'wedding+styling'
+                              //   ? 'hidden'
+                              //   : ''
+
+                              title != 'STYLING_FOLDER' && role == 'styling'
+                                ? 'hidden'
+                                : title == 'STYLING_FOLDER' && role == 'wedding'
                                 ? 'hidden'
                                 : ''
                             }
@@ -1437,12 +1445,7 @@ const Page = (props: Props) => {
                           type="button"
                           onClick={() => {
                             // go back to homepage
-                            router.push(
-                              `/clients/${state.loggedInUser?.name.replace(
-                                ' + ',
-                                '-'
-                              )}`
-                            );
+                            router.back();
                           }}
                           className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
                           Back
