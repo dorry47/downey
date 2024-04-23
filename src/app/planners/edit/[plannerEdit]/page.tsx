@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useClient } from '../../../../../lib/useClient';
 import { useStateContext } from '../../../../../context/StateContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {};
 
@@ -71,6 +73,7 @@ const Page = (props: Props) => {
       PHONE: '',
       ARCHIVED: false,
       ADDRESS: '',
+      PASSWORD: '',
     },
   });
 
@@ -110,6 +113,38 @@ const Page = (props: Props) => {
 
   const onSubmit = async (data: Record<string, any>) => {
     const { FNAME, LNAME, EMAIL, PHONE, ARCHIVED, ADDRESS, ROLE } = data;
+
+    if (data.PASSWORD) {
+      const { data: refreshedSession, error: refreshError } =
+        await supabase.auth.refreshSession({
+          refresh_token: state.session?.refresh_token,
+        });
+      if (refreshError) {
+        console.log('session', state.session);
+
+        console.log('refresh error', refreshError);
+        return toast.error(refreshError.message, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      } else {
+        const { data: userUpdateData, error: updateError } =
+          await supabase.auth.updateUser({
+            password: data.PASSWORD,
+          });
+        if (updateError) {
+          toast.error(updateError.message);
+        } else {
+          toast.success('Password updated successfully!');
+        }
+      }
+    }
 
     fetch('/api/editPlanner', {
       method: 'POST',
@@ -258,6 +293,7 @@ const Page = (props: Props) => {
                         <input
                           className="focus:ring-indigo-500 border-[1px] py-[0.75rem] px-[0.5rem] focus:border-indigo-500 sm:text-sm block w-full mt-1 border-gray-300 rounded-md shadow-sm"
                           type="text"
+                          autoComplete="new-email"
                           {...register('EMAIL', {
                             required: 'Email required.',
                           })}
@@ -305,6 +341,35 @@ const Page = (props: Props) => {
                               'Full address or contact information required.',
                           })}
                           id="ADDRESS"
+                        />
+                      </div>
+
+                      <div
+                        className={`sm:col-span-6 col-span-6
+                      ${
+                        state.loggedInUser?.email != plannerData?.email
+                          ? 'hidden'
+                          : ''
+                      }
+                      
+                      `}>
+                        {errors.PASSWORD ? (
+                          <p className="text-red-600">
+                            {errors.PASSWORD.message as string}
+                          </p>
+                        ) : (
+                          <label
+                            className="block text-sm font-medium text-gray-700"
+                            htmlFor="password">
+                            Reset Password
+                          </label>
+                        )}
+                        <input
+                          type="password"
+                          autoComplete="new-password"
+                          className="focus:ring-indigo-500 py-[0.75rem] px-[0.5rem] focus:border-indigo-500 sm:text-sm block w-full mt-1 border-[1px] border-gray-300 rounded-md shadow-sm"
+                          {...register('PASSWORD')}
+                          id="password"
                         />
                       </div>
 
