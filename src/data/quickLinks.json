@@ -71,7 +71,7 @@
       "titleKey": "STYLING_QUESTIONNAIRE_URL",
       "title": "Styling Questionnaire",
       "subtitle": "",
-      "imageSrc": "/images/styling-icon.jpg",
+      "imageSrc": "/images/styling-dress.png",
       "href": "/questionnaires/1137",
       "active": false
     }
@@ -91,7 +91,7 @@
       "titleKey": "STYLING_FOLDER_URL",
       "title": "Styling Folder",
       "subtitle": "",
-      "imageSrc": "/images/styling-icon.jpg",
+      "imageSrc": "/images/styling-heel.png",
       "href": "/questionnaires/1137",
       "active": false
     },
