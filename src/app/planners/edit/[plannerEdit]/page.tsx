@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useClient } from '../../../../../lib/useClient';
 import { useStateContext } from '../../../../../context/StateContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {};
 
@@ -47,7 +49,7 @@ const Page = (props: Props) => {
       .from('users')
       .select('*')
       .eq('name', formattedAndCapitalizedSlug)
-      .eq('role', 'planner');
+      .in('role', ['planner', 'stylist']);
 
     if (error) {
       console.log(error);
@@ -64,12 +66,14 @@ const Page = (props: Props) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      ROLE: '',
       FNAME: '',
       LNAME: '',
       EMAIL: '',
       PHONE: '',
       ARCHIVED: false,
       ADDRESS: '',
+      PASSWORD: '',
     },
   });
 
@@ -90,13 +94,14 @@ const Page = (props: Props) => {
   }, [plannerData]);
 
   useEffect(() => {
-    const { name, email, phone, archived, address } = plannerData || {};
+    const { name, email, phone, archived, address, role } = plannerData || {};
     const firstName = name?.split(' ')[0];
     const lastName = name?.split(' ')[1];
 
     console.log('planner data', plannerData);
 
     if (plannerData) {
+      setValue('ROLE', role || 'planner');
       setValue('FNAME', firstName);
       setValue('LNAME', lastName);
       setValue('EMAIL', email);
@@ -107,7 +112,39 @@ const Page = (props: Props) => {
   }, [plannerData]);
 
   const onSubmit = async (data: Record<string, any>) => {
-    const { FNAME, LNAME, EMAIL, PHONE, ARCHIVED, ADDRESS } = data;
+    const { FNAME, LNAME, EMAIL, PHONE, ARCHIVED, ADDRESS, ROLE } = data;
+
+    if (data.PASSWORD) {
+      const { data: refreshedSession, error: refreshError } =
+        await supabase.auth.refreshSession({
+          refresh_token: state.session?.refresh_token,
+        });
+      if (refreshError) {
+        console.log('session', state.session);
+
+        console.log('refresh error', refreshError);
+        return toast.error(refreshError.message, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      } else {
+        const { data: userUpdateData, error: updateError } =
+          await supabase.auth.updateUser({
+            password: data.PASSWORD,
+          });
+        if (updateError) {
+          toast.error(updateError.message);
+        } else {
+          toast.success('Password updated successfully!');
+        }
+      }
+    }
 
     fetch('/api/editPlanner', {
       method: 'POST',
@@ -120,6 +157,7 @@ const Page = (props: Props) => {
         phone: PHONE,
         address: ADDRESS,
         archived: ARCHIVED,
+        role: ROLE,
       }),
     })
       .then((response) => response.json())
@@ -152,7 +190,7 @@ const Page = (props: Props) => {
       <header className="bg-white shadow">
         <div className="max-w-7xl sm:px-6 lg:px-8 px-4 py-6 mx-auto">
           <h1 className="font-display pt-4 pb-2 text-3xl font-normal leading-tight tracking-widest text-center uppercase">
-            Edit Planner
+            {plannerSlug == 'new' ? 'New Planner' : 'Edit Planner'}
           </h1>
         </div>
       </header>
@@ -174,6 +212,29 @@ const Page = (props: Props) => {
                 <div className="sm:rounded-md overflow-hidden shadow">
                   <div className="sm:p-6 px-4 py-5 bg-white">
                     <div className="grid grid-cols-6 gap-6">
+                      <div className="sm:col-span-6 col-span-6">
+                        {errors.FNAME ? (
+                          <p className="text-red-600">
+                            {errors.FNAME.message as string}
+                          </p>
+                        ) : (
+                          <label
+                            className="block text-sm font-medium text-gray-700"
+                            htmlFor="ROLE">
+                            Role
+                          </label>
+                        )}
+                        <select
+                          className="focus:ring-indigo-500 border-[1px] py-[0.75rem] px-[0.5rem] focus:border-indigo-500 sm:text-sm block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                          {...register('ROLE', {
+                            required: 'Role required.',
+                          })}
+                          id="ROLE">
+                          <option value="planner">Planner</option>
+                          <option value="stylist">Stylist</option>
+                        </select>
+                      </div>
+
                       <div className="sm:col-span-3 col-span-6">
                         {errors.FNAME ? (
                           <p className="text-red-600">
@@ -232,6 +293,7 @@ const Page = (props: Props) => {
                         <input
                           className="focus:ring-indigo-500 border-[1px] py-[0.75rem] px-[0.5rem] focus:border-indigo-500 sm:text-sm block w-full mt-1 border-gray-300 rounded-md shadow-sm"
                           type="text"
+                          autoComplete="new-email"
                           {...register('EMAIL', {
                             required: 'Email required.',
                           })}
@@ -282,6 +344,35 @@ const Page = (props: Props) => {
                         />
                       </div>
 
+                      <div
+                        className={`sm:col-span-6 col-span-6
+                      ${
+                        state.loggedInUser?.email != plannerData?.email
+                          ? 'hidden'
+                          : ''
+                      }
+                      
+                      `}>
+                        {errors.PASSWORD ? (
+                          <p className="text-red-600">
+                            {errors.PASSWORD.message as string}
+                          </p>
+                        ) : (
+                          <label
+                            className="block text-sm font-medium text-gray-700"
+                            htmlFor="password">
+                            Reset Password
+                          </label>
+                        )}
+                        <input
+                          type="password"
+                          autoComplete="new-password"
+                          className="focus:ring-indigo-500 py-[0.75rem] px-[0.5rem] focus:border-indigo-500 sm:text-sm block w-full mt-1 border-[1px] border-gray-300 rounded-md shadow-sm"
+                          {...register('PASSWORD')}
+                          id="password"
+                        />
+                      </div>
+
                       <div className="sm:col-span-4 flex items-start col-span-6">
                         <div className="flex items-center h-5">
                           <input
@@ -309,7 +400,9 @@ const Page = (props: Props) => {
                       type="submit"
                       name="commit"
                       className="bg-[rgba(217,142,72)] hover:bg-[rgba(219,96,53)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm">
-                      Update User
+                      {plannerSlug == 'new'
+                        ? 'Create Planner'
+                        : 'Update Planner'}
                     </button>
                   </div>
                 </div>

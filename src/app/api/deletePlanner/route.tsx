@@ -10,17 +10,8 @@ export async function DELETE(req: Request) {
     .from('users')
     .delete()
     .eq('email', data.email)
-    .eq('role', 'planner');
+    .in('role', ['planner', 'stylist']);
 
-  const { error: newPlannerError } = await supabase
-    .from('new_planner')
-    .delete()
-    .eq('plannerEmail', data.email);
-
-  if (error)
-    return NextResponse.json([
-      { error: error.message },
-      { error: newPlannerError?.message },
-    ]);
+  if (error) return NextResponse.json([{ error: error.message }]);
   return NextResponse.json({ data });
 }

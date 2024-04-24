@@ -1,10 +1,10 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { use, useEffect } from 'react';
 import { useStateContext } from '../context/StateContext';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useClient } from '../lib/useClient';
-import { set } from 'react-hook-form';
 
 type Props = {
   showLinks: boolean;

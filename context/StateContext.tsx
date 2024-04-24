@@ -1,3 +1,4 @@
+'use client';
 // Import the necessary hooks from React
 import React, {
   createContext,

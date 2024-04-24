@@ -4,6 +4,7 @@ import React from 'react';
 import DocumentsRow from '../../../components/DocumentsRow';
 import { useQuery } from '@tanstack/react-query';
 import { useClient } from '../../../lib/useClient';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 type Props = {};
 
@@ -25,13 +26,6 @@ const Page = (props: Props) => {
     }
   };
 
-  const { data: documentsData } = useQuery({
-    queryKey: ['documents'],
-    queryFn: fetchDocuments,
-  });
-
-  console.log(documentsData);
-
   // useEffect(() => {
   //   const session = JSON.parse(localStorage.getItem('session') as string);
   //   const user = JSON.parse(localStorage.getItem('user') as string);
@@ -39,6 +33,8 @@ const Page = (props: Props) => {
   //     setState({ ...state, session, user });
   //   }
   // }, []);
+
+  const queryClient = new QueryClient();
 
   return (
     <div className="">
@@ -49,33 +45,51 @@ const Page = (props: Props) => {
           </h1>
         </div>
       </header>
-      <section className="max-w-7xl justify-center px-6 py-8 mx-auto overflow-auto break-words">
-        <div className="w-[1000px] mx-auto flex flex-col">
-          <div className=" grid grid-cols-4 gap-1">
-            {['TITLE', 'STATUS', 'ID'].map((title, id) => (
+      <QueryClientProvider client={queryClient}>
+        <DocumentList fetchDocumentData={fetchDocuments} />
+      </QueryClientProvider>
+    </div>
+  );
+
+  function DocumentList({ fetchDocumentData }: any) {
+    const { data: documentData } = useQuery({
+      queryKey: ['documentData'],
+      queryFn: fetchDocumentData,
+    });
+
+    return (
+      <section className="max-w-7xl px-6 py-8 mx-auto overflow-auto break-words">
+        <div className="w-[1200px] flex flex-col">
+          <div className=" grid grid-cols-8 gap-1">
+            {['Title', 'Status', 'ID'].map((title, id) => (
               <h2
                 key={id}
-                className={`py-4 font-sans font-normal tracking-widest text-left uppercase`}>
+                className={`${
+                  title == 'Email' && 'col-span-2'
+                } py-4 font-sans font-normal tracking-widest text-left uppercase`}>
                 {title}
               </h2>
             ))}
           </div>
+
           <div className="flex flex-col justify-between mb-4">
-            {documentsData?.map((document: Document, id: number) => (
-              <DocumentsRow key={id} document={document} />
-            ))}
-            <div className="flex justify-end w-full my-10">
-              <button
-                type="button"
-                className="bg-[rgba(219,96,53)]  hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-4 py-2 text-sm font-normal text-white border border-transparent rounded-md shadow-sm">
-                <Link href={`/documents/edit`}>New Document</Link>{' '}
-              </button>
-            </div>
+            {(documentData as Document[])?.map(
+              (document: Document, id: number) => (
+                <DocumentsRow document={document} key={id} />
+              )
+            )}
           </div>
         </div>
+        <Link href="/documents/edit/new">
+          <button
+            type="button"
+            className="bg-[rgba(219,96,53)] hover:bg-[rgba(217,142,72)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center px-4 py-2 text-sm font-normal text-white border border-transparent rounded-md shadow-sm">
+            + New Document
+          </button>
+        </Link>
       </section>
-    </div>
-  );
+    );
+  }
 };
 
 export default Page;

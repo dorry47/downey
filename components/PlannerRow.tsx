@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,11 +12,13 @@ type Props = {
     phone: string;
     archived: boolean;
     slug: string;
+    role?: string;
   };
 };
 
 const PlannerRow = (props: Props) => {
-  const { name, email, phone, archived } = props.planner;
+  const { name, email, phone, archived, role } = props.planner;
+  const router = useRouter();
 
   const firstName = name.split(' ')[0];
   const lastName = name.split(' ')[1];
@@ -31,9 +34,11 @@ const PlannerRow = (props: Props) => {
     toast.success('Planner deleted');
 
     console.log('deleted', data);
+    router.push('/planners');
   };
+
   return (
-    <div className=" grid grid-cols-7 gap-1">
+    <div className=" grid grid-cols-8 gap-1">
       <p className="py-4 font-serif text-base text-left capitalize">
         {firstName}
       </p>
@@ -45,6 +50,7 @@ const PlannerRow = (props: Props) => {
       <p className="py-4 font-serif text-base text-left">
         {archived?.toString()}
       </p>
+      <p className="py-4 font-serif text-base text-left">{role}</p>
       <div className="grid grid-cols-3 gap-1 my-auto">
         <p className="flex justify-center font-sans text-left">
           <Link href={`planners/${slug}`}>

@@ -82,3 +82,12 @@ select {
 .signatureBox {
   font-family: 'Cedarville Cursive', cursive;
 }
+
+.tox-statusbar__help-text, .tox-statusbar__right-container {
+  display: none !important;
+}
+
+.tox-tinymce {
+  border: 2px solid #efcec6 !important;
+  
+}

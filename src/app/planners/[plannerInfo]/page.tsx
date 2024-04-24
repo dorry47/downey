@@ -26,7 +26,7 @@ export default function Page(props: Props) {
       .from('users')
       .select('*')
       .eq('name', formattedAndCapitalizedSlug)
-      .eq('role', 'planner');
+      .in('role', ['planner', 'stylist']);
 
     if (error) {
       console.log(error);
