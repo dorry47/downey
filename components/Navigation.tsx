@@ -56,6 +56,8 @@ const Navigation = (props: Props) => {
         user: null,
         showMobileMenu: false,
         loggedInUser: null,
+        refresh_token: null,
+        access_token: null,
       });
       router.push('/');
     } catch (error) {

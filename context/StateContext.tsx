@@ -13,6 +13,8 @@ const initialState: StateType = {
   user: null,
   showMobileMenu: false,
   loggedInUser: null,
+  refresh_token: null,
+  access_token: null,
 };
 
 // Define the types
@@ -21,6 +23,8 @@ type StateType = {
   user: any;
   showMobileMenu: boolean;
   loggedInUser: any;
+  refresh_token: any;
+  access_token: any;
 };
 
 type StateContextType = {
@@ -52,6 +56,8 @@ const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
     loggedInUser: 'loggedInUser',
     stripe: 'stripe',
     activeNavButtons: 'activeNavButton',
+    refresh_token: 'refresh_token',
+    access_token: 'access_token',
   };
 
   const [state, setState] = useState<StateType>(initialState);
@@ -73,6 +79,14 @@ const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
         JSON.parse(
           localStorage.getItem(localStorageKeys.loggedInUser) || 'null'
         ) || initialState.loggedInUser,
+      refresh_token:
+        JSON.parse(
+          localStorage.getItem(localStorageKeys.refresh_token) || 'null'
+        ) || initialState.refresh_token,
+      access_token:
+        JSON.parse(
+          localStorage.getItem(localStorageKeys.access_token) || 'null'
+        ) || initialState.access_token,
     });
   }, []);
 
