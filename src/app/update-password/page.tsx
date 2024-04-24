@@ -21,6 +21,8 @@ const Page = (props: Props) => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     shouldUnregister: false,
@@ -72,6 +74,7 @@ const Page = (props: Props) => {
             console.log('user data', data);
 
             setLoggedInUser(data[0]);
+            setValue('EMAIL', data[0].email);
           } else {
             console.error(error);
           }
@@ -143,6 +146,7 @@ const Page = (props: Props) => {
                     placeholder="Email Address"
                     className="rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none"
                     type="text"
+                    disabled={watch('EMAIL') !== ''}
                     {...register('EMAIL', {
                       required: 'Email required.',
                     })}
