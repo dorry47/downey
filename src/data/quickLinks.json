@@ -65,6 +65,15 @@
       "imageSrc": "/images/music-icon.jpg",
       "href": "/questionnaires/1136",
       "active": false
+    }, 
+
+      {
+      "titleKey": "STYLING_QUESTIONNAIRE_URL",
+      "title": "Styling Questionnaire",
+      "subtitle": "",
+      "imageSrc": "/images/styling-dress.png",
+      "href": "/questionnaires/1137",
+      "active": false
     }
   ]
   , 
@@ -78,7 +87,14 @@
         "href": "https://docs.google.com/spreadsheets/d/1UlJPaWHgCAgrYf5WysDXkBQad9ZFeL0OR8H2xFByFoE/edit#gid=2050384383",
         "active": false
       },
-
+    {
+      "titleKey": "STYLING_FOLDER_URL",
+      "title": "Styling Folder",
+      "subtitle": "",
+      "imageSrc": "/images/styling-heel.png",
+      "href": "/questionnaires/1137",
+      "active": false
+    },
       
         
         {

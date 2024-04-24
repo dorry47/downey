@@ -92,7 +92,7 @@ export default function Page() {
     let { data, error } = await supabase
       .from('users')
       .select('name, email, phone, address, archived, role')
-      .eq('role', 'planner');
+      .in('role', ['planner', 'stylist']);
 
     if (error) {
       console.log(error);

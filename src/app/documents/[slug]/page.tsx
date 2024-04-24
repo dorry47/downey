@@ -221,7 +221,7 @@ const Page = (props: Props) => {
                             return (
                               <section key={id} className="flex flex-col">
                                 <div className="col-span-6 mb-3">
-                                  <h4 className="md:w-5/6 block pb-1 font-sans text-[11px] leading-5 font-normal tracking-widest uppercase">
+                                  <h4 className="md:w-5/6 block pb-1 whitespace-pre-wrap font-sans text-[11px] leading-5 font-normal tracking-widest uppercase">
                                     {question?.prompt}
                                   </h4>
 
@@ -234,7 +234,7 @@ const Page = (props: Props) => {
 
                                   <textarea
                                     {...register(`questions.${id}.answer`)}
-                                    className=" focus:border-dse-orange border-dse-peach block w-full my-1 mb-2 font-serif text-sm"
+                                    className=" focus:border-dse-orange whitespace-pre-wrap border-dse-peach block w-full my-1 mb-2 font-serif text-sm"
                                     id="answer"></textarea>
                                 </div>
                               </section>
