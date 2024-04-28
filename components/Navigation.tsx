@@ -59,6 +59,9 @@ const Navigation = (props: Props) => {
         refresh_token: null,
         access_token: null,
       });
+      if (role != 'client') {
+        localStorage.clear();
+      }
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);

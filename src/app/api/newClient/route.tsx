@@ -29,57 +29,105 @@ export async function POST(req: Request) {
     //     }
     //   );
 
-    const { data: inviteData, error: inviteError } = await supabase.auth.signUp(
-      {
-        email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
-        password: 'password',
-        options: {
-          data: { role: 'client' },
+    if (data.ADMIN_INFO.ROLE == 'styling') {
+      const { data: createData, error: createError } =
+        await supabase.auth.admin.createUser({
+          email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+          password: 'password',
+          user_metadata: {
+            role: 'stylist',
+            name: name,
+            email: email,
+            phone: phone,
+            address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
+            archived: archived,
+          },
+        });
+
+      const { data: inviteData, error: inviteError } =
+        await supabase.auth.admin.inviteUserByEmail(
+          data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+          {
+            redirectTo: isDev
+              ? 'http://localhost:3000/'
+              : 'https://planning.downeystreetevents.com/',
+          }
+        );
+
+      // const { data: inviteData, error: inviteError } =
+      //   await supabase.auth.resetPasswordForEmail(email, {
+      //     redirectTo: isDev
+      //       ? 'http://localhost:3000/'
+      //       : 'https://planning.downeystreetevents.com/',
+      //   });
+
+      console.log('inviteData', inviteData);
+
+      if (inviteError) return NextResponse.json({ error: inviteError.message });
+
+      console.log('data', data);
+
+      const { error } = await supabase.from('new_client').insert([
+        {
+          ...data,
         },
-      }
-    );
+      ]);
 
-    // const { data: inviteData, error: inviteError } =
-    //   await supabase.auth.admin.generateLink({
-    //     type: 'recovery',
-    //     email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
-    //   });
+      const { data: userInsertData, error: userInsertError } = await supabase
+        .from('users')
+        .insert([
+          {
+            name: name,
+            email: email,
+            phone: phone,
+            address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
+            archived: archived,
+            role: 'client',
+          },
+        ]);
+      console.log('userInsertData', userInsertData);
+      console.log('userInsertError', userInsertError);
 
-    if (inviteError) return NextResponse.json({ error: inviteError.message });
+      if (userInsertError) return NextResponse.json({ error: userInsertError });
 
-    console.log('inviteData', inviteData);
+      if (error) return NextResponse.json({ error: error });
+      return NextResponse.json({ data: inviteData });
+    } else {
+      const { data: inviteData, error: inviteError } =
+        await supabase.auth.signUp({
+          email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+          password: 'password',
+          options: {
+            data: { role: 'client' },
+          },
+        });
+      console.log('inviteData', inviteData);
 
-    // const { data: user, error: updateError } =
-    //   await supabase.auth.admin.updateUserById(inviteData?.user?.id as string, {
-    //     password: 'password',
-    //   });
+      if (inviteError) return NextResponse.json({ error: inviteError.message });
 
-    // if (updateError) return NextResponse.json({ error: updateError.message });
+      console.log('data', data);
 
-    // console.log('user', user);
+      const { error } = await supabase.from('new_client').insert([
+        {
+          ...data,
+        },
+      ]);
 
-    console.log('data', data);
+      await supabase.from('users').insert([
+        {
+          name: name,
+          email: email,
+          phone: phone,
+          address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
+          archived: archived,
+          role: 'client',
+        },
+      ]);
 
-    const { error } = await supabase.from('new_client').insert([
-      {
-        ...data,
-      },
-    ]);
+      if (error) return NextResponse.json({ error: error });
 
-    await supabase.from('users').insert([
-      {
-        name: name,
-        email: email,
-        phone: phone,
-        address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
-        archived: archived,
-        role: 'client',
-      },
-    ]);
-
-    if (error) return NextResponse.json({ error: error });
-
-    return NextResponse.json({ data: inviteData });
+      return NextResponse.json({ data: inviteData });
+    }
   } else {
     const { error } = await supabase
       .from('new_client')

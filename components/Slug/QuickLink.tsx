@@ -15,7 +15,9 @@ const QuickLinks = (props: Props) => {
   return (
     <div className={`col-span-1 mb-4 ${!active ? 'visible' : 'hidden'}`}>
       <Link href={href}>
-        <img className="md:w-11/12 w-10/12 mx-auto" src={imageSrc}></img>
+        <img
+          className="h-[200px] w-[200px] mx-auto object-contain"
+          src={imageSrc}></img>
         <h4 className="text-xxs sm:text-xxs tracking-extrawide pt-4 font-normal text-black uppercase">
           {subtitle}
         </h4>
