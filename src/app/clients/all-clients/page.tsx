@@ -3,7 +3,8 @@ import React, { use, useEffect, useState } from 'react';
 import AllClientsRow from '../../../../components/AllClientsRow';
 import Link from 'next/link';
 import { useClient } from '../../../../lib/useClient';
-import { useStateContext } from '../../../../context/StateContext';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../../context/atoms';
 
 type Props = {};
 
@@ -23,7 +24,7 @@ interface ClientData {
 const Page = (props: Props) => {
   const [clientData, setClientData] = useState<ClientData[]>([]);
   const supabase = useClient();
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
   const [deletedItem, setDeletedItem] = useState<any>(false);
 
   const fetchClientData = async () => {

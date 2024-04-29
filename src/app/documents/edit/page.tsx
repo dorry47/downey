@@ -50,15 +50,16 @@ const Page = () => {
   });
 
   const fetchDocuments = async () => {
-    let { data, error } = await supabase
-      .from('documents')
-      .select('*')
-      .eq('id', Number(urlParameter));
-    if (error) {
-      console.log(error);
-    } else {
-      return data;
-    }
+    const documentData = await fetch(`/api/fetchDocuments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: urlParameter }),
+    });
+    const data = await documentData.json();
+    console.log('data', data);
+    return data.data;
   };
 
   useEffect(() => {

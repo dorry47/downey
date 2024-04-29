@@ -10,8 +10,9 @@ import { Cedarville_Cursive } from 'next/font/google';
 import { Document, Page } from 'react-pdf';
 
 import { pdfjs } from 'react-pdf';
-import { set, useForm } from 'react-hook-form';
-import { useStateContext } from '../../../../context/StateContext';
+import { useForm } from 'react-hook-form';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../../context/atoms';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -59,7 +60,7 @@ const Page1 = (props: Props) => {
   const [fileUrl, setFileUrl] = useState(null);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);

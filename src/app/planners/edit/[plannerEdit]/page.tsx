@@ -4,9 +4,10 @@ import { set, useForm } from 'react-hook-form';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useClient } from '../../../../../lib/useClient';
-import { useStateContext } from '../../../../../context/StateContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../../../context/atoms';
 
 type Props = {};
 
@@ -23,7 +24,7 @@ const Page = (props: Props) => {
   const pathName = usePathname();
   const router = useRouter();
   const supabase = useClient();
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
 
   const plannerSlug = pathName.split('/planners/edit/')[1];
 
@@ -78,15 +79,9 @@ const Page = (props: Props) => {
   });
 
   useEffect(() => {
-    const session = JSON.parse(localStorage.getItem('session') as string);
-    const user = JSON.parse(localStorage.getItem('user') as string);
     fetchPlannerData().then((data: any) => {
       setPlannerData(data[0]);
     });
-
-    if (session) {
-      setState({ ...state, session, user });
-    }
   }, []);
 
   useEffect(() => {

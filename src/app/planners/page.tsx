@@ -9,7 +9,8 @@ import {
 import PlannerRow from '../../../components/PlannerRow';
 import Link from 'next/link';
 import { useClient } from '../../../lib/useClient';
-import { useStateContext } from '../../../context/StateContext';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../context/atoms';
 
 type Props = {};
 
@@ -23,7 +24,7 @@ interface Planner {
 
 export default function Page(props: Props) {
   const supabase = useClient();
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
 
   const fetchPlannerData = async () => {
     let { data, error } = await supabase

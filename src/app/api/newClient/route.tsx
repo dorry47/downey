@@ -33,6 +33,7 @@ export async function POST(req: Request) {
       const { data: createData, error: createError } =
         await supabase.auth.admin.createUser({
           email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+          email_confirm: true,
           password: 'password',
           user_metadata: {
             role: 'stylist',
@@ -44,22 +45,22 @@ export async function POST(req: Request) {
           },
         });
 
-      const { data: inviteData, error: inviteError } =
-        await supabase.auth.admin.inviteUserByEmail(
-          data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
-          {
-            redirectTo: isDev
-              ? 'http://localhost:3000/'
-              : 'https://planning.downeystreetevents.com/',
-          }
-        );
-
       // const { data: inviteData, error: inviteError } =
-      //   await supabase.auth.resetPasswordForEmail(email, {
-      //     redirectTo: isDev
-      //       ? 'http://localhost:3000/'
-      //       : 'https://planning.downeystreetevents.com/',
-      //   });
+      //   await supabase.auth.admin.inviteUserByEmail(
+      //     data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
+      //     {
+      //       redirectTo: isDev
+      //         ? 'http://localhost:3000/'
+      //         : 'https://planning.downeystreetevents.com/',
+      //     }
+      //   );
+
+      const { data: inviteData, error: inviteError } =
+        await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: isDev
+            ? 'http://localhost:3000/'
+            : 'https://planning.downeystreetevents.com/',
+        });
 
       console.log('inviteData', inviteData);
 

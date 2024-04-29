@@ -1,10 +1,7 @@
 'use client';
 import Link from 'next/link';
-import React from 'react';
+import React, { use, useEffect, useState } from 'react';
 import DocumentsRow from '../../../components/DocumentsRow';
-import { useQuery } from '@tanstack/react-query';
-import { useClient } from '../../../lib/useClient';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 type Props = {};
 
@@ -15,26 +12,25 @@ interface Document {
 }
 
 const Page = (props: Props) => {
-  const supabase = useClient();
+  const [documentData, setDocumentData] = useState<Document[] | null>(null);
 
   const fetchDocuments = async () => {
-    let { data, error } = await supabase.from('documents').select('*');
-    if (error) {
-      console.log(error);
-    } else {
-      return data;
-    }
+    try {
+      const data = await fetch('/api/fetchDocuments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+      const json = await data.json();
+      setDocumentData(json.data);
+    } catch (error) {}
   };
 
-  // useEffect(() => {
-  //   const session = JSON.parse(localStorage.getItem('session') as string);
-  //   const user = JSON.parse(localStorage.getItem('user') as string);
-  //   if (session) {
-  //     setState({ ...state, session, user });
-  //   }
-  // }, []);
-
-  const queryClient = new QueryClient();
+  useEffect(() => {
+    fetchDocuments();
+  }, []);
 
   return (
     <div className="">
@@ -45,19 +41,6 @@ const Page = (props: Props) => {
           </h1>
         </div>
       </header>
-      <QueryClientProvider client={queryClient}>
-        <DocumentList fetchDocumentData={fetchDocuments} />
-      </QueryClientProvider>
-    </div>
-  );
-
-  function DocumentList({ fetchDocumentData }: any) {
-    const { data: documentData } = useQuery({
-      queryKey: ['documentData'],
-      queryFn: fetchDocumentData,
-    });
-
-    return (
       <section className="max-w-7xl px-6 py-8 mx-auto overflow-auto break-words">
         <div className="w-[1200px] flex flex-col">
           <div className=" grid grid-cols-8 gap-1">
@@ -73,11 +56,12 @@ const Page = (props: Props) => {
           </div>
 
           <div className="flex flex-col justify-between mb-4">
-            {(documentData as Document[])?.map(
-              (document: Document, id: number) => (
-                <DocumentsRow document={document} key={id} />
-              )
-            )}
+            {documentData &&
+              (documentData as Document[]).map(
+                (document: Document, id: number) => (
+                  <DocumentsRow document={document} key={id} />
+                )
+              )}
           </div>
         </div>
         <Link href="/documents/edit/new">
@@ -88,8 +72,8 @@ const Page = (props: Props) => {
           </button>
         </Link>
       </section>
-    );
-  }
+    </div>
+  );
 };
 
 export default Page;

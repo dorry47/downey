@@ -1,48 +1,45 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useClient } from '../lib/useClient'; // import supabase client
-import { useStateContext } from '../context/StateContext';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../context/atoms';
 
 type Props = {
   links: { href: string; title: string }[];
 };
 
 const Footer = (props: Props) => {
-  const { setState, state } = useStateContext();
-  const [loggedInUser, setLoggedInUser] = React.useState<any>(null);
+  const [state, setState] = useAtom(globalStateAtom);
   const [plannerSlug, setPlannerSlug] = React.useState<any>(null);
 
+  const path = usePathname();
   const router = useRouter();
 
   const supabase = useClient();
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
-    const loggedInUser = async () =>
-      await supabase
-        .from('users')
-        .select('*')
-        .eq('email', state?.user?.email)
-        .then((data: any) => {
-          console.log(data?.data[0]);
-          setLoggedInUser(data?.data[0]);
-        });
-    loggedInUser();
-
-    setLoggedInUser(loggedInUser);
-  }, [state]);
-
-  useEffect(() => {
-    const slug = loggedInUser?.name;
+    const slug = state.loggedInUser?.name;
     setPlannerSlug(slug?.replace(/\s+/g, '-').toLowerCase());
-  }, [loggedInUser]);
+  }, [state.loggedInUser]);
 
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
-      localStorage.clear();
-      setState({ ...state, session: null, user: null });
+      setState({
+        ...state,
+        session: null,
+        user: null,
+        showMobileMenu: false,
+        loggedInUser: null,
+        refresh_token: null,
+        access_token: null,
+      });
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
@@ -50,7 +47,10 @@ const Footer = (props: Props) => {
   };
 
   return (
-    (loggedInUser?.role == 'planner' || loggedInUser?.role == 'stylist') && (
+    path !== '/' &&
+    isClient &&
+    (state.loggedInUser?.role == 'planner' ||
+      state.loggedInUser?.role == 'stylist') && (
       <footer className="mt-6 mb-4">
         <div className="max-w-7xl sm:px-6 lg:px-8 px-4 mx-auto">
           <div className="md:flex-row md:space-x-10 md:space-y-0 flex flex-col justify-center py-4 space-x-0 space-y-4">

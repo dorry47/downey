@@ -2,7 +2,8 @@
 import React, { use, useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { useRouter } from 'next/navigation';
-import { useStateContext } from '../../context/StateContext';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../context/atoms';
 import Link from 'next/link';
 import { useClient } from '../../lib/useClient';
 import { toast, ToastContainer } from 'react-toastify';
@@ -12,7 +13,7 @@ type Props = {};
 
 const Page = (props: Props) => {
   const router = useRouter();
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
   const [loading, setLoading] = useState(true);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
@@ -52,19 +53,21 @@ const Page = (props: Props) => {
 
   const handleAuthChange = async (event: any, session: any) => {
     if (event === 'SIGNED_IN' && session !== null) {
-      console.log('session', event);
-      localStorage.setItem('session', JSON.stringify(session));
-      localStorage.setItem('user', JSON.stringify(session.user));
-      setState({
-        ...state,
-        session,
-        user: session.user,
-      });
-
-      console.log('session', session);
+      await supabase
+        .from('users')
+        .select('*')
+        .eq('email', session.user.email)
+        .then((data: any) => {
+          setState({
+            ...state,
+            session,
+            user: session.user,
+            loggedInUser: data?.data[0],
+          });
+        });
 
       if (session != null) {
-        window.location.href = '/Homepage';
+        router.push('/Homepage');
       }
     } else {
       localStorage.clear();

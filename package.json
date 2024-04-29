@@ -25,6 +25,7 @@
     "encoding": "^0.1.13",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.8",
+    "jotai": "^2.8.0",
     "next": "13.4.8",
     "pango": "^0.0.3",
     "pdfjs-dist": "^3.4.120",

@@ -3,7 +3,8 @@ import ClientBox from '../../../components/ClientBox';
 import events from '../../data/events.json';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useStateContext } from '../../../context/StateContext';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../context/atoms';
 import React from 'react';
 import { useClient } from '../../../lib/useClient';
 import { useRouter } from 'next/navigation';
@@ -31,9 +32,8 @@ interface LoggedInPlanner {
 
 export default function Page() {
   const [activeList, setActiveList] = useState<{ [key: string]: boolean }>({});
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
   const [clientData, setClientData] = useState<any[]>();
-  const [loggedInPlanner, setLoggedInPlanner] = useState<LoggedInPlanner>();
   const supabase = useClient();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,27 +64,16 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const session = JSON.parse(localStorage.getItem('session') as string);
-    const user = JSON.parse(localStorage.getItem('user') as string);
-
-    console.log('saved session', session);
-    if (session) {
-      setState({ ...state, session, user });
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log('loggedInPlanner', loggedInPlanner);
-    if (loggedInPlanner && loggedInPlanner.role == 'planner') {
+    console.log('loggedInUser', state.loggedInUser);
+    if (state.loggedInUser && state.loggedInUser.role == 'planner') {
       setIsLoading(false);
-    } else if (loggedInPlanner && loggedInPlanner.role == 'client') {
-      localStorage.setItem('loggedInUser', JSON.stringify(loggedInPlanner));
-      window.location.href = `/clients/new?edit=${loggedInPlanner?.name.replace(
+    } else if (state.loggedInUser && state.loggedInUser.role == 'client') {
+      window.location.href = `/clients/new?edit=${state.loggedInUser?.name.replace(
         ' + ',
         '-'
       )}`;
     }
-  }, [loggedInPlanner]);
+  }, [state.loggedInUser]);
 
   const allPlanners = async () => {
     let { data, error } = await supabase
@@ -139,16 +128,6 @@ export default function Page() {
 
   useEffect(() => {
     console.log('planner email', `${state?.user?.email}`);
-
-    if (state.user !== null) {
-      const loggedInUser = async () =>
-        await supabase.from('users').select('*').eq('email', state.user.email);
-
-      loggedInUser().then((data: any) => {
-        console.log('logged in data', data);
-        setLoggedInPlanner(data.data[0]);
-      });
-    }
 
     if (state.session !== null) {
       allPlanners().then((plannerData: any) => {
@@ -207,7 +186,7 @@ export default function Page() {
             <div className="md:items-center md:pb-12 md:pt-12 text-center">
               <div className="md:col-span-10 md:py-12 md:mx-8 border-[rgba(238,217,212)] bg-[rgba(238,217,212)] bg-opacity-10 col-span-12 py-8 border border-solid">
                 <h1 className="font-display md:text-3xl mt-2 text-xl font-normal leading-tight tracking-widest uppercase">
-                  Hello {loggedInPlanner?.name.split(' ')[0]}!
+                  Hello {state.loggedInUser?.name.split(' ')[0]}!
                 </h1>
               </div>
             </div>
@@ -227,7 +206,7 @@ export default function Page() {
                   clientData
                     .filter(
                       (planner: Planner) =>
-                        planner.plannerEmail == loggedInPlanner?.email
+                        planner.plannerEmail == state.loggedInUser?.email
                     )
                     .flatMap((planner: Planner) => planner.events)
                     .map((event: Event, id: number) => {
@@ -265,7 +244,7 @@ export default function Page() {
               clientData
                 .filter(
                   (planner: Planner) =>
-                    planner.plannerEmail !== loggedInPlanner?.email
+                    planner.plannerEmail !== state.loggedInUser?.email
                 )
                 .map((list: Planner, id: number) => (
                   <div

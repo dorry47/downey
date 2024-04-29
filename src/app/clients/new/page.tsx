@@ -9,11 +9,12 @@ import {
   guestRange,
   bgImages,
 } from '../../../../constants/NEW_CLIENT_CONSTS';
-import { useStateContext } from '../../../../context/StateContext';
 import { useClient } from '../../../../lib/useClient';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../../context/atoms';
 
 interface Planner {
   name: string;
@@ -34,7 +35,7 @@ const Page = (props: Props) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [password, setPassword] = React.useState('');
   const [passwordConfirmation, setPasswordConfirmation] = React.useState('');
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
   const supabase = useClient();
   const router = useRouter();
   const params = useSearchParams();

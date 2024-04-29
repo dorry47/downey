@@ -1,17 +1,18 @@
 'use client';
 import React, { use, useEffect, useState } from 'react';
 import { useClient } from '../../../lib/useClient';
-import { useStateContext } from '../../../context/StateContext';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../context/atoms';
 
 type Props = {};
 
 const Page = (props: Props) => {
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
   const [submitted, setSubmitted] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
   const supabase = useClient();
@@ -36,21 +37,21 @@ const Page = (props: Props) => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session: any) => {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          localStorage.setItem('access_token', session.access_token);
-          localStorage.setItem('refresh_token', session.refresh_token);
-          localStorage.setItem('user', JSON.stringify(session.user));
-          localStorage.setItem('session', JSON.stringify(session));
-
-          console.log('handled session', session);
-
           setState({
             ...state,
             session,
             user: session.user,
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
           });
         } else if (event === 'SIGNED_OUT') {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          setState({
+            ...state,
+            session: null,
+            user: null,
+            access_token: null,
+            refresh_token: null,
+          });
         }
       }
     );

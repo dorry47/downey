@@ -132,17 +132,17 @@ const Page = (props: Props) => {
   const onError = (errors: any, e: any) => console.log(errors, e);
 
   const fetchDocumentData = async () => {
-    let { data, error } = await supabase
-      .from('documents')
-      .select('*')
-      .eq('id', documentID);
+    const documentData = await fetch('/api/fetchDocuments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: documentID }),
+    });
 
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('document data', data);
-      return data;
-    }
+    const dataJson = await documentData.json();
+
+    return dataJson.data;
   };
   useEffect(() => {
     fetchDocumentData().then((data: any) => {

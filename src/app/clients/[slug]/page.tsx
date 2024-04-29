@@ -7,7 +7,8 @@ import Link from 'next/link';
 import { useClient } from '../../../../lib/useClient';
 import { bgImages } from '../../../../constants/NEW_CLIENT_CONSTS';
 import { set } from 'react-hook-form';
-import { useStateContext } from '../../../../context/StateContext';
+import { useAtom } from 'jotai';
+import { globalStateAtom } from '../../../../context/atoms';
 interface PlanningLinks {
   workflow_url: string;
   budget_url: string;
@@ -69,7 +70,7 @@ const Page = () => {
   const [bgImageURL, setBgImageURL] = useState<any>('');
   const [documents, setDocuments] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
-  const { state, setState } = useStateContext();
+  const [state, setState] = useAtom(globalStateAtom);
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
   const supabase = useClient();
 
@@ -279,14 +280,12 @@ const Page = () => {
   };
 
   const fetchDocuments = async () => {
-    let { data, error } = await supabase
-      .from('documents')
-      .select('id, title')
-      .eq('status', 'Published');
-    if (error) {
-      console.log(error);
-    }
-    return data;
+    const documentData = await fetch('/api/fetchDocuments', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+    const documents = await documentData.json();
+    return documents.data;
   };
 
   const date = `${clientData?.WED_MONTH} ${clientData?.WED_DAY}, ${clientData?.WED_YEAR}`;
