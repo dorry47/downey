@@ -26,7 +26,7 @@ const Page = (props: Props) => {
     // Simulate a delay for the loading animation
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 1000);
 
     return () => {
       authListener.subscription.unsubscribe();
@@ -67,9 +67,18 @@ const Page = (props: Props) => {
         window.location.href = '/Homepage';
       }
     } else {
-      console.log('no session');
+      localStorage.clear();
+      console.log('no session, clearing local storage');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="fixed z-[1000] bg-white justify-center align-middle top-0 bottom-0 left-0 right-0  h-full w-full m-auto flex text-center text-2xl">
+        <div className="m-auto">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 sm:px-6 lg:px-8 flex justify-center min-h-screen px-4 py-4">
