@@ -73,7 +73,14 @@ const Page = (props: Props) => {
         router.push('/Homepage');
       }
     } else {
-      localStorage.clear();
+      setState({
+        session: null,
+        user: null,
+        showMobileMenu: false,
+        loggedInUser: null,
+        refresh_token: null,
+        access_token: null,
+      });
       console.log('no session, clearing local storage');
     }
   };

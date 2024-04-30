@@ -37,16 +37,10 @@ const Page = (props: Props) => {
   };
 
   useEffect(() => {
-    const session = JSON.parse(localStorage.getItem('session') as string);
-    const user = JSON.parse(localStorage.getItem('user') as string);
     fetchClientData().then((data: any) => {
       console.log(data);
       setClientData(data);
     });
-
-    if (session) {
-      setState({ ...state, session, user });
-    }
   }, []);
 
   useEffect(() => {

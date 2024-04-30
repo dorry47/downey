@@ -39,14 +39,6 @@ export default function Page(props: Props) {
     }
   };
 
-  useEffect(() => {
-    const session = JSON.parse(localStorage.getItem('session') as string);
-    const user = JSON.parse(localStorage.getItem('user') as string);
-    if (session) {
-      setState({ ...state, session, user });
-    }
-  }, []);
-
   const queryClient = new QueryClient();
 
   return (
