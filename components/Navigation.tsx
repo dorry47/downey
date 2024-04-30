@@ -45,6 +45,9 @@ const Navigation = () => {
       });
 
       router.push('/');
+      if (state.loggedInUser.role !== 'client') {
+        localStorage.removeItem('hasVisitedPage');
+      }
     } catch (error) {
       console.error('Error signing out:', error);
     }
