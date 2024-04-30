@@ -1,4 +1,3 @@
-'use client';
 import Footer from '../../components/Footer';
 import Navigation from '../../components/Navigation';
 import './globals.css';
@@ -13,10 +12,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathName = typeof window !== 'undefined' && window.location.pathname;
-  const isMainPage = pathName === '/';
-  // const queryClient = new QueryClient();
-
   const footerHeight =
     (typeof window !== 'undefined' &&
       document.querySelector('footer')?.clientHeight) ||
