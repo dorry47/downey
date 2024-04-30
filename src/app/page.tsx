@@ -52,7 +52,10 @@ const Page = (props: Props) => {
   };
 
   const handleAuthChange = async (event: any, session: any) => {
-    if (event === 'SIGNED_IN' && session !== null) {
+    if (
+      (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') &&
+      session !== null
+    ) {
       await supabase
         .from('users')
         .select('*')
