@@ -1,6 +1,6 @@
-'use client';
-import React, { use, useEffect } from 'react';
-import { set, useController, useForm } from 'react-hook-form';
+"use client";
+import React, { use, useEffect } from "react";
+import { set, useController, useForm } from "react-hook-form";
 // import planners from '../../../data/planners.json';
 import {
   days,
@@ -8,13 +8,13 @@ import {
   years,
   guestRange,
   bgImages,
-} from '../../../../constants/NEW_CLIENT_CONSTS';
-import { useClient } from '../../../../lib/useClient';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useAtom } from 'jotai';
-import { globalStateAtom } from '../../../../context/atoms';
+} from "../../../../constants/NEW_CLIENT_CONSTS";
+import { useClient } from "../../../../lib/useClient";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAtom } from "jotai";
+import { globalStateAtom } from "../../../../context/atoms";
 
 interface Planner {
   name: string;
@@ -33,16 +33,16 @@ const Page = (props: Props) => {
   const [editClientData, setEditClientData] = React.useState<any>([]);
   const [submitted, setSubmitted] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [password, setPassword] = React.useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = React.useState('');
+  const [password, setPassword] = React.useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
   const [state, setState] = useAtom(globalStateAtom);
   const supabase = useClient();
   const router = useRouter();
   const params = useSearchParams();
   const slug = editClientData[0]?.SLUG;
-  console.log('slug', slug);
+  console.log("slug", slug);
 
-  const urlParameter = params.get('edit');
+  const urlParameter = params.get("edit");
 
   const {
     register,
@@ -56,104 +56,104 @@ const Page = (props: Props) => {
     shouldUnregister: false,
     defaultValues: {
       ADMIN_INFO: {
-        PLANNER: '',
+        PLANNER: "",
         ARCHIVED: false,
-        ROLE: '',
+        ROLE: "",
       },
 
       EVENT_DETAILS: {
-        DATE: '',
-        WED_MONTH: '',
-        WED_DAY: '',
-        WED_YEAR: '',
-        VENUE_NAME: '',
-        VENUE_CITY: '',
-        VENUE_STATE: '',
-        GUEST_RANGE_START: '',
-        GUEST_RANGE_END: '',
+        DATE: "",
+        WED_MONTH: "",
+        WED_DAY: "",
+        WED_YEAR: "",
+        VENUE_NAME: "",
+        VENUE_CITY: "",
+        VENUE_STATE: "",
+        GUEST_RANGE_START: "",
+        GUEST_RANGE_END: "",
       },
       PEOPLE: {
-        P_A_FNAME: '',
-        P_A_LNAME: '',
-        P_A_ROLE: '',
-        P_A_PHONE: '',
-        P_A_EMAIL: '',
-        P_A_ADD1: '',
-        P_A_ADD2: '',
-        P_A_CITY: '',
-        P_A_STATE: '',
-        P_A_ZIP: '',
-        P_B_FNAME: '',
-        P_B_LNAME: '',
-        P_B_ROLE: '',
-        P_B_PHONE: '',
-        P_B_EMAIL: '',
-        P_B_ADD1: '',
-        P_B_ADD2: '',
-        P_B_CITY: '',
-        P_B_STATE: '',
-        P_B_ZIP: '',
+        P_A_FNAME: "",
+        P_A_LNAME: "",
+        P_A_ROLE: "",
+        P_A_PHONE: "",
+        P_A_EMAIL: "",
+        P_A_ADD1: "",
+        P_A_ADD2: "",
+        P_A_CITY: "",
+        P_A_STATE: "",
+        P_A_ZIP: "",
+        P_B_FNAME: "",
+        P_B_LNAME: "",
+        P_B_ROLE: "",
+        P_B_PHONE: "",
+        P_B_EMAIL: "",
+        P_B_ADD1: "",
+        P_B_ADD2: "",
+        P_B_CITY: "",
+        P_B_STATE: "",
+        P_B_ZIP: "",
       },
       SITE_INFO: {
-        SITE_PASSCODE: '',
-        SITE_PASSCODE_CONFIRMATION: '',
-        BG_IMAGE_ID: '',
+        SITE_PASSCODE: "",
+        SITE_PASSCODE_CONFIRMATION: "",
+        BG_IMAGE_ID: "",
       },
       PLANNING_LINKS: {
         // ADMIN FORMS
-        DESIGN_URL: '',
-        WORLFLOW_URL: '',
-        MUSIC_URL: '',
-        GUEST_SERVE_URL: '',
-        CATERING_URL: '',
-        CONTRACT_URL: '',
-        Workflow_Budget_Payment_URL: '',
+        DESIGN_URL: "",
+        WORLFLOW_URL: "",
+        MUSIC_URL: "",
+        GUEST_SERVE_URL: "",
+        CATERING_URL: "",
+        CONTRACT_URL: "",
+        Workflow_Budget_Payment_URL: "",
         // EXTERNAL LINKS
-        ADDRESS_URL: '',
-        BUDGET_URL: '',
-        DESIGN_BOARD_URL: '',
-        CLIENT_DOCS_URL: '',
-        VENDOR_PROPOSALS_URL: '',
-        VENDOR_CONTACT_URL: '',
-        GUEST_INFO_URL: '',
+        ADDRESS_URL: "",
+        BUDGET_URL: "",
+        DESIGN_BOARD_URL: "",
+        CLIENT_DOCS_URL: "",
+        VENDOR_PROPOSALS_URL: "",
+        VENDOR_CONTACT_URL: "",
+        GUEST_INFO_URL: "",
         // CALENDAR_URL: '',
-        STYLING_FOLDER_URL: '',
+        STYLING_FOLDER_URL: "",
       },
       PUBLIC_LINKS: {
-        YELP_URL: '',
-        FACEBOOK_URL: '',
-        REGISTRY_URL: '',
-        INSTAGRAM_URL: '',
-        PINTEREST_URL: '',
-        TWITTER_URL: '',
+        YELP_URL: "",
+        FACEBOOK_URL: "",
+        REGISTRY_URL: "",
+        INSTAGRAM_URL: "",
+        PINTEREST_URL: "",
+        TWITTER_URL: "",
       },
     },
   });
 
-  const role = watch('ADMIN_INFO.ROLE');
+  const role = watch("ADMIN_INFO.ROLE");
 
   const { field: archivedField } = useController({
-    name: 'ADMIN_INFO.ARCHIVED',
+    name: "ADMIN_INFO.ARCHIVED",
     control,
     defaultValue: false, // Initial value for the checkbox
   });
 
   const checkAndRedirectIfVisited = (slug: string | undefined) => {
     // Use a unique key for identifying whether the user has visited the page
-    const visitedKey = 'hasVisitedPage';
+    const visitedKey = "hasVisitedPage";
 
     // Check if the user has visited the page before
     const hasVisited = localStorage.getItem(visitedKey);
 
     // If the user has visited and a valid slug is provided, redirect them to the specified URL
-    if (hasVisited == 'true' && slug != undefined) {
+    if (hasVisited == "true" && slug != undefined) {
       // Use Next.js router for redirection
       router.push(`/clients/${slug}`);
-      console.log('redirecting to', `/clients/${slug}`);
+      console.log("redirecting to", `/clients/${slug}`);
     } else {
       // If the user hasn't visited or no valid slug, set the flag in local storage
-      localStorage.setItem(visitedKey, 'true');
-      console.log('setting visited key');
+      localStorage.setItem(visitedKey, "true");
+      console.log("setting visited key");
     }
   };
 
@@ -166,9 +166,9 @@ const Page = (props: Props) => {
 
   const plannerData = async () => {
     let { data, error } = await supabase
-      .from('users')
-      .select('name, email, role') // Fix: Pass a single string instead of an array of strings
-      .in('role', ['planner', 'stylist']);
+      .from("users")
+      .select("name, email, role") // Fix: Pass a single string instead of an array of strings
+      .in("role", ["planner", "stylist"]);
     if (error) {
       console.log(error);
     } else {
@@ -184,14 +184,14 @@ const Page = (props: Props) => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const editClientSlug = urlParams.get('edit');
-    console.log('edit client slug', editClientSlug);
+    const editClientSlug = urlParams.get("edit");
+    console.log("edit client slug", editClientSlug);
 
     const getClientData = async () => {
       let { data, error } = await supabase
-        .from('new_client')
-        .select('*')
-        .eq('SLUG', editClientSlug);
+        .from("new_client")
+        .select("*")
+        .eq("SLUG", editClientSlug);
       if (error) {
         console.log(error);
       } else {
@@ -200,7 +200,7 @@ const Page = (props: Props) => {
     };
 
     getClientData().then((data) => {
-      console.log('edit client data', data);
+      console.log("edit client data", data);
       setEditClientData(data);
     });
     setIsLoading(false);
@@ -219,59 +219,59 @@ const Page = (props: Props) => {
       setSelectedBgImageId(SITE_INFO.BG_IMAGE_ID);
       Object.entries({
         plannerName: ADMIN_INFO.PLANNER,
-        'ADMIN_INFO.PLANNER': ADMIN_INFO.PLANNER,
-        'ADMIN_INFO.ROLE': ADMIN_INFO.ROLE,
-        'ADMIN_INFO.ARCHIVED': ADMIN_INFO.ARCHIVED,
-        'EVENT_DETAILS.DATE': EVENT_DETAILS.DATE.toString(),
-        'EVENT_DETAILS.WED_MONTH': EVENT_DETAILS.WED_MONTH,
-        'EVENT_DETAILS.WED_DAY': EVENT_DETAILS.WED_DAY,
-        'EVENT_DETAILS.WED_YEAR': EVENT_DETAILS.WED_YEAR,
-        'EVENT_DETAILS.VENUE_NAME': EVENT_DETAILS.VENUE_NAME,
-        'EVENT_DETAILS.VENUE_CITY': EVENT_DETAILS.VENUE_CITY,
-        'EVENT_DETAILS.VENUE_STATE': EVENT_DETAILS.VENUE_STATE,
-        'EVENT_DETAILS.GUEST_RANGE_START': EVENT_DETAILS.GUEST_RANGE_START,
-        'EVENT_DETAILS.GUEST_RANGE_END': EVENT_DETAILS.GUEST_RANGE_END,
-        'PEOPLE.P_A_FNAME': PEOPLE.P_A_FNAME,
-        'PEOPLE.P_A_LNAME': PEOPLE.P_A_LNAME,
-        'PEOPLE.P_A_ROLE': PEOPLE.P_A_ROLE,
-        'PEOPLE.P_A_PHONE': PEOPLE.P_A_PHONE,
-        'PEOPLE.P_A_EMAIL': PEOPLE.P_A_EMAIL,
-        'PEOPLE.P_A_ADD1': PEOPLE.P_A_ADD1,
-        'PEOPLE.P_A_ADD2': PEOPLE.P_A_ADD2,
-        'PEOPLE.P_A_CITY': PEOPLE.P_A_CITY,
-        'PEOPLE.P_A_STATE': PEOPLE.P_A_STATE,
-        'PEOPLE.P_A_ZIP': PEOPLE.P_A_ZIP,
-        'PEOPLE.P_B_FNAME': PEOPLE.P_B_FNAME,
-        'PEOPLE.P_B_LNAME': PEOPLE.P_B_LNAME,
-        'PEOPLE.P_B_ROLE': PEOPLE.P_B_ROLE,
-        'PEOPLE.P_B_PHONE': PEOPLE.P_B_PHONE,
-        'PEOPLE.P_B_EMAIL': PEOPLE.P_B_EMAIL,
-        'PEOPLE.P_B_ADD1': PEOPLE.P_B_ADD1,
-        'PEOPLE.P_B_ADD2': PEOPLE.P_B_ADD2,
-        'PEOPLE.P_B_CITY': PEOPLE.P_B_CITY,
-        'PEOPLE.P_B_STATE': PEOPLE.P_B_STATE,
-        'PEOPLE.P_B_ZIP': PEOPLE.P_B_ZIP,
-        'SITE_INFO.SITE_PASSCODE': SITE_INFO.SITE_PASSCODE,
-        'SITE_INFO.SITE_PASSCODE_CONFIRMATION':
+        "ADMIN_INFO.PLANNER": ADMIN_INFO.PLANNER,
+        "ADMIN_INFO.ROLE": ADMIN_INFO.ROLE,
+        "ADMIN_INFO.ARCHIVED": ADMIN_INFO.ARCHIVED,
+        "EVENT_DETAILS.DATE": EVENT_DETAILS.DATE.toString(),
+        "EVENT_DETAILS.WED_MONTH": EVENT_DETAILS.WED_MONTH,
+        "EVENT_DETAILS.WED_DAY": EVENT_DETAILS.WED_DAY,
+        "EVENT_DETAILS.WED_YEAR": EVENT_DETAILS.WED_YEAR,
+        "EVENT_DETAILS.VENUE_NAME": EVENT_DETAILS.VENUE_NAME,
+        "EVENT_DETAILS.VENUE_CITY": EVENT_DETAILS.VENUE_CITY,
+        "EVENT_DETAILS.VENUE_STATE": EVENT_DETAILS.VENUE_STATE,
+        "EVENT_DETAILS.GUEST_RANGE_START": EVENT_DETAILS.GUEST_RANGE_START,
+        "EVENT_DETAILS.GUEST_RANGE_END": EVENT_DETAILS.GUEST_RANGE_END,
+        "PEOPLE.P_A_FNAME": PEOPLE.P_A_FNAME,
+        "PEOPLE.P_A_LNAME": PEOPLE.P_A_LNAME,
+        "PEOPLE.P_A_ROLE": PEOPLE.P_A_ROLE,
+        "PEOPLE.P_A_PHONE": PEOPLE.P_A_PHONE,
+        "PEOPLE.P_A_EMAIL": PEOPLE.P_A_EMAIL,
+        "PEOPLE.P_A_ADD1": PEOPLE.P_A_ADD1,
+        "PEOPLE.P_A_ADD2": PEOPLE.P_A_ADD2,
+        "PEOPLE.P_A_CITY": PEOPLE.P_A_CITY,
+        "PEOPLE.P_A_STATE": PEOPLE.P_A_STATE,
+        "PEOPLE.P_A_ZIP": PEOPLE.P_A_ZIP,
+        "PEOPLE.P_B_FNAME": PEOPLE.P_B_FNAME,
+        "PEOPLE.P_B_LNAME": PEOPLE.P_B_LNAME,
+        "PEOPLE.P_B_ROLE": PEOPLE.P_B_ROLE,
+        "PEOPLE.P_B_PHONE": PEOPLE.P_B_PHONE,
+        "PEOPLE.P_B_EMAIL": PEOPLE.P_B_EMAIL,
+        "PEOPLE.P_B_ADD1": PEOPLE.P_B_ADD1,
+        "PEOPLE.P_B_ADD2": PEOPLE.P_B_ADD2,
+        "PEOPLE.P_B_CITY": PEOPLE.P_B_CITY,
+        "PEOPLE.P_B_STATE": PEOPLE.P_B_STATE,
+        "PEOPLE.P_B_ZIP": PEOPLE.P_B_ZIP,
+        "SITE_INFO.SITE_PASSCODE": SITE_INFO.SITE_PASSCODE,
+        "SITE_INFO.SITE_PASSCODE_CONFIRMATION":
           SITE_INFO.SITE_PASSCODE_CONFIRMATION,
-        'PLANNING_LINKS.BUDGET_URL': PLANNING_LINKS.BUDGET_URL,
-        'PLANNING_LINKS.ADDRESS_URL': PLANNING_LINKS.ADDRESS_URL,
-        'PLANNING_LINKS.DESIGN_BOARD_URL': PLANNING_LINKS.DESIGN_BOARD_URL,
-        'PLANNING_LINKS.CLIENT_DOCS_URL': PLANNING_LINKS.CLIENT_DOCS_URL,
-        'PLANNING_LINKS.VENDOR_PROPOSALS_URL':
+        "PLANNING_LINKS.BUDGET_URL": PLANNING_LINKS.BUDGET_URL,
+        "PLANNING_LINKS.ADDRESS_URL": PLANNING_LINKS.ADDRESS_URL,
+        "PLANNING_LINKS.DESIGN_BOARD_URL": PLANNING_LINKS.DESIGN_BOARD_URL,
+        "PLANNING_LINKS.CLIENT_DOCS_URL": PLANNING_LINKS.CLIENT_DOCS_URL,
+        "PLANNING_LINKS.VENDOR_PROPOSALS_URL":
           PLANNING_LINKS.VENDOR_PROPOSALS_URL,
-        'PLANNING_LINKS.VENDOR_CONTACT_URL': PLANNING_LINKS.VENDOR_CONTACT_URL,
-        'PLANNING_LINKS.GUEST_INFO_URL': PLANNING_LINKS.GUEST_INFO_URL,
-        'PLANNING_LINKS.Workflow_Budget_Payment_URL':
+        "PLANNING_LINKS.VENDOR_CONTACT_URL": PLANNING_LINKS.VENDOR_CONTACT_URL,
+        "PLANNING_LINKS.GUEST_INFO_URL": PLANNING_LINKS.GUEST_INFO_URL,
+        "PLANNING_LINKS.Workflow_Budget_Payment_URL":
           PLANNING_LINKS.Workflow_Budget_Payment_URL,
-        'PLANNING_LINKS.STYLING_FOLDER_URL': PLANNING_LINKS.STYLING_FOLDER_URL,
+        "PLANNING_LINKS.STYLING_FOLDER_URL": PLANNING_LINKS.STYLING_FOLDER_URL,
         // 'PLANNING_LINKS.CALENDAR_URL': PLANNING_LINKS.GUEST_INFO_URL,
-        'PUBLIC_LINKS.TWITTER_URL': PUBLIC_LINKS.TWITTER_URL,
-        'PUBLIC_LINKS.YELP_URL': PUBLIC_LINKS.YELP_URL,
-        'PUBLIC_LINKS.FACEBOOK_URL': PUBLIC_LINKS.FACEBOOK_URL,
-        'PUBLIC_LINKS.REGISTRY_URL': PUBLIC_LINKS.REGISTRY_URL,
-        'PUBLIC_LINKS.INSTAGRAM_URL': PUBLIC_LINKS.INSTAGRAM_URL,
-        'PUBLIC_LINKS.PINTEREST_URL': PUBLIC_LINKS.PINTEREST_URL,
+        "PUBLIC_LINKS.TWITTER_URL": PUBLIC_LINKS.TWITTER_URL,
+        "PUBLIC_LINKS.YELP_URL": PUBLIC_LINKS.YELP_URL,
+        "PUBLIC_LINKS.FACEBOOK_URL": PUBLIC_LINKS.FACEBOOK_URL,
+        "PUBLIC_LINKS.REGISTRY_URL": PUBLIC_LINKS.REGISTRY_URL,
+        "PUBLIC_LINKS.INSTAGRAM_URL": PUBLIC_LINKS.INSTAGRAM_URL,
+        "PUBLIC_LINKS.PINTEREST_URL": PUBLIC_LINKS.PINTEREST_URL,
       }).forEach(
         (
           [key, value] // @ts-ignore
@@ -280,7 +280,7 @@ const Page = (props: Props) => {
     }
   }, [editClientData]);
 
-  console.log('planners', planners);
+  console.log("planners", planners);
 
   const handleBgImageSelect = (id: number) => {
     setSelectedBgImageId(id);
@@ -297,132 +297,137 @@ const Page = (props: Props) => {
 
     data.SITE_INFO.BG_IMAGE_ID = selectedBgImageId || bgImages[0].id;
     data.SLUG =
-      data.PEOPLE.P_A_FNAME.trim() + '-' + data.PEOPLE.P_B_FNAME.trim();
+      data.PEOPLE.P_A_FNAME.trim() + "-" + data.PEOPLE.P_B_FNAME.trim();
+
+    data.PEOPLE.P_A_EMAIL = data.PEOPLE.P_A_EMAIL.replace(/\s+/g, "");
+    data.PEOPLE.P_B_EMAIL = data.PEOPLE.P_B_EMAIL.replace(/\s+/g, "");
+
+    console.log("data", data);
 
     if (password !== passwordConfirmation) {
-      toast.error('Passwords do not match', {
-        position: 'bottom-right',
+      toast.error("Passwords do not match", {
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
+        theme: "light",
       });
       return;
-    } else if (password !== '') {
+    } else if (password !== "") {
       const { data: refreshedSession, error: refreshError } =
         await supabase.auth.refreshSession({
           refresh_token: state.session?.refresh_token,
         });
       if (refreshError) {
-        console.log('session', state.session);
+        console.log("session", state.session);
 
-        console.log('refresh error', refreshError);
+        console.log("refresh error", refreshError);
         return toast.error(refreshError.message, {
-          position: 'bottom-right',
+          position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
+          theme: "light",
         });
       }
-      console.log('refreshed session', refreshedSession);
+      console.log("refreshed session", refreshedSession);
 
       const { data: userUpdateData, error: updateError } =
         await supabase.auth.updateUser({
           password: password,
         });
       if (updateError) {
-        console.log('update error', updateError);
+        console.log("update error", updateError);
         return toast.error(updateError.message, {
-          position: 'bottom-right',
+          position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
+          theme: "light",
         });
       } else {
-        console.log('Password updated successfully', userUpdateData);
+        console.log("Password updated successfully", userUpdateData);
       }
     }
 
     try {
-      const response = await fetch('/api/newClient', {
-        method: 'POST',
+      const response = await fetch("/api/newClient", {
+        method: "POST",
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const responseData = await response.json();
 
       if (responseData.error) {
         if (responseData.error) {
-          console.log('error', responseData.error);
+          console.log("error", responseData.error);
           toast.error(responseData.error, {
-            position: 'bottom-right',
+            position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: 'light',
+            theme: "light",
           });
         }
       } else {
-        if (state.loggedInUser?.role != 'client') {
+        if (state.loggedInUser?.role != "client") {
           setSubmitted(true);
           reset();
         } else {
-          const session = JSON.parse(localStorage.getItem('session') as string);
-          const user = JSON.parse(localStorage.getItem('user') as string);
+          const session = JSON.parse(localStorage.getItem("session") as string);
+          const user = JSON.parse(localStorage.getItem("user") as string);
           setState({ ...state, session, user });
           window.location.href = `/clients/${data.SLUG}`;
         }
       }
     } catch (error: any) {
-      console.error('Error:', error.message);
+      console.error("Error:", error.message);
       toast.error(error.message, {
-        position: 'bottom-right',
+        position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
+        theme: "light",
       });
     }
   };
 
   useEffect(() => {
     if (submitted) {
-      console.log('redirecting to clients page');
+      console.log("redirecting to clients page");
       setTimeout(() => {
         router.push(`/Homepage`);
       }, 3000);
     }
   }, [submitted]);
 
-  console.log('state.loggedInUser?.role', state.loggedInUser?.role);
+  console.log("state.loggedInUser?.role", state.loggedInUser?.role);
 
   const onError = (errors: any) => {
     // your code here
-    console.log('errors: ', errors);
+    console.log("errors: ", errors);
   };
 
   if (isLoading) {
@@ -449,10 +454,10 @@ const Page = (props: Props) => {
 
   return (
     <main className="newContainer">
-      {state.loggedInUser?.role === 'client' && !isLoading ? (
+      {state.loggedInUser?.role === "client" && !isLoading ? (
         <header
           className="mb-10 bg-center bg-cover"
-          style={{ backgroundImage: 'url(/images/signup-bg.jpg)' }}>
+          style={{ backgroundImage: "url(/images/signup-bg.jpg)" }}>
           <div className="max-w-7xl lg:px-8 p-4 px-6 mx-auto text-black">
             <div className="md:items-center md:pb-16 md:pt-20 flex justify-center gap-6 py-8 mx-auto text-center">
               <div className=" md:py-16 md:mx-8 border-dse-peach bg-dse-peach md:bg-opacity-0 py-8 bg-opacity-50 border border-solid">
@@ -500,7 +505,7 @@ const Page = (props: Props) => {
           <form onSubmit={handleSubmit(onSubmit, onError)}>
             <div
               className={`mt-10 ${
-                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== "client" ? "visible" : "hidden"
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -532,14 +537,14 @@ const Page = (props: Props) => {
                           )}
 
                           <select
-                            {...register('ADMIN_INFO.PLANNER', {
-                              required: 'Planner required.',
+                            {...register("ADMIN_INFO.PLANNER", {
+                              required: "Planner required.",
                             })}
                             className="border-dse-peach focus:outline-none focus:ring-transparent focus:border-dse-orange w-full px-3 py-2 mt-1 font-serif text-sm bg-white border"
                             id="PLANNER">
                             <optgroup label="Planners">
                               {planners?.map((planner: Planner, id: number) => {
-                                if (planner.role == 'planner') {
+                                if (planner.role == "planner") {
                                   return (
                                     <option value={`${planner.name}`} key={id}>
                                       {planner.name}
@@ -551,7 +556,7 @@ const Page = (props: Props) => {
                             {/* i want a unselectable title Stylists and then the stylists as options below  */}
                             <optgroup label="Stylists">
                               {planners?.map((planner: Planner, id: number) => {
-                                if (planner.role == 'stylist') {
+                                if (planner.role == "stylist") {
                                   return (
                                     <option value={`${planner.name}`} key={id}>
                                       {planner.name}
@@ -614,7 +619,7 @@ const Page = (props: Props) => {
 
             <div
               className={`sm:mt-0 mt-10  ${
-                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== "client" ? "visible" : "hidden"
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -646,8 +651,8 @@ const Page = (props: Props) => {
                           )}
 
                           <select
-                            {...register('ADMIN_INFO.ROLE', {
-                              required: 'Role required.',
+                            {...register("ADMIN_INFO.ROLE", {
+                              required: "Role required.",
                             })}
                             className="border-dse-peach focus:outline-none focus:ring-transparent focus:border-dse-orange w-full px-3 py-2 mt-1 font-serif text-sm bg-white border"
                             id="ROLE">
@@ -672,7 +677,7 @@ const Page = (props: Props) => {
 
             <div
               className={`mt-10 sm:mt-0 ${
-                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== "client" ? "visible" : "hidden"
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -703,7 +708,7 @@ const Page = (props: Props) => {
                           )}
                           <div className=" flex justify-between w-full">
                             <select
-                              {...register('EVENT_DETAILS.WED_MONTH', {
+                              {...register("EVENT_DETAILS.WED_MONTH", {
                                 // required: 'Wedding date required.',
                               })}
                               id="WED_MONTH"
@@ -715,7 +720,7 @@ const Page = (props: Props) => {
                               ))}
                             </select>
                             <select
-                              {...register('EVENT_DETAILS.WED_DAY', {
+                              {...register("EVENT_DETAILS.WED_DAY", {
                                 // required: 'First name required.',
                               })}
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach lining-nums w-3/12 px-3 py-2 mt-1 font-serif text-sm">
@@ -726,7 +731,7 @@ const Page = (props: Props) => {
                               ))}
                             </select>
                             <select
-                              {...register('EVENT_DETAILS.WED_YEAR', {
+                              {...register("EVENT_DETAILS.WED_YEAR", {
                                 // required: 'First name required.',
                               })}
                               id="project_wedding_date_3i"
@@ -753,7 +758,7 @@ const Page = (props: Props) => {
                             </label>
                           )}
                           <input
-                            {...register('EVENT_DETAILS.VENUE_NAME', {
+                            {...register("EVENT_DETAILS.VENUE_NAME", {
                               // required: 'Venue name required.',
                             })}
                             className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -775,7 +780,7 @@ const Page = (props: Props) => {
                             </label>
                           )}
                           <input
-                            {...register('EVENT_DETAILS.VENUE_CITY', {
+                            {...register("EVENT_DETAILS.VENUE_CITY", {
                               // required: 'Venue city required.',
                             })}
                             placeholder=""
@@ -798,7 +803,7 @@ const Page = (props: Props) => {
                             </label>
                           )}
                           <input
-                            {...register('EVENT_DETAILS.VENUE_STATE', {
+                            {...register("EVENT_DETAILS.VENUE_STATE", {
                               // required: 'Venue state required.',
                             })}
                             placeholder=""
@@ -808,7 +813,7 @@ const Page = (props: Props) => {
                           />
                         </div>
 
-                        {(role == 'wedding' || role == 'wedding+styling') && (
+                        {(role == "wedding" || role == "wedding+styling") && (
                           <>
                             <div className={`sm:col-span-3 col-span-6`}>
                               <label
@@ -818,7 +823,7 @@ const Page = (props: Props) => {
                               </label>
                               <select
                                 {...register(
-                                  'EVENT_DETAILS.GUEST_RANGE_START',
+                                  "EVENT_DETAILS.GUEST_RANGE_START",
                                   {}
                                 )}
                                 className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -838,7 +843,7 @@ const Page = (props: Props) => {
                               </label>
                               <select
                                 {...register(
-                                  'EVENT_DETAILS.GUEST_RANGE_END',
+                                  "EVENT_DETAILS.GUEST_RANGE_END",
                                   {}
                                 )}
                                 className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -867,7 +872,7 @@ const Page = (props: Props) => {
 
             <div
               className={`   ${
-                state.loggedInUser?.role !== 'client' && 'sm:mt-0'
+                state.loggedInUser?.role !== "client" && "sm:mt-0"
               } mt-10`}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -904,8 +909,8 @@ const Page = (props: Props) => {
                             )}
 
                             <input
-                              {...register('PEOPLE.P_A_FNAME', {
-                                required: 'Person A name required.',
+                              {...register("PEOPLE.P_A_FNAME", {
+                                required: "Person A name required.",
                               })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -926,8 +931,8 @@ const Page = (props: Props) => {
                               </label>
                             )}
                             <input
-                              {...register('PEOPLE.P_A_LNAME', {
-                                required: 'Person A name required.',
+                              {...register("PEOPLE.P_A_LNAME", {
+                                required: "Person A name required.",
                               })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -942,7 +947,7 @@ const Page = (props: Props) => {
                               Role
                             </label>
                             <select
-                              {...register('PEOPLE.P_A_ROLE', {})}
+                              {...register("PEOPLE.P_A_ROLE", {})}
                               className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               id="P_A_ROLE">
                               <option value="bride">Bride</option>
@@ -957,7 +962,7 @@ const Page = (props: Props) => {
                               Phone
                             </label>
                             <input
-                              {...register('PEOPLE.P_A_PHONE', {})}
+                              {...register("PEOPLE.P_A_PHONE", {})}
                               placeholder=""
                               className="w-100 focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -978,8 +983,8 @@ const Page = (props: Props) => {
                             )}
 
                             <input
-                              {...register('PEOPLE.P_A_EMAIL', {
-                                required: 'Please provide an email address',
+                              {...register("PEOPLE.P_A_EMAIL", {
+                                required: "Please provide an email address",
                               })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -994,7 +999,7 @@ const Page = (props: Props) => {
                               Address 1
                             </label>
                             <input
-                              {...register('PEOPLE.P_A_ADD1', {})}
+                              {...register("PEOPLE.P_A_ADD1", {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1008,7 +1013,7 @@ const Page = (props: Props) => {
                               Address 2
                             </label>
                             <input
-                              {...register('PEOPLE.P_A_ADD2', {})}
+                              {...register("PEOPLE.P_A_ADD2", {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1023,7 +1028,7 @@ const Page = (props: Props) => {
                                 City
                               </label>
                               <input
-                                {...register('PEOPLE.P_A_CITY', {})}
+                                {...register("PEOPLE.P_A_CITY", {})}
                                 placeholder=""
                                 className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                                 type="text"
@@ -1037,7 +1042,7 @@ const Page = (props: Props) => {
                                 State
                               </label>
                               <input
-                                {...register('PEOPLE.P_A_STATE', {})}
+                                {...register("PEOPLE.P_A_STATE", {})}
                                 placeholder=""
                                 className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                                 type="text"
@@ -1051,7 +1056,7 @@ const Page = (props: Props) => {
                                 Postal code
                               </label>
                               <input
-                                {...register('PEOPLE.P_A_ZIP', {})}
+                                {...register("PEOPLE.P_A_ZIP", {})}
                                 placeholder=""
                                 className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                                 type="text"
@@ -1080,8 +1085,8 @@ const Page = (props: Props) => {
                               </label>
                             )}
                             <input
-                              {...register('PEOPLE.P_B_FNAME', {
-                                required: 'Person B name required.',
+                              {...register("PEOPLE.P_B_FNAME", {
+                                required: "Person B name required.",
                               })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -1102,8 +1107,8 @@ const Page = (props: Props) => {
                               </label>
                             )}
                             <input
-                              {...register('PEOPLE.P_B_LNAME', {
-                                required: 'Person B name required.',
+                              {...register("PEOPLE.P_B_LNAME", {
+                                required: "Person B name required.",
                               })}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
@@ -1118,7 +1123,7 @@ const Page = (props: Props) => {
                               Role
                             </label>
                             <select
-                              {...register('PEOPLE.P_B_ROLE', {})}
+                              {...register("PEOPLE.P_B_ROLE", {})}
                               className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               id="P_B_ROLE">
                               <option value="bride">Bride</option>
@@ -1133,7 +1138,7 @@ const Page = (props: Props) => {
                               Phone
                             </label>
                             <input
-                              {...register('PEOPLE.P_B_PHONE', {})}
+                              {...register("PEOPLE.P_B_PHONE", {})}
                               placeholder=""
                               className="w-100 focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1154,7 +1159,7 @@ const Page = (props: Props) => {
                             )}
 
                             <input
-                              {...register('PEOPLE.P_B_EMAIL')}
+                              {...register("PEOPLE.P_B_EMAIL")}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1168,7 +1173,7 @@ const Page = (props: Props) => {
                               Address 1
                             </label>
                             <input
-                              {...register('PEOPLE.P_B_ADD1', {})}
+                              {...register("PEOPLE.P_B_ADD1", {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1182,7 +1187,7 @@ const Page = (props: Props) => {
                               Address 2
                             </label>
                             <input
-                              {...register('PEOPLE.P_B_ADD2', {})}
+                              {...register("PEOPLE.P_B_ADD2", {})}
                               placeholder=""
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                               type="text"
@@ -1197,7 +1202,7 @@ const Page = (props: Props) => {
                                 City
                               </label>
                               <input
-                                {...register('PEOPLE.P_B_CITY', {})}
+                                {...register("PEOPLE.P_B_CITY", {})}
                                 placeholder=""
                                 className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                                 type="text"
@@ -1211,7 +1216,7 @@ const Page = (props: Props) => {
                                 State
                               </label>
                               <input
-                                {...register('PEOPLE.P_B_STATE', {})}
+                                {...register("PEOPLE.P_B_STATE", {})}
                                 placeholder=""
                                 className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                                 type="text"
@@ -1225,7 +1230,7 @@ const Page = (props: Props) => {
                                 Postal code
                               </label>
                               <input
-                                {...register('PEOPLE.P_B_ZIP', {})}
+                                {...register("PEOPLE.P_B_ZIP", {})}
                                 placeholder=""
                                 className="lining-nums focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm"
                                 type="text"
@@ -1274,8 +1279,8 @@ const Page = (props: Props) => {
                             key={id}
                             className={`sm:col-span-3 ${
                               selectedBgImageId == image.id
-                                ? 'border-[rgb(217,142,72)]'
-                                : 'border-transparent'
+                                ? "border-[rgb(217,142,72)]"
+                                : "border-transparent"
                             } col-span-6 border-8 `}>
                             <input
                               type="radio"
@@ -1300,7 +1305,7 @@ const Page = (props: Props) => {
             </div>
             <div
               className={`mt-10 sm:mt-0 ${
-                state.loggedInUser?.role !== 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role !== "client" ? "visible" : "hidden"
               } `}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -1318,12 +1323,12 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'Workflow_Budget_Payment',
-                          'DESIGN_BOARD',
-                          'CLIENT_DOCS',
-                          'VENDOR_PROPOSALS',
-                          'GUEST_INFO',
-                          'STYLING_FOLDER',
+                          "Workflow_Budget_Payment",
+                          "DESIGN_BOARD",
+                          "CLIENT_DOCS",
+                          "VENDOR_PROPOSALS",
+                          "GUEST_INFO",
+                          "STYLING_FOLDER",
                         ].map((title, id) => (
                           <div
                             key={id}
@@ -1335,11 +1340,11 @@ const Page = (props: Props) => {
                               //   ? 'hidden'
                               //   : ''
 
-                              title != 'STYLING_FOLDER' && role == 'styling'
-                                ? 'hidden'
-                                : title == 'STYLING_FOLDER' && role == 'wedding'
-                                ? 'hidden'
-                                : ''
+                              title != "STYLING_FOLDER" && role == "styling"
+                                ? "hidden"
+                                : title == "STYLING_FOLDER" && role == "wedding"
+                                ? "hidden"
+                                : ""
                             }
                           `}>
                             {/* @ts-ignore */}
@@ -1350,7 +1355,7 @@ const Page = (props: Props) => {
                               </span>
                             ) : (
                               <label className="text-[12px] tracking-widewide font-sans font-normal uppercase">
-                                {title.split('_').join(' ')} url
+                                {title.split("_").join(" ")} url
                               </label>
                             )}
 
@@ -1360,8 +1365,8 @@ const Page = (props: Props) => {
                                 `PLANNING_LINKS.${title}_URL`
                               )}
                               placeholder={`${title
-                                .split('_')
-                                .join(' ')
+                                .split("_")
+                                .join(" ")
                                 .toLowerCase()}`}
                               className="focus:ring-transparent focus:border-dse-orange border-dse-peach w-full mt-1 font-serif text-sm placeholder:capitalize"
                               type="text"
@@ -1399,12 +1404,12 @@ const Page = (props: Props) => {
                     <div className="md:p-0 p-4">
                       <div className="grid grid-cols-6 gap-6">
                         {[
-                          'PINTEREST',
-                          'FACEBOOK',
-                          'INSTAGRAM',
-                          'TWITTER',
-                          'YELP',
-                          'REGISTRY',
+                          "PINTEREST",
+                          "FACEBOOK",
+                          "INSTAGRAM",
+                          "TWITTER",
+                          "YELP",
+                          "REGISTRY",
                         ].map((title, id) => (
                           <div key={id} className="sm:col-span-3 col-span-6">
                             {/* @ts-ignore */}
@@ -1438,9 +1443,9 @@ const Page = (props: Props) => {
                       </div>
                       <div
                         className={`md:px-0 px-4 py-3 gap-4 flex justify-end text-right ${
-                          state.loggedInUser?.role !== 'client'
-                            ? 'visible'
-                            : 'hidden'
+                          state.loggedInUser?.role !== "client"
+                            ? "visible"
+                            : "hidden"
                         }`}>
                         <button
                           type="button"
@@ -1455,10 +1460,10 @@ const Page = (props: Props) => {
                           type="submit"
                           name="commit"
                           className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
-                          {state.loggedInUser?.role == 'planner' &&
+                          {state.loggedInUser?.role == "planner" &&
                           urlParameter == null
-                            ? 'Create'
-                            : 'Update'}
+                            ? "Create"
+                            : "Update"}
                         </button>
                       </div>
                     </div>
@@ -1469,7 +1474,7 @@ const Page = (props: Props) => {
 
             <div
               className={`sm:mt-0 mt-10 mb-20 ${
-                state.loggedInUser?.role == 'client' ? 'visible' : 'hidden'
+                state.loggedInUser?.role == "client" ? "visible" : "hidden"
               }`}>
               <div className="md:grid md:grid-cols-3 md:gap-6">
                 <div className="md:col-span-1">
@@ -1539,8 +1544,8 @@ const Page = (props: Props) => {
                             // go back to homepage
                             router.push(
                               `/clients/${state.loggedInUser?.name.replace(
-                                ' + ',
-                                '-'
+                                " + ",
+                                "-"
                               )}`
                             );
                           }}
@@ -1551,10 +1556,10 @@ const Page = (props: Props) => {
                           type="submit"
                           name="commit"
                           className="md:py-2 text-small md:text-xs bg-dse-gold hover:bg-dse-orange md:w-auto inline-flex justify-center w-full px-4 py-4 font-medium tracking-widest text-white uppercase border border-transparent cursor-pointer">
-                          {state.loggedInUser?.role == 'planner' &&
+                          {state.loggedInUser?.role == "planner" &&
                           urlParameter == null
-                            ? 'Create'
-                            : 'Update'}
+                            ? "Create"
+                            : "Update"}
                         </button>
                       </div>
                     </div>
@@ -1581,9 +1586,9 @@ const Page = (props: Props) => {
           className="h-1/3 opacity-90 rounded-xl fixed inset-0 z-10 flex flex-col w-1/3 p-4 m-auto bg-white border-4 border-gray-300"
           id="successModal">
           <p className="m-auto text-xl text-center">
-            {state.loggedInUser?.role != 'client'
-              ? 'Successful creation. Please wait while we redirect you to the homepage.'
-              : 'Successful update. Please wait while we redirect you to your portal.'}
+            {state.loggedInUser?.role != "client"
+              ? "Successful creation. Please wait while we redirect you to the homepage."
+              : "Successful update. Please wait while we redirect you to your portal."}
           </p>
           <svg
             aria-hidden="true"

@@ -1,15 +1,19 @@
-import { useClient } from '../../../../lib/useClient';
-import { NextResponse } from 'next/server';
+import { useClient } from "../../../../lib/useClient";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const data = await req.json();
   const urlSlug = data?.urlParameter;
   const name = `${data.PEOPLE.P_A_FNAME} + ${data.PEOPLE.P_B_FNAME}`;
-  const email = data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL;
+  const email =
+    data.PEOPLE.P_A_EMAIL.replace(/\s+/g, "") ||
+    data.PEOPLE.P_B_EMAIL.replace(/\s+/g, "");
   const phone = data.PEOPLE.P_A_PHONE || data.PEOPLE.P_B_PHONE;
   const archived = data.ADMIN_INFO.ARCHIVED;
   const supabase = useClient();
-  const isDev = process.env.NODE_ENV === 'development';
+  const isDev = process.env.NODE_ENV === "development";
+
+  console.log("email", `${email}`);
 
   if (!urlSlug) {
     // const { data: createUserData, error: createUserError } =
@@ -29,14 +33,14 @@ export async function POST(req: Request) {
     //     }
     //   );
 
-    if (data.ADMIN_INFO.ROLE == 'styling') {
+    if (data.ADMIN_INFO.ROLE == "styling") {
       const { data: createData, error: createError } =
         await supabase.auth.admin.createUser({
           email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
           email_confirm: true,
-          password: 'password',
+          password: "password",
           user_metadata: {
-            role: 'stylist',
+            role: "stylist",
             name: name,
             email: email,
             phone: phone,
@@ -58,24 +62,24 @@ export async function POST(req: Request) {
       const { data: inviteData, error: inviteError } =
         await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: isDev
-            ? 'http://localhost:3000/'
-            : 'https://planning.downeystreetevents.com/',
+            ? "http://localhost:3000/"
+            : "https://planning.downeystreetevents.com/",
         });
 
-      console.log('inviteData', inviteData);
+      console.log("inviteData", inviteData);
 
       if (inviteError) return NextResponse.json({ error: inviteError.message });
 
-      console.log('data', data);
+      console.log("data", data);
 
-      const { error } = await supabase.from('new_client').insert([
+      const { error } = await supabase.from("new_client").insert([
         {
           ...data,
         },
       ]);
 
       const { data: userInsertData, error: userInsertError } = await supabase
-        .from('users')
+        .from("users")
         .insert([
           {
             name: name,
@@ -83,11 +87,11 @@ export async function POST(req: Request) {
             phone: phone,
             address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
             archived: archived,
-            role: 'client',
+            role: "client",
           },
         ]);
-      console.log('userInsertData', userInsertData);
-      console.log('userInsertError', userInsertError);
+      console.log("userInsertData", userInsertData);
+      console.log("userInsertError", userInsertError);
 
       if (userInsertError) return NextResponse.json({ error: userInsertError });
 
@@ -97,31 +101,31 @@ export async function POST(req: Request) {
       const { data: inviteData, error: inviteError } =
         await supabase.auth.signUp({
           email: data.PEOPLE.P_A_EMAIL || data.PEOPLE.P_B_EMAIL,
-          password: 'password',
+          password: "password",
           options: {
-            data: { role: 'client' },
+            data: { role: "client" },
           },
         });
-      console.log('inviteData', inviteData);
+      console.log("inviteData", inviteData);
 
       if (inviteError) return NextResponse.json({ error: inviteError.message });
 
-      console.log('data', data);
+      console.log("data", data);
 
-      const { error } = await supabase.from('new_client').insert([
+      const { error } = await supabase.from("new_client").insert([
         {
           ...data,
         },
       ]);
 
-      await supabase.from('users').insert([
+      await supabase.from("users").insert([
         {
           name: name,
           email: email,
           phone: phone,
           address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
           archived: archived,
-          role: 'client',
+          role: "client",
         },
       ]);
 
@@ -131,17 +135,17 @@ export async function POST(req: Request) {
     }
   } else {
     const { error } = await supabase
-      .from('new_client')
+      .from("new_client")
       .update([
         {
           ...data,
           urlParameter: undefined,
         },
       ])
-      .eq('SLUG', urlSlug);
+      .eq("SLUG", urlSlug);
 
     await supabase
-      .from('users')
+      .from("users")
       .update([
         {
           name: name,
@@ -149,10 +153,10 @@ export async function POST(req: Request) {
           phone: phone,
           address: `${data.PEOPLE.P_A_ADD1} ${data.PEOPLE.P_A_ADD2} ${data.PEOPLE.P_A_CITY} ${data.PEOPLE.P_A_STATE} ${data.PEOPLE.P_A_ZIP}`,
           archived: archived,
-          role: 'client',
+          role: "client",
         },
       ])
-      .eq('email', email);
+      .eq("email", email);
     if (error) return NextResponse.json({ error: error.message });
   }
 
