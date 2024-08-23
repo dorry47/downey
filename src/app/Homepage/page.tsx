@@ -1,13 +1,13 @@
-'use client';
-import ClientBox from '../../../components/ClientBox';
-import events from '../../data/events.json';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useAtom } from 'jotai';
-import { globalStateAtom } from '../../../context/atoms';
-import React from 'react';
-import { useClient } from '../../../lib/useClient';
-import { useRouter } from 'next/navigation';
+"use client";
+import ClientBox from "../../../components/ClientBox";
+import events from "../../data/events.json";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { globalStateAtom } from "../../../context/atoms";
+import React from "react";
+import { useClient } from "../../../lib/useClient";
+import { useRouter } from "next/navigation";
 interface Event {
   names: string[];
   date: string;
@@ -51,35 +51,38 @@ export default function Page() {
 
   const allClients = async () => {
     let { data, error } = await supabase
-      .from('new_client')
+      .from("new_client")
       .select(
-        'plannerName, plannerEmail, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_B_FNAME, EVENT_DETAILS->>WED_MONTH, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR, ADMIN_INFO->>ARCHIVED'
+        "plannerName, plannerEmail, SLUG, PEOPLE->>P_A_FNAME, PEOPLE->>P_B_FNAME, EVENT_DETAILS->>WED_MONTH, EVENT_DETAILS->>WED_DAY, EVENT_DETAILS->>WED_YEAR, ADMIN_INFO->>ARCHIVED"
       );
-    if (error) {
+    // i want to order the data by the date of the event
+
+    if (error || !data) {
       console.log(error);
     } else {
-      console.log('clientData', data);
+      console.log("clientData", data);
+
       return data;
     }
   };
 
   useEffect(() => {
-    console.log('loggedInUser', state.loggedInUser);
-    if (state.loggedInUser && state.loggedInUser.role == 'planner') {
+    console.log("loggedInUser", state.loggedInUser);
+    if (state.loggedInUser && state.loggedInUser.role == "planner") {
       setIsLoading(false);
-    } else if (state.loggedInUser && state.loggedInUser.role == 'client') {
+    } else if (state.loggedInUser && state.loggedInUser.role == "client") {
       window.location.href = `/clients/new?edit=${state.loggedInUser?.name.replace(
-        ' + ',
-        '-'
+        " + ",
+        "-"
       )}`;
     }
   }, [state.loggedInUser]);
 
   const allPlanners = async () => {
     let { data, error } = await supabase
-      .from('users')
-      .select('name, email, phone, address, archived, role')
-      .in('role', ['planner', 'stylist']);
+      .from("users")
+      .select("name, email, phone, address, archived, role")
+      .in("role", ["planner", "stylist"]);
 
     if (error) {
       console.log(error);
@@ -123,15 +126,24 @@ export default function Page() {
       }
     });
 
+    // Sort events by date (oldest first)
+    Object.values(groupedClients).forEach((planner) => {
+      planner.events.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA.getTime() - dateB.getTime(); // Oldest first
+      });
+    });
+
     return Object.values(groupedClients);
   };
 
   useEffect(() => {
-    console.log('planner email', `${state?.user?.email}`);
+    console.log("planner email", `${state?.user?.email}`);
 
     if (state.session !== null) {
       allPlanners().then((plannerData: any) => {
-        console.log('planner data', plannerData);
+        console.log("planner data", plannerData);
 
         // Create a Set of valid planner emails (non-archived)
         const validPlannerEmails = new Set(
@@ -141,7 +153,7 @@ export default function Page() {
         );
 
         allClients().then((data: any) => {
-          console.log('pre organized', data);
+          console.log("pre organized", data);
 
           // Group clients by planner email and include only valid planners
           const groupedClients = groupClientsByPlanner(
@@ -149,7 +161,7 @@ export default function Page() {
             validPlannerEmails as Set<string>
           );
 
-          console.log('post organized', groupedClients);
+          console.log("post organized", groupedClients);
 
           setClientData(groupedClients as Planner[]);
         });
@@ -179,14 +191,14 @@ export default function Page() {
       <main className="">
         <header
           style={{
-            backgroundImage: 'url(/images/header-background.jpg)',
+            backgroundImage: "url(/images/header-background.jpg)",
           }}
           className="md:mb-10 bg-center bg-cover">
           <div className="lg:px-8 max-w-6xl p-4 px-6 mx-auto text-white">
             <div className="md:items-center md:pb-12 md:pt-12 text-center">
               <div className="md:col-span-10 md:py-12 md:mx-8 border-[rgba(238,217,212)] bg-[rgba(238,217,212)] bg-opacity-10 col-span-12 py-8 border border-solid">
                 <h1 className="font-display md:text-3xl mt-2 text-xl font-normal leading-tight tracking-widest uppercase">
-                  Hello {state.loggedInUser?.name.split(' ')[0]}!
+                  Hello {state.loggedInUser?.name.split(" ")[0]}!
                 </h1>
               </div>
             </div>
@@ -210,7 +222,7 @@ export default function Page() {
                     )
                     .flatMap((planner: Planner) => planner.events)
                     .map((event: Event, id: number) => {
-                      if (event.active == 'true') {
+                      if (event.active == "true") {
                         return null;
                       } else {
                         return (
@@ -257,12 +269,12 @@ export default function Page() {
                       <h2
                         className="text-[rgba(238,217,212)] text-sm font-semibold tracking-wide uppercase"
                         onClick={() => toggleList(list.planner)}>
-                        {activeList[list.planner] ? 'Hide List' : 'View List'}
+                        {activeList[list.planner] ? "Hide List" : "View List"}
                       </h2>
                     </div>
                     {activeList[list.planner] &&
                       list.events.map((event: Event, id: number) => {
-                        if (event.active == 'true') {
+                        if (event.active == "true") {
                           return null;
                         } else {
                           return (
